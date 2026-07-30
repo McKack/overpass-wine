@@ -1,7 +1,7 @@
 /*
  * Runtime Classes for windows.ui.core.textinput.dll
  *
- * Copyright 2025 Zhiyi Zhang for CodeWeavers
+ * Written by Weather
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,8 +21,19 @@
 #pragma makedep register
 #pragma winrt ns_prefix
 
+import "inspectable.idl";
+import "asyncinfo.idl";
+import "eventtoken.idl";
+import "windows.foundation.idl";
+import "windowscontracts.idl";
+import "windows.system.idl";
+import "windows.ui.text.core.idl";
 import "windows.ui.viewmanagement.core.idl";
 
 namespace Windows.UI.ViewManagement.Core {
     runtimeclass CoreInputView;
+}
+
+namespace Windows.UI.Text.Core {
+    runtimeclass CoreTextServicesManager;
 }
