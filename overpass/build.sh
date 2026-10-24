@@ -20,11 +20,12 @@ rm -rf "$BUILD"
 mkdir -p "$BUILD/obj" "$DEST"
 cd "$BUILD/obj"
 
+# No --with-opengl: Wine 11 makes EGL a hard requirement then, but winemac.drv does OpenGL through CGL.
 "$SRC/configure" \
     --prefix="$DEST" \
     --enable-archs=i386,x86_64 \
     --disable-tests \
-    --with-coreaudio --with-freetype --with-gnutls --with-mingw --with-opengl \
+    --with-coreaudio --with-freetype --with-gnutls --with-mingw \
     --with-pthread --with-sdl --with-unwind --with-vulkan \
     --without-alsa --without-capi --without-dbus --without-fontconfig --without-gettextpo \
     --without-gphoto --without-gssapi --without-gstreamer --without-krb5 --without-netapi \
