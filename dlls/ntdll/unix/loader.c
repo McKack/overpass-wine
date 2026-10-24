@@ -387,12 +387,24 @@ void prepend_dll_path(const char *path)
 static void set_dll_path(void)
 {
     char *p, *path = getenv( "WINEDLLPATH" );
+    char *prepend = getenv( "OVERPASS_DLL_PATH_PREPEND" );
     int i, count = 0;
 
     if (path) for (p = path, count = 1; *p; p++) if (*p == ':') count++;
+    if (prepend) for (p = prepend, count++; *p; p++) if (*p == ':') count++;
 
     dll_paths = malloc( (count + 2) * sizeof(*dll_paths) );
     count = 0;
+
+    /* OverPass: directories searched before Wine's own, so a per-prefix graphics backend
+     * (e.g. DXMT's or D3DMetal's builtin d3d11/dxgi) replaces wined3d without touching the
+     * Wine install. Same layout as dll_dir: <dir>/<arch>-windows and <dir>/<arch>-unix. */
+    if (prepend)
+    {
+        prepend = strdup( prepend );
+        for (p = strtok( prepend, ":" ); p; p = strtok( NULL, ":" )) dll_paths[count++] = strdup( p );
+        free( prepend );
+    }
 
     if (!build_dir) dll_paths[count++] = dll_dir;
 

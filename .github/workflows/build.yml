@@ -1,0 +1,55 @@
+name: Build OverPass Wine
+
+on:
+  push:
+    branches: [main]
+    tags: ["overpass-wine-*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # Wine on macOS is x86_64 (run under Rosetta 2 on Apple silicon), so build on Intel.
+    runs-on: macos-15-intel
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          brew update
+          brew install bison flex mingw-w64 pkgconf freetype gnutls sdl2 molten-vk vulkan-loader dylibbundler
+
+      - name: Build and package
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/overpass-wine-* ]]; then
+            export OVERPASS_WINE_VERSION="${GITHUB_REF_NAME#overpass-wine-}"
+          else
+            export OVERPASS_WINE_VERSION="dev-${GITHUB_SHA::7}"
+          fi
+          overpass/build.sh
+
+      - name: Smoke test
+        run: |
+          W="$(ls -d build-overpass/stage/overpass-wine-*)"
+          "$W/bin/wine" --version
+          export WINEPREFIX="$RUNNER_TEMP/prefix" WINEDEBUG=-all
+          "$W/bin/wine" wineboot --init
+          "$W/bin/wine" cmd /c ver
+          nm -gU "$W/lib/wine/x86_64-unix/winemac.so" | grep -q _macdrv_functions && echo "macdrv_functions exported"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: overpass-wine
+          path: overpass-wine-*.tar.xz
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/overpass-wine-')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" overpass-wine-*.tar.xz \
+            --title "$GITHUB_REF_NAME" --notes-file overpass/README.md
