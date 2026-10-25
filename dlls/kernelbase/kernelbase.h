@@ -39,7 +39,7 @@ extern void init_locale( HMODULE module );
 extern void init_console(void);
 extern BOOL is_console_handle( HANDLE );
 extern BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const void *env, DWORD flags,
-                                   WCHAR **new_cmdline, WCHAR **new_env );
+                                   WCHAR **new_app_name, WCHAR **new_cmdline, WCHAR **new_env );
 
 extern const WCHAR windows_dir[];
 extern const WCHAR system_dir[];

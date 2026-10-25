@@ -35,6 +35,11 @@
  *   dll = xaudio2_7=n,b                             added to WINEDLLOVERRIDES
  *   graphics = dxmt                                 dxmt, d3dmetal, wined3d or auto; OverPass sets
  *                                                   OVERPASS_BACKEND_<NAME> to each backend's DLL folder
+ *   replace-path = \Game\start.exe => \Game\game.exe
+ *                                                   start another program instead: the first part of the
+ *                                                   program's path is replaced by the second, or the whole
+ *                                                   path when the second is absolute (C:\...); skipped
+ *                                                   when the replacement doesn't exist
  *   source = https://...                            where the fix comes from (not used here)
  *
  * Lines starting with '#' or ';' are comments. A rule applies when any of its program or steam-app
@@ -282,6 +287,64 @@ static const WCHAR *value_of( const WCHAR *line, const WCHAR *key )
     return line;
 }
 
+/* Case-insensitive wcsstr. */
+static const WCHAR *find_nocase( const WCHAR *str, const WCHAR *sub, size_t sub_len )
+{
+    for (; *str; str++) if (!wcsnicmp( str, sub, sub_len )) return str;
+    return NULL;
+}
+
+/* Applies a "from => to" replace-path value to *app_name and the program at the start of *cmdline. */
+static void replace_path( const struct rule *rule, const WCHAR *value, WCHAR **app_name, WCHAR **cmdline )
+{
+    const WCHAR *sep = wcsstr( value, L"=>" ), *to, *found, *args;
+    size_t from_len, to_len, app_len = lstrlenW( *app_name ), len;
+    WCHAR *new_app, *new_cmdline;
+
+    if (!sep) return;
+    for (from_len = sep - value; from_len && (value[from_len - 1] == ' ' || value[from_len - 1] == '\t'); from_len--) ;
+    for (to = sep + 2; *to == ' ' || *to == '\t'; to++) ;
+    to_len = lstrlenW( to );
+    if (!from_len || !to_len || !(found = find_nocase( *app_name, value, from_len ))) return;
+
+    if ((to[0] && to[1] == ':') || (to[0] == '\\' && to[1] == '\\')) new_app = heap_strdupW( to, to_len );
+    else if ((new_app = HeapAlloc( GetProcessHeap(), 0, (app_len - from_len + to_len + 1) * sizeof(WCHAR) )))
+    {
+        len = found - *app_name;
+        memcpy( new_app, *app_name, len * sizeof(WCHAR) );
+        memcpy( new_app + len, to, to_len * sizeof(WCHAR) );
+        lstrcpyW( new_app + len + to_len, found + from_len );
+    }
+    if (!new_app) return;
+    if (GetFileAttributesW( new_app ) == INVALID_FILE_ATTRIBUTES)
+    {
+        WARN( "rule %s: %s doesn't exist\n", debugstr_w(rule->name), debugstr_w(new_app) );
+        HeapFree( GetProcessHeap(), 0, new_app );
+        return;
+    }
+
+    /* The command line's first word names the program; the arguments after it stay as they are. */
+    if (**cmdline == '"')
+    {
+        args = wcschr( *cmdline + 1, '"' );
+        args = args ? args + 1 : *cmdline + lstrlenW( *cmdline );
+    }
+    else for (args = *cmdline; *args && *args != ' ' && *args != '\t'; args++) ;
+    len = lstrlenW( new_app ) + lstrlenW( args ) + 3;
+    if (!(new_cmdline = HeapAlloc( GetProcessHeap(), 0, len * sizeof(WCHAR) )))
+    {
+        HeapFree( GetProcessHeap(), 0, new_app );
+        return;
+    }
+    swprintf( new_cmdline, len, L"\"%s\"%s", new_app, args );
+
+    TRACE( "rule %s: starting %s instead of %s\n", debugstr_w(rule->name), debugstr_w(new_app), debugstr_w(*app_name) );
+    HeapFree( GetProcessHeap(), 0, *app_name );
+    HeapFree( GetProcessHeap(), 0, *cmdline );
+    *app_name = new_app;
+    *cmdline = new_cmdline;
+}
+
 static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const struct env_block *env )
 {
     size_t app_len = lstrlenW( app_name );
@@ -312,7 +375,7 @@ static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const 
     return FALSE;
 }
 
-static void rule_apply( const struct rule *rule, WCHAR **cmdline, struct env_block *env )
+static void rule_apply( const struct rule *rule, WCHAR **app_name, WCHAR **cmdline, struct env_block *env )
 {
     const WCHAR *unless = NULL, *value;
     unsigned int i;
@@ -324,7 +387,8 @@ static void rule_apply( const struct rule *rule, WCHAR **cmdline, struct env_blo
     {
         const WCHAR *line = rule->lines[i];
 
-        if ((value = value_of( line, L"add-arguments" )))
+        if ((value = value_of( line, L"replace-path" ))) replace_path( rule, value, app_name, cmdline );
+        else if ((value = value_of( line, L"add-arguments" )))
         {
             size_t len = lstrlenW( *cmdline ), add = lstrlenW( value );
             WCHAR *new_cmdline;
@@ -381,32 +445,35 @@ static void rule_apply( const struct rule *rule, WCHAR **cmdline, struct env_blo
     }
 }
 
-static void finish_rule( struct rule *rule, const WCHAR *app_name, WCHAR **cmdline, struct env_block *env,
+static void finish_rule( struct rule *rule, WCHAR **app_name, WCHAR **cmdline, struct env_block *env,
                          BOOL *matched )
 {
-    if (rule->name && rule_matches( rule, app_name, env ))
+    if (rule->name && rule_matches( rule, *app_name, env ))
     {
-        TRACE( "rule %s matches %s\n", debugstr_w(rule->name), debugstr_w(app_name) );
-        rule_apply( rule, cmdline, env );
+        TRACE( "rule %s matches %s\n", debugstr_w(rule->name), debugstr_w(*app_name) );
+        rule_apply( rule, app_name, cmdline, env );
         *matched = TRUE;
     }
     memset( rule, 0, sizeof(*rule) );
 }
 
-/* Applies every matching rule. When one matched, returns TRUE with *new_cmdline and *new_env (a Unicode
- * block) set; the caller frees both with HeapFree. */
+/* Applies every matching rule. When one matched, returns TRUE with *new_app_name, *new_cmdline and
+ * *new_env (a Unicode block) set; the caller frees all three with HeapFree. Rules after a replace-path
+ * see the replacement program. */
 BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const void *env_block, DWORD flags,
-                            WCHAR **new_cmdline, WCHAR **new_env )
+                            WCHAR **new_app_name, WCHAR **new_cmdline, WCHAR **new_env )
 {
     struct env_block env = { 0 };
     struct rule rule = { 0 };
-    WCHAR *text, *line, *next, *cmd;
+    WCHAR *text, *line, *next, *cmd = NULL, *app = NULL;
     BOOL matched = FALSE;
 
-    *new_cmdline = *new_env = NULL;
+    *new_app_name = *new_cmdline = *new_env = NULL;
     if (!app_name || !cmdline || !(text = load_rules())) return FALSE;
-    if (!env_load( &env, env_block, flags ) || !(cmd = heap_strdupW( cmdline, lstrlenW( cmdline ) )))
+    if (!env_load( &env, env_block, flags ) || !(cmd = heap_strdupW( cmdline, lstrlenW( cmdline ) ))
+        || !(app = heap_strdupW( app_name, lstrlenW( app_name ) )))
     {
+        HeapFree( GetProcessHeap(), 0, cmd );
         env_free( &env );
         HeapFree( GetProcessHeap(), 0, text );
         return FALSE;
@@ -424,20 +491,25 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
 
         if (*line == '[' && end[-1] == ']')
         {
-            finish_rule( &rule, app_name, &cmd, &env, &matched );
+            finish_rule( &rule, &app, &cmd, &env, &matched );
             end[-1] = 0;
             rule.name = line + 1;
         }
         else if (rule.name && rule.count < MAX_RULE_LINES) rule.lines[rule.count++] = line;
     }
-    finish_rule( &rule, app_name, &cmd, &env, &matched );
+    finish_rule( &rule, &app, &cmd, &env, &matched );
 
     if (matched)
     {
+        *new_app_name = app;
         *new_cmdline = cmd;
         *new_env = env_build( &env );
     }
-    else HeapFree( GetProcessHeap(), 0, cmd );
+    else
+    {
+        HeapFree( GetProcessHeap(), 0, app );
+        HeapFree( GetProcessHeap(), 0, cmd );
+    }
     env_free( &env );
     HeapFree( GetProcessHeap(), 0, text );
     return matched;

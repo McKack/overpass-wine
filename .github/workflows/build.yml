@@ -48,6 +48,11 @@ jobs:
           out="$(OVERPASS_COMPAT_RULES='C:\rules' "$W/bin/wine" cmd /c cmd /v:on /c echo !OVERPASS_RULE_TEST! 2>/dev/null | tr -d '\r')"
           echo "rule test: $out"
           [ "$out" = "applied" ]
+          # replace-path starts another program with the same arguments: hostname.exe becomes cmd.exe here.
+          printf '[replace test]\nprogram = hostname.exe\nreplace-path = \\hostname.exe => \\cmd.exe\n' > "$WINEPREFIX/drive_c/rules/replace.ini"
+          out="$(OVERPASS_COMPAT_RULES='C:\rules' "$W/bin/wine" cmd /c hostname.exe /c echo replaced 2>/dev/null | tr -d '\r')"
+          echo "replace test: $out"
+          [ "$out" = "replaced" ]
           nm -gU "$W/lib/wine/x86_64-unix/winemac.so" | grep -q _macdrv_functions && echo "macdrv_functions exported"
 
       - uses: actions/upload-artifact@v4
