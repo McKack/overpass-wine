@@ -5,6 +5,7 @@ Every patch on top of `crossover-26.3.0` is listed here with how it was verified
 | # | Patch | Files | Status | Upstream candidate |
 |---|---|---|---|---|
 | 1 | `OVERPASS_DLL_PATH_PREPEND`: colon-separated directories searched before Wine's own DLL directory, so a bottle can use DXMT or D3DMetal without modifying the Wine install. | `dlls/ntdll/unix/loader.c` | Builds in CI; runtime check pending | No: OverPass-specific. CodeWeavers already exports `prepend_dll_path()` for the same purpose. |
+| 2 | Consistent Windows username `overpass` instead of CodeWeavers' `crossover` (CrossOver Hack 12735), so bottles have `C:\users\overpass`. `CX_REPORT_REAL_USERNAME` still reports the real one. | `dlls/advapi32/advapi.c`, `dlls/shell32/shellpath.c` | Builds in CI; new-bottle check pending | No: OverPass-specific. |
 
 ## Build changes
 

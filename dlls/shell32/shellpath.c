@@ -2632,8 +2632,8 @@ static HRESULT _SHExpandEnvironmentStrings(LPCWSTR szSrc, LPWSTR szDest)
         }
         else if (!wcsnicmp(szTemp, L"%USERPROFILE%", lstrlenW(L"%USERPROFILE%")))
         {
-            /* CrossOver Hack 12735 */
-            static const WCHAR userName[] = {'c','r','o','s','s','o','v','e','r',0};
+            /* CrossOver Hack 12735; OverPass Wine's consistent username, matching GetUserNameW */
+            static const WCHAR userName[] = L"overpass";
 
             lstrcpyW(szDest, szProfilesPrefix);
             PathAppendW(szDest, userName);

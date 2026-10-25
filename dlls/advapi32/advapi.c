@@ -48,11 +48,11 @@ BOOL WINAPI GetUserNameA( LPSTR name, LPDWORD size )
     DWORD len = GetEnvironmentVariableA( "WINEUSERNAME", name, *size );
     BOOL ret;
 
-    /* CrossOver Hack 12735: Use a consistent username */
+    /* CrossOver Hack 12735: Use a consistent username ("overpass" in OverPass Wine) */
     if (!getenv( "CX_REPORT_REAL_USERNAME" ))
     {
-        len = sizeof("crossover");
-        if ((ret = (len <= *size))) strcpy( name, "crossover" );
+        len = sizeof("overpass");
+        if ((ret = (len <= *size))) strcpy( name, "overpass" );
         else SetLastError( ERROR_INSUFFICIENT_BUFFER );
         *size = len;
         return ret;
@@ -73,11 +73,11 @@ BOOL WINAPI GetUserNameW( LPWSTR name, LPDWORD size )
     DWORD len = GetEnvironmentVariableW( L"WINEUSERNAME", name, *size );
     BOOL ret;
 
-    /* CrossOver Hack 12735: Use a consistent username */
+    /* CrossOver Hack 12735: Use a consistent username ("overpass" in OverPass Wine) */
     if (!getenv( "CX_REPORT_REAL_USERNAME" ))
     {
-        len = ARRAY_SIZE( L"crossover" );
-        if ((ret = (len <= *size))) wcscpy( name, L"crossover" );
+        len = ARRAY_SIZE( L"overpass" );
+        if ((ret = (len <= *size))) wcscpy( name, L"overpass" );
         else SetLastError( ERROR_INSUFFICIENT_BUFFER );
         *size = len;
         return ret;
