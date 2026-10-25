@@ -519,6 +519,8 @@ BOOL WINAPI DECLSPEC_HOTPATCH CreateProcessInternalW( HANDLE token, const WCHAR 
     ULONG nt_flags = 0;
     USHORT machine = 0;
     NTSTATUS status;
+    /* OverPass patch 3: compatibility rules */
+    WCHAR *compat_cmdline = NULL, *compat_env = NULL;
     /* CW Hack 24938 */
     BOOL epic_launcher_hack = FALSE;
     WCHAR winsta0_defaultW[] = L"winsta0\\Default";
@@ -586,7 +588,16 @@ BOOL WINAPI DECLSPEC_HOTPATCH CreateProcessInternalW( HANDLE token, const WCHAR 
     info->hThread = info->hProcess = 0;
     info->dwProcessId = info->dwThreadId = 0;
 
-    if (!(params = create_process_params( app_name, tidy_cmdline, cur_dir, env, flags, startup_info )))
+    /* OverPass patch 3: per-program command-line, environment and DLL tweaks from the bottle's rules */
+    if (overpass_compat_apply( app_name, tidy_cmdline, env, flags, &compat_cmdline, &compat_env ))
+    {
+        TRACE( "compat rules: cmdline %s\n", debugstr_w(compat_cmdline) );
+        env = compat_env;
+        flags |= CREATE_UNICODE_ENVIRONMENT;
+    }
+
+    if (!(params = create_process_params( app_name, compat_cmdline ? compat_cmdline : tidy_cmdline,
+                                          cur_dir, env, flags, startup_info )))
     {
         status = STATUS_NO_MEMORY;
         goto done;
@@ -714,6 +725,8 @@ BOOL WINAPI DECLSPEC_HOTPATCH CreateProcessInternalW( HANDLE token, const WCHAR 
 
     RtlDestroyProcessParameters( params );
     if (tidy_cmdline != cmd_line) HeapFree( GetProcessHeap(), 0, tidy_cmdline );
+    HeapFree( GetProcessHeap(), 0, compat_cmdline );
+    HeapFree( GetProcessHeap(), 0, compat_env );
     return set_ntstatus( status );
 }
 

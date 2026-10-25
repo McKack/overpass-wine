@@ -16,6 +16,7 @@ SOURCES = \
 	locale.c \
 	main.c \
 	memory.c \
+	overpass_compat.c \
 	path.c \
 	process.c \
 	registry.c \

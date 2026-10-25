@@ -42,6 +42,11 @@ jobs:
           "$W/bin/wineserver" -w
           # winebus.sys (controllers) loads SDL at startup; a broken SDL aborts it with an NSException.
           if grep -q "uncaught exception" "$RUNNER_TEMP/boot.log"; then echo "winebus.sys crashed"; exit 1; fi
+          # Compatibility rules (patch 3) reach processes created from Windows code.
+          printf 'rule smoke test\npath_suffix \\cmd.exe\nenv OVERPASS_RULE_TEST=applied\n' > "$WINEPREFIX/drive_c/rules.txt"
+          out="$(OVERPASS_COMPAT_RULES='C:\rules.txt' "$W/bin/wine" cmd /c cmd /v:on /c echo !OVERPASS_RULE_TEST! 2>/dev/null | tr -d '\r')"
+          echo "rule test: $out"
+          [ "$out" = "applied" ]
           nm -gU "$W/lib/wine/x86_64-unix/winemac.so" | grep -q _macdrv_functions && echo "macdrv_functions exported"
 
       - uses: actions/upload-artifact@v4
