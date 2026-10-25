@@ -18,6 +18,20 @@ export MACOSX_DEPLOYMENT_TARGET=11.0
 
 rm -rf "$BUILD"
 mkdir -p "$BUILD/obj" "$DEST"
+
+# SDL 2.30, the version CrossOver ships. Homebrew's sdl2 is now sdl2-compat, a shim over SDL3 that makes
+# winebus.sys (game controllers) abort with "NSWindow should only be instantiated on the main thread".
+SDL_VERSION=2.30.12
+SDL_PREFIX="$BUILD/sdl2"
+curl -fsSL "https://github.com/libsdl-org/SDL/releases/download/release-$SDL_VERSION/SDL2-$SDL_VERSION.tar.gz" | tar -xz -C "$BUILD"
+cmake -S "$BUILD/SDL2-$SDL_VERSION" -B "$BUILD/sdl2-build" \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$SDL_PREFIX" \
+    -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET" \
+    -DSDL_STATIC=OFF -DSDL_TEST=OFF
+cmake --build "$BUILD/sdl2-build" -j"$JOBS"
+cmake --install "$BUILD/sdl2-build"
+export PKG_CONFIG_PATH="$SDL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+
 cd "$BUILD/obj"
 
 # No --with-opengl: Wine 11 makes EGL a hard requirement then, but winemac.drv does OpenGL through CGL.
@@ -41,7 +55,7 @@ LIB="$DEST/lib"
 for f in \
     "$BREW/opt/freetype/lib/libfreetype.6.dylib" \
     "$BREW/opt/gnutls/lib/libgnutls.30.dylib" \
-    "$BREW/opt/sdl2/lib/libSDL2-2.0.0.dylib" \
+    "$SDL_PREFIX/lib/libSDL2-2.0.0.dylib" \
     "$BREW/opt/molten-vk/lib/libMoltenVK.dylib" \
     "$BREW/opt/vulkan-loader/lib/libvulkan.1.dylib"; do
     cp -L "$f" "$LIB/"

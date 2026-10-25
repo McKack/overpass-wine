@@ -6,6 +6,12 @@ Every patch on top of `crossover-26.3.0` is listed here with how it was verified
 |---|---|---|---|---|
 | 1 | `OVERPASS_DLL_PATH_PREPEND`: colon-separated directories searched before Wine's own DLL directory, so a bottle can use DXMT or D3DMetal without modifying the Wine install. | `dlls/ntdll/unix/loader.c` | Builds in CI; runtime check pending | No: OverPass-specific. CodeWeavers already exports `prepend_dll_path()` for the same purpose. |
 
+## Build changes
+
+| Change | Why | Verified |
+|---|---|---|
+| Build SDL 2.30.12 from source instead of Homebrew's `sdl2` | Homebrew's `sdl2` is `sdl2-compat` (SDL3 underneath). With it, `winedevice.exe` aborts when loading `winebus.sys`: `NSWindow should only be instantiated on the main thread!`. Setting winebus `Enable SDL`=0 stops the crash, which confirms SDL as the cause. CrossOver 26 ships SDL 2.30.12. | Crash reproduced locally with build a8d4038; fix checked by the CI smoke test |
+
 ## Upstreaming policy
 
 Fixes that might help the wider Wine community start here, not as patches sent to WineHQ or CodeWeavers. A fix is proposed upstream only when all of these hold:

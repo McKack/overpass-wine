@@ -21,7 +21,7 @@ jobs:
       - name: Install build dependencies
         run: |
           brew update
-          brew install bison flex mingw-w64 pkgconf freetype gnutls sdl2 molten-vk vulkan-loader dylibbundler
+          brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler
 
       - name: Build and package
         run: |
@@ -37,8 +37,11 @@ jobs:
           W="$(ls -d build-overpass/stage/overpass-wine-*)"
           "$W/bin/wine" --version
           export WINEPREFIX="$RUNNER_TEMP/prefix" WINEDEBUG=-all
-          "$W/bin/wine" wineboot --init
-          "$W/bin/wine" cmd /c ver
+          "$W/bin/wine" wineboot --init 2>&1 | tee "$RUNNER_TEMP/boot.log"
+          "$W/bin/wine" cmd /c ver 2>&1 | tee -a "$RUNNER_TEMP/boot.log"
+          "$W/bin/wineserver" -w
+          # winebus.sys (controllers) loads SDL at startup; a broken SDL aborts it with an NSException.
+          if grep -q "uncaught exception" "$RUNNER_TEMP/boot.log"; then echo "winebus.sys crashed"; exit 1; fi
           nm -gU "$W/lib/wine/x86_64-unix/winemac.so" | grep -q _macdrv_functions && echo "macdrv_functions exported"
 
       - uses: actions/upload-artifact@v4
