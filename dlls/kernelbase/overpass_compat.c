@@ -20,19 +20,25 @@
  */
 
 /*
- * The rules file is named by OVERPASS_COMPAT_RULES (a Windows path) in the creating process's
- * environment. It is UTF-8 text, one directive per line, '#' starts a comment:
+ * Rules are INI-style text files, one or more per app, that people can edit without building
+ * anything. OVERPASS_COMPAT_RULES (in the creating process's environment) lists Windows paths to
+ * folders of *.ini files, or to single files, separated by ';'. Each [section] is one rule:
  *
- *   rule <description>            starts a rule
- *   path_suffix \GalaxyClient.exe matches when the program's full path ends with this (any case)
- *   steam_game_id 1234            matches when the new process's SteamGameId is this
- *   append <arguments>            appended to the command line...
- *   forbidden <text>              ...unless the command line already contains this
- *   env NAME=VALUE                set in the new process's Windows and Unix environment
- *   dll name=n,b                  added to WINEDLLOVERRIDES
- *   backend dxmt|d3dmetal|wined3d sets OVERPASS_DLL_PATH_PREPEND from OVERPASS_BACKEND_<NAME>
+ *   # GOG Galaxy draws its interface with Chromium, whose GPU path fails under Wine.
+ *   [GOG Galaxy: software rendering]
+ *   program = GalaxyClient.exe                      a program the rule covers: file name or path ending,
+ *   program = GOG Galaxy\GalaxyClient Helper.exe     any case; repeat for more
+ *   steam-app = 1234                                or a Steam game, by the SteamGameId Steam sets
+ *   add-arguments = --in-process-gpu --use-gl=swiftshader
+ *   unless-argument = --type=crashpad-handler       don't add arguments to command lines containing this
+ *   env = NAME=value                                for the program's Windows and Unix environment
+ *   dll = xaudio2_7=n,b                             added to WINEDLLOVERRIDES
+ *   graphics = dxmt                                 dxmt, d3dmetal, wined3d or auto; OverPass sets
+ *                                                   OVERPASS_BACKEND_<NAME> to each backend's DLL folder
+ *   source = https://...                            where the fix comes from (not used here)
  *
- * A rule applies when any of its match lines matches. Rules are applied in file order.
+ * Lines starting with '#' or ';' are comments. A rule applies when any of its program or steam-app
+ * lines matches; matching rules are applied in the order they are read.
  */
 
 #include <stdarg.h>
@@ -188,49 +194,90 @@ static WCHAR *env_build( const struct env_block *env )
     return block;
 }
 
-/* The rules file as UTF-16 text, or NULL when there is none. */
-static WCHAR *load_rules(void)
+/* Appends a UTF-8 file to *text (a heap UTF-16 buffer), followed by a newline. */
+static void append_file( WCHAR **text, size_t *len, const WCHAR *path )
 {
-    WCHAR path[MAX_PATH], *text = NULL;
-    char *utf8 = NULL;
+    HANDLE file = CreateFileW( path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, 0, NULL );
     DWORD size, read, lenW;
-    HANDLE file;
+    char *utf8 = NULL;
+    WCHAR *grown;
 
-    if (!GetEnvironmentVariableW( L"OVERPASS_COMPAT_RULES", path, ARRAY_SIZE(path) )) return NULL;
-    file = CreateFileW( path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_DELETE, NULL, OPEN_EXISTING, 0, NULL );
     if (file == INVALID_HANDLE_VALUE)
     {
         WARN( "can't open %s\n", debugstr_w(path) );
-        return NULL;
+        return;
     }
     size = GetFileSize( file, NULL );
     if (size != INVALID_FILE_SIZE && size < (4 << 20) && (utf8 = HeapAlloc( GetProcessHeap(), 0, size + 1 ))
         && ReadFile( file, utf8, size, &read, NULL ))
     {
         lenW = MultiByteToWideChar( CP_UTF8, 0, utf8, read, NULL, 0 );
-        if ((text = HeapAlloc( GetProcessHeap(), 0, (lenW + 1) * sizeof(WCHAR) )))
+        grown = *text ? HeapReAlloc( GetProcessHeap(), 0, *text, (*len + lenW + 2) * sizeof(WCHAR) )
+                      : HeapAlloc( GetProcessHeap(), 0, (lenW + 2) * sizeof(WCHAR) );
+        if (grown)
         {
-            MultiByteToWideChar( CP_UTF8, 0, utf8, read, text, lenW );
-            text[lenW] = 0;
+            *text = grown;
+            MultiByteToWideChar( CP_UTF8, 0, utf8, read, *text + *len, lenW );
+            *len += lenW;
+            (*text)[(*len)++] = '\n';
+            (*text)[*len] = 0;
         }
     }
     HeapFree( GetProcessHeap(), 0, utf8 );
     CloseHandle( file );
+}
+
+/* Every rules file named by OVERPASS_COMPAT_RULES as one UTF-16 text, or NULL when there are none. */
+static WCHAR *load_rules(void)
+{
+    WCHAR list[4096], *entry, *next, path[MAX_PATH];
+    WCHAR *text = NULL;
+    size_t len = 0;
+
+    if (!GetEnvironmentVariableW( L"OVERPASS_COMPAT_RULES", list, ARRAY_SIZE(list) )) return NULL;
+    for (entry = list; entry; entry = next)
+    {
+        DWORD attr;
+
+        if ((next = wcschr( entry, ';' ))) *next++ = 0;
+        if (!*entry) continue;
+        attr = GetFileAttributesW( entry );
+        if (attr == INVALID_FILE_ATTRIBUTES) continue;
+        if (attr & FILE_ATTRIBUTE_DIRECTORY)
+        {
+            WIN32_FIND_DATAW data;
+            HANDLE find;
+
+            if (swprintf( path, ARRAY_SIZE(path), L"%s\\*.ini", entry ) < 0) continue;
+            if ((find = FindFirstFileW( path, &data )) == INVALID_HANDLE_VALUE) continue;
+            do
+            {
+                if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) continue;
+                if (swprintf( path, ARRAY_SIZE(path), L"%s\\%s", entry, data.cFileName ) >= 0)
+                    append_file( &text, &len, path );
+            } while (FindNextFileW( find, &data ));
+            FindClose( find );
+        }
+        else append_file( &text, &len, entry );
+    }
     return text;
 }
 
 struct rule
 {
-    const WCHAR *desc;
-    const WCHAR *lines[MAX_RULE_LINES];  /* directive lines, keyword included */
+    const WCHAR *name;
+    const WCHAR *lines[MAX_RULE_LINES];  /* "key = value" lines */
     unsigned int count;
 };
 
-static const WCHAR *directive( const WCHAR *line, const WCHAR *keyword )
+/* The value of a "key = value" line, or NULL when the line has another key. */
+static const WCHAR *value_of( const WCHAR *line, const WCHAR *key )
 {
-    size_t len = lstrlenW( keyword );
-    if (wcsncmp( line, keyword, len ) || (line[len] != ' ' && line[len] != '\t')) return NULL;
+    size_t len = lstrlenW( key );
+    if (wcsnicmp( line, key, len )) return NULL;
     line += len;
+    while (*line == ' ' || *line == '\t') line++;
+    if (*line++ != '=') return NULL;
     while (*line == ' ' || *line == '\t') line++;
     return line;
 }
@@ -239,19 +286,27 @@ static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const 
 {
     size_t app_len = lstrlenW( app_name );
     unsigned int i;
-    const WCHAR *arg;
+    const WCHAR *value;
 
     for (i = 0; i < rule->count; i++)
     {
-        if ((arg = directive( rule->lines[i], L"path_suffix" )))
+        if ((value = value_of( rule->lines[i], L"program" )))
         {
-            size_t len = lstrlenW( arg );
-            if (len && len <= app_len && !wcsicmp( app_name + app_len - len, arg )) return TRUE;
+            /* Compare with a backslash in front, so "Client.exe" doesn't match "GalaxyClient.exe". */
+            WCHAR suffix[MAX_PATH];
+            size_t len;
+            WCHAR *p;
+
+            while (*value == '\\' || *value == '/') value++;
+            if (swprintf( suffix, ARRAY_SIZE(suffix), L"\\%s", value ) < 0) continue;
+            for (p = suffix; *p; p++) if (*p == '/') *p = '\\';
+            len = lstrlenW( suffix );
+            if (len > 1 && len <= app_len && !wcsicmp( app_name + app_len - len, suffix )) return TRUE;
         }
-        else if ((arg = directive( rule->lines[i], L"steam_game_id" )))
+        else if ((value = value_of( rule->lines[i], L"steam-app" )))
         {
             const WCHAR *id = env_get( env, L"SteamGameId" );
-            if (id && !wcscmp( id, arg )) return TRUE;
+            if (id && !wcscmp( id, value )) return TRUE;
         }
     }
     return FALSE;
@@ -259,66 +314,69 @@ static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const 
 
 static void rule_apply( const struct rule *rule, WCHAR **cmdline, struct env_block *env )
 {
-    const WCHAR *forbidden = NULL, *arg;
+    const WCHAR *unless = NULL, *value;
     unsigned int i;
 
     for (i = 0; i < rule->count; i++)
-        if ((arg = directive( rule->lines[i], L"forbidden" ))) forbidden = arg;
+        if ((value = value_of( rule->lines[i], L"unless-argument" ))) unless = value;
 
     for (i = 0; i < rule->count; i++)
     {
         const WCHAR *line = rule->lines[i];
 
-        if ((arg = directive( line, L"append" )))
+        if ((value = value_of( line, L"add-arguments" )))
         {
-            size_t len = lstrlenW( *cmdline ), add = lstrlenW( arg );
+            size_t len = lstrlenW( *cmdline ), add = lstrlenW( value );
             WCHAR *new_cmdline;
 
-            if (forbidden && wcsstr( *cmdline, forbidden )) continue;
-            if (wcsstr( *cmdline, arg )) continue;  /* already there, e.g. passed on by a parent */
+            if (unless && wcsstr( *cmdline, unless )) continue;
+            if (wcsstr( *cmdline, value )) continue;  /* already there, e.g. passed on by a parent */
             if (!(new_cmdline = HeapAlloc( GetProcessHeap(), 0, (len + add + 2) * sizeof(WCHAR) ))) continue;
             memcpy( new_cmdline, *cmdline, len * sizeof(WCHAR) );
             new_cmdline[len] = ' ';
-            memcpy( new_cmdline + len + 1, arg, (add + 1) * sizeof(WCHAR) );
+            memcpy( new_cmdline + len + 1, value, (add + 1) * sizeof(WCHAR) );
             HeapFree( GetProcessHeap(), 0, *cmdline );
             *cmdline = new_cmdline;
         }
-        else if ((arg = directive( line, L"env" )))
+        else if ((value = value_of( line, L"env" )))
         {
-            const WCHAR *eq = wcschr( arg, '=' );
-            if (eq && eq != arg) env_set_both( env, arg, eq - arg, eq + 1 );
+            const WCHAR *eq = wcschr( value, '=' );
+            if (eq && eq != value) env_set_both( env, value, eq - value, eq + 1 );
         }
-        else if ((arg = directive( line, L"dll" )))
+        else if ((value = value_of( line, L"dll" )))
         {
             const WCHAR *current = env_get( env, L"WINEDLLOVERRIDES" );
-            size_t len = current ? lstrlenW( current ) : 0, add = lstrlenW( arg );
-            WCHAR *value = HeapAlloc( GetProcessHeap(), 0, (len + add + 2) * sizeof(WCHAR) );
+            size_t len = current ? lstrlenW( current ) : 0, add = lstrlenW( value );
+            WCHAR *overrides = HeapAlloc( GetProcessHeap(), 0, (len + add + 2) * sizeof(WCHAR) );
 
-            if (!value) continue;
+            if (!overrides) continue;
             /* Later entries win in Wine's parser, so the rule's override takes effect. */
             if (len)
             {
-                memcpy( value, current, len * sizeof(WCHAR) );
-                value[len++] = ';';
+                memcpy( overrides, current, len * sizeof(WCHAR) );
+                overrides[len++] = ';';
             }
-            memcpy( value + len, arg, (add + 1) * sizeof(WCHAR) );
-            env_set_both( env, L"WINEDLLOVERRIDES", 16, value );
-            HeapFree( GetProcessHeap(), 0, value );
+            memcpy( overrides + len, value, (add + 1) * sizeof(WCHAR) );
+            env_set_both( env, L"WINEDLLOVERRIDES", 16, overrides );
+            HeapFree( GetProcessHeap(), 0, overrides );
         }
-        else if ((arg = directive( line, L"backend" )))
+        else if ((value = value_of( line, L"graphics" )))
         {
             WCHAR name[64] = L"OVERPASS_BACKEND_";
-            const WCHAR *dir;
+            const WCHAR *dir, *v;
             unsigned int n = lstrlenW( name );
+            BOOL builtin = !wcsicmp( value, L"wined3d" ) || !wcsicmp( value, L"auto" );
 
-            for (; *arg && n < ARRAY_SIZE(name) - 1; arg++) name[n++] = towupper( *arg );
+            for (v = value; *v && n < ARRAY_SIZE(name) - 1; v++) name[n++] = towupper( *v );
             name[n] = 0;
-            if (!(dir = env_get( env, name )))
+            /* wined3d is Wine's own, so it needs no folder in front of Wine's DLLs. */
+            if (!(dir = env_get( env, name )) && !builtin)
             {
-                WARN( "rule %s wants a backend without %s\n", debugstr_w(rule->desc), debugstr_w(name) );
+                WARN( "rule %s wants %s, which isn't installed\n", debugstr_w(rule->name), debugstr_w(value) );
                 continue;
             }
-            env_set_both( env, L"OVERPASS_DLL_PATH_PREPEND", 25, dir );
+            env_set_both( env, L"OVERPASS_DLL_PATH_PREPEND", 25, dir ? dir : L"" );
+            env_set_both( env, L"CX_ACTIVE_GRAPHICS_BACKEND", 26, wcsicmp( value, L"auto" ) ? value : L"" );
         }
     }
 }
@@ -326,9 +384,9 @@ static void rule_apply( const struct rule *rule, WCHAR **cmdline, struct env_blo
 static void finish_rule( struct rule *rule, const WCHAR *app_name, WCHAR **cmdline, struct env_block *env,
                          BOOL *matched )
 {
-    if (rule->desc && rule_matches( rule, app_name, env ))
+    if (rule->name && rule_matches( rule, app_name, env ))
     {
-        TRACE( "rule %s matches %s\n", debugstr_w(rule->desc), debugstr_w(app_name) );
+        TRACE( "rule %s matches %s\n", debugstr_w(rule->name), debugstr_w(app_name) );
         rule_apply( rule, cmdline, env );
         *matched = TRUE;
     }
@@ -357,20 +415,20 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
     for (line = text; line; line = next)
     {
         WCHAR *end;
-        const WCHAR *desc;
 
         if ((next = wcschr( line, '\n' ))) *next++ = 0;
-        while (*line == ' ' || *line == '\t') line++;
+        while (*line == ' ' || *line == '\t' || *line == 0xfeff) line++;
         end = line + lstrlenW( line );
         while (end > line && (end[-1] == '\r' || end[-1] == ' ' || end[-1] == '\t')) *--end = 0;
-        if (!*line || *line == '#') continue;
+        if (!*line || *line == '#' || *line == ';') continue;
 
-        if (!wcscmp( line, L"rule" ) || (desc = directive( line, L"rule" )))
+        if (*line == '[' && end[-1] == ']')
         {
             finish_rule( &rule, app_name, &cmd, &env, &matched );
-            rule.desc = wcscmp( line, L"rule" ) ? desc : L"";
+            end[-1] = 0;
+            rule.name = line + 1;
         }
-        else if (rule.desc && rule.count < MAX_RULE_LINES) rule.lines[rule.count++] = line;
+        else if (rule.name && rule.count < MAX_RULE_LINES) rule.lines[rule.count++] = line;
     }
     finish_rule( &rule, app_name, &cmd, &env, &matched );
 
