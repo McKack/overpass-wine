@@ -21,6 +21,8 @@ limit() {
         echo "::error::'$*' failed or took longer than ${seconds}s; last log lines:"
         tail -50 "$log"
         tail -200 "$log.err"
+        echo "Wine processes still running:"
+        ps -axo pid,etime,command | grep -iE 'wine|\.exe' | grep -v grep || true
         "$W/bin/wineserver" -k 2>/dev/null || true
         exit 1
     fi
