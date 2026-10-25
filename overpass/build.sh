@@ -19,6 +19,17 @@ export MACOSX_DEPLOYMENT_TARGET=11.0
 rm -rf "$BUILD"
 mkdir -p "$BUILD/obj" "$DEST"
 
+# With ccache installed (CI keeps its cache between runs), compiles that didn't change are reused.
+# Wine builds unix code with clang and PE code with mingw, so both are wrapped.
+CMAKE_LAUNCHER=()
+WINE_CC=()
+if command -v ccache >/dev/null; then
+    export CCACHE_BASEDIR="$SRC" CCACHE_COMPILERCHECK=content CCACHE_NOHASHDIR=1
+    CMAKE_LAUNCHER=(-DCMAKE_C_COMPILER_LAUNCHER=ccache)
+    WINE_CC=(CC="ccache clang" x86_64_CC="ccache x86_64-w64-mingw32-gcc" i386_CC="ccache i686-w64-mingw32-gcc")
+    ccache -z >/dev/null
+fi
+
 # SDL 2.30, the version CrossOver ships. Homebrew's sdl2 is now sdl2-compat, a shim over SDL3 that makes
 # winebus.sys (game controllers) abort with "NSWindow should only be instantiated on the main thread".
 SDL_VERSION=2.30.12
@@ -27,7 +38,7 @@ curl -fsSL "https://github.com/libsdl-org/SDL/releases/download/release-$SDL_VER
 cmake -S "$BUILD/SDL2-$SDL_VERSION" -B "$BUILD/sdl2-build" \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$SDL_PREFIX" \
     -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET" \
-    -DSDL_STATIC=OFF -DSDL_TEST=OFF
+    -DSDL_STATIC=OFF -DSDL_TEST=OFF ${CMAKE_LAUNCHER[@]+"${CMAKE_LAUNCHER[@]}"}
 cmake --build "$BUILD/sdl2-build" -j"$JOBS"
 cmake --install "$BUILD/sdl2-build"
 export PKG_CONFIG_PATH="$SDL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -44,9 +55,11 @@ cd "$BUILD/obj"
     --without-alsa --without-capi --without-dbus --without-fontconfig --without-gettextpo \
     --without-gphoto --without-gssapi --without-gstreamer --without-krb5 --without-netapi \
     --without-oss --without-pulse --without-sane --without-udev --without-usb \
-    --without-v4l2 --without-wayland --without-x
+    --without-v4l2 --without-wayland --without-x \
+    ${WINE_CC[@]+"${WINE_CC[@]}"}
 
 make -j"$JOBS"
+if command -v ccache >/dev/null; then ccache -s; fi
 make install-lib
 
 # Wine dlopen()s these by leaf name; macOS resolves leaf names through the caller's LC_RPATH,

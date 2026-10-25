@@ -21,7 +21,21 @@ jobs:
       - name: Install build dependencies
         run: |
           brew update
-          brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler
+          brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler ccache
+
+      # Compiler cache: each run saves a new one and restores the most recent, so only changed files compile.
+      # A new compiler version (brew upgrades mingw or Xcode) simply misses and rebuilds.
+      - uses: actions/cache@v4
+        with:
+          path: ~/Library/Caches/ccache
+          key: ccache-${{ runner.os }}-${{ github.sha }}
+          restore-keys: ccache-${{ runner.os }}-
+
+      - name: Configure ccache
+        run: |
+          ccache --set-config=cache_dir="$HOME/Library/Caches/ccache"
+          ccache --set-config=max_size=4G
+          ccache --set-config=compression=true
 
       - name: Build and package
         run: |

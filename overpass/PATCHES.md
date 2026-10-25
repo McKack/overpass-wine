@@ -14,6 +14,7 @@ Every patch on top of `crossover-26.3.0` is listed here with how it was verified
 | Change | Why | Verified |
 |---|---|---|
 | Build SDL 2.30.12 from source instead of Homebrew's `sdl2` | Homebrew's `sdl2` is `sdl2-compat` (SDL3 underneath). With it, `winedevice.exe` aborts when loading `winebus.sys`: `NSWindow should only be instantiated on the main thread!`. Setting winebus `Enable SDL`=0 stops the crash, which confirms SDL as the cause. CrossOver 26 ships SDL 2.30.12. | Crash reproduced locally with build a8d4038. With CrossOver's SDL 2.30.12 in its place, a prefix boots on an M4 Mac and winebus.sys starts its SDL loop. On the CI runner (no desktop session) the first build with our SDL hung in `wineboot --init`; the smoke test now has time limits and hid traces to show where |
+| ccache for clang (unix side), mingw (PE side) and the SDL build; CI keeps the cache between runs | A full build takes 80–112 min on the Intel runner; a small patch should only recompile what changed | Pending: first cached run fills the cache, the second shows the gain |
 
 ## Upstreaming policy
 
