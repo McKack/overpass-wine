@@ -10,6 +10,9 @@ set -euo pipefail
 W="$(cd "$1" && pwd)"
 TMP="${RUNNER_TEMP:-$(mktemp -d)}"
 export WINEPREFIX="$TMP/prefix" WINEDEBUG="${WINEDEBUG:--all}"
+# Without Wine Mono and Gecko in Wine's download cache, setting up a prefix offers to download them in a
+# dialog that waits for a click; the test needs neither (OverPass caches both before a bottle's first boot).
+export WINEDLLOVERRIDES="mscoree,mshtml="
 rm -rf "$WINEPREFIX"
 
 # limit SECONDS LOG COMMAND...: runs COMMAND with stdout appended to LOG and stderr to LOG.err; when it
