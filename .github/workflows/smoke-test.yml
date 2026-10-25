@@ -1,0 +1,30 @@
+name: Smoke test
+
+# Runs overpass/smoke-test.sh from the chosen branch against the build of an earlier Build OverPass Wine
+# run, to try test changes without rebuilding Wine.
+on:
+  workflow_dispatch:
+    inputs:
+      run-id:
+        description: ID of the Build OverPass Wine run whose build to test
+        required: true
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-15-intel
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: overpass-wine
+          run-id: ${{ inputs.run-id }}
+          github-token: ${{ github.token }}
+      - name: Smoke test
+        run: |
+          tar -xJf overpass-wine-*.tar.xz -C "$RUNNER_TEMP"
+          overpass/smoke-test.sh "$(ls -d "$RUNNER_TEMP"/overpass-wine-*/)"
