@@ -1310,6 +1310,7 @@ static NTSTATUS unwind_builtin_dll( void *args )
 /* CW HACK 22434 */
 #if defined(__APPLE__) && defined(__x86_64__)
 #include <sys/utsname.h>
+#include <sys/sysctl.h>
 static pthread_once_t non_native_init_once = PTHREAD_ONCE_INIT;
 static void *non_native_support_lib;
 void *libd3dshared_load_addr = NULL, *libd3dshared_code_end = NULL;
@@ -1330,6 +1331,50 @@ static BOOL sonoma_or_later(void)
     return (result == 1) ? TRUE : FALSE;
 }
 
+/* OverPass: Rosetta takes code regions through its own syscall, which any translated process can make,
+ * so bottles get this without libd3dshared. Same check as libd3dshared: running under Rosetta, and a
+ * Rosetta build (bits 40-63 of rosetta_get_runtime_version()) of at least 304, or 0. */
+#define ROSETTA_SYSCALL_NON_NATIVE_CODE_REGION 0x7000009
+
+static bool builtin_non_native_supported;
+
+static bool builtin_supports_non_native_code_regions(void)
+{
+    return builtin_non_native_supported;
+}
+
+static void builtin_register_non_native_code_region( void *start, void *end )
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    syscall( ROSETTA_SYSCALL_NON_NATIVE_CODE_REGION, start, end );
+#pragma clang diagnostic pop
+}
+
+static void init_builtin_non_native_support(void)
+{
+    int translated = 0;
+    size_t size = sizeof(translated);
+    void *rosetta;
+    unsigned long long (*get_version)(void);
+    unsigned int build;
+    const char *disable = getenv( "OVERPASS_NO_ROSETTA_CODE_REGIONS" );
+
+    if (disable && *disable && *disable != '0') return;
+    if (sysctlbyname( "sysctl.proc_translated", &translated, &size, NULL, 0 ) == -1 || !translated) return;
+    if (!(rosetta = dlopen( "/usr/lib/libRosetta.dylib", RTLD_LAZY | RTLD_LOCAL ))) return;
+    if ((get_version = dlsym( rosetta, "rosetta_get_runtime_version" )))
+    {
+        build = (get_version() >> 40) & 0xffffff;
+        builtin_non_native_supported = build >= 0x130 || build == 0;
+        TRACE( "Rosetta build %u, does%s support non-native code regions\n", build,
+               builtin_non_native_supported ? "" : " not" );
+    }
+    if (!builtin_non_native_supported) return;
+    register_non_native_code_region = builtin_register_non_native_code_region;
+    supports_non_native_code_regions = builtin_supports_non_native_code_regions;
+}
+
 static void init_non_native_support(void)
 {
     char *libd3dshared_path = getenv( "CX_APPLEGPTK_LIBD3DSHARED_PATH" );
@@ -1337,8 +1382,13 @@ static void init_non_native_support(void)
     register_non_native_code_region = NULL;
     supports_non_native_code_regions = NULL;
 
-    if (!libd3dshared_path || !sonoma_or_later())
+    if (!sonoma_or_later())
         return;
+    if (!libd3dshared_path)
+    {
+        init_builtin_non_native_support();
+        return;
+    }
 
     non_native_support_lib = dlopen( libd3dshared_path, RTLD_LOCAL );
     if (non_native_support_lib)
