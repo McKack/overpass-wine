@@ -1,0 +1,10281 @@
+[
+ {
+  "file": "blue_button.svg",
+  "x": 0.0,
+  "y": 28,
+  "width": 22.0,
+  "height": 138.0,
+  "depth": 32,
+  "section": "Button.Pushbutton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted",
+   "Defaulted Animating"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_checkbox_13px.svg",
+  "x": 156.0,
+  "y": 28,
+  "width": 13.0,
+  "height": 260.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_checkbox_16px.svg",
+  "x": 255.0,
+  "y": 28,
+  "width": 16.0,
+  "height": 320.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_checkbox_20px.svg",
+  "x": 287.0,
+  "y": 28,
+  "width": 20.0,
+  "height": 400.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_checkbox_26px.svg",
+  "x": 323.0,
+  "y": 28,
+  "width": 26.0,
+  "height": 520.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_checkbox_32px.svg",
+  "x": 365.0,
+  "y": 28,
+  "width": 32.0,
+  "height": 640.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_checkbox_40px.svg",
+  "x": 413.0,
+  "y": 28,
+  "width": 40.0,
+  "height": 800.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_checkbox_52px.svg",
+  "x": 469.0,
+  "y": 28,
+  "width": 52.0,
+  "height": 1040.0,
+  "depth": 24,
+  "section": "Button.Checkbox",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled",
+   "Mixed Normal",
+   "Mixed Hot",
+   "Mixed Pressed",
+   "Mixed Disabled",
+   "Implicit Normal",
+   "Implicit Hot",
+   "Implicit Pressed",
+   "Implicit Disabled",
+   "Excluded Normal",
+   "Excluded Hot",
+   "Excluded Pressed",
+   "Excluded Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_13px.svg",
+  "x": 585.0,
+  "y": 28,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_16px.svg",
+  "x": 684.0,
+  "y": 28,
+  "width": 16.0,
+  "height": 128.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_19px.svg",
+  "x": 716.0,
+  "y": 28,
+  "width": 19.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_22px.svg",
+  "x": 751.0,
+  "y": 28,
+  "width": 22.0,
+  "height": 176.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_25px.svg",
+  "x": 789.0,
+  "y": 28,
+  "width": 25.0,
+  "height": 200.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_28px.svg",
+  "x": 830.0,
+  "y": 28,
+  "width": 28.0,
+  "height": 224.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_radiobutton_31px.svg",
+  "x": 874.0,
+  "y": 28,
+  "width": 31.0,
+  "height": 248.0,
+  "depth": 32,
+  "section": "Button.Radiobutton",
+  "states": [
+   "Unchecked Normal",
+   "Unchecked Hot",
+   "Unchecked Pressed",
+   "Unchecked Disabled",
+   "Checked Normal",
+   "Checked Hot",
+   "Checked Pressed",
+   "Checked Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_combobox_border.svg",
+  "x": 969.0,
+  "y": 28,
+  "width": 5.0,
+  "height": 20.0,
+  "depth": 24,
+  "section": "ComboBox.Border",
+  "states": [
+   "Normal",
+   "Hot",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton.svg",
+  "x": 1129.5,
+  "y": 28,
+  "width": 7.0,
+  "height": 84.0,
+  "depth": 24,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_9px.svg",
+  "x": 1350.0,
+  "y": 28,
+  "width": 9.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_10px.svg",
+  "x": 1445.0,
+  "y": 28,
+  "width": 10.0,
+  "height": 76.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_11px.svg",
+  "x": 1471.0,
+  "y": 28,
+  "width": 11.0,
+  "height": 24.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_14px.svg",
+  "x": 1498.0,
+  "y": 28,
+  "width": 14.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_17px.svg",
+  "x": 1528.0,
+  "y": 28,
+  "width": 17.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_21px.svg",
+  "x": 1561.0,
+  "y": 28,
+  "width": 21.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_glyph_27px.svg",
+  "x": 1598.0,
+  "y": 28,
+  "width": 27.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left.svg",
+  "x": 1689.0,
+  "y": 28,
+  "width": 6.0,
+  "height": 92.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_9px.svg",
+  "x": 1947.0,
+  "y": 28,
+  "width": 9.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_10px.svg",
+  "x": 2042.0,
+  "y": 28,
+  "width": 10.0,
+  "height": 76.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_11px.svg",
+  "x": 2068.0,
+  "y": 28,
+  "width": 11.0,
+  "height": 24.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_14px.svg",
+  "x": 2095.0,
+  "y": 28,
+  "width": 14.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_17px.svg",
+  "x": 2125.0,
+  "y": 28,
+  "width": 17.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_21px.svg",
+  "x": 2158.0,
+  "y": 28,
+  "width": 21.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_left_glyph_27px.svg",
+  "x": 2195.0,
+  "y": 28,
+  "width": 27.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right.svg",
+  "x": 0.0,
+  "y": 1144.0,
+  "width": 5.0,
+  "height": 92.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_9px.svg",
+  "x": 265.5,
+  "y": 1144.0,
+  "width": 9.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_10px.svg",
+  "x": 360.5,
+  "y": 1144.0,
+  "width": 10.0,
+  "height": 76.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_11px.svg",
+  "x": 386.5,
+  "y": 1144.0,
+  "width": 11.0,
+  "height": 24.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_14px.svg",
+  "x": 413.5,
+  "y": 1144.0,
+  "width": 14.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_17px.svg",
+  "x": 443.5,
+  "y": 1144.0,
+  "width": 17.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_21px.svg",
+  "x": 476.5,
+  "y": 1144.0,
+  "width": 21.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_dropdownbutton_right_glyph_27px.svg",
+  "x": 513.5,
+  "y": 1144.0,
+  "width": 27.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "ComboBox.DropDownButtonRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   8
+  ]
+ },
+ {
+  "file": "blue_combobox_readonly.svg",
+  "x": 604.5,
+  "y": 1144.0,
+  "width": 7.0,
+  "height": 84.0,
+  "depth": 24,
+  "section": "ComboBox.ReadOnly",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_edit_background_1x12px.svg",
+  "x": 780.0,
+  "y": 1144.0,
+  "width": 1.0,
+  "height": 12.0,
+  "depth": 24,
+  "section": "Edit.Background",
+  "states": [
+   "Normal",
+   "Hot",
+   "Disabled",
+   "Focused",
+   "Readonly",
+   "Assist"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_edit_background_1x15px.svg",
+  "x": 993.0,
+  "y": 1144.0,
+  "width": 1.0,
+  "height": 15.0,
+  "depth": 24,
+  "section": "Edit.Background",
+  "states": [
+   "Normal",
+   "Hot",
+   "Disabled",
+   "Focused",
+   "Readonly",
+   "Assist"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_edit_background_1x18px.svg",
+  "x": 1206.0,
+  "y": 1144.0,
+  "width": 1.0,
+  "height": 18.0,
+  "depth": 24,
+  "section": "Edit.Background",
+  "states": [
+   "Normal",
+   "Hot",
+   "Disabled",
+   "Focused",
+   "Readonly",
+   "Assist"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_edit_background_1x24px.svg",
+  "x": 1419.0,
+  "y": 1144.0,
+  "width": 1.0,
+  "height": 24.0,
+  "depth": 24,
+  "section": "Edit.Background",
+  "states": [
+   "Normal",
+   "Hot",
+   "Disabled",
+   "Focused",
+   "Readonly",
+   "Assist"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_edit_background_1x6px.svg",
+  "x": 1632.0,
+  "y": 1144.0,
+  "width": 1.0,
+  "height": 6.0,
+  "depth": 24,
+  "section": "Edit.Background",
+  "states": [
+   "Normal",
+   "Hot",
+   "Disabled",
+   "Focused",
+   "Readonly",
+   "Assist"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_edit_border_hscroll.svg",
+  "x": 1837.5,
+  "y": 1144.0,
+  "width": 5.0,
+  "height": 20.0,
+  "depth": 24,
+  "section": "Edit.EditBorder_HScroll",
+  "states": [
+   "Normal",
+   "Hot",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_edit_border_hvscroll.svg",
+  "x": 2028.0,
+  "y": 1144.0,
+  "width": 5.0,
+  "height": 20.0,
+  "depth": 24,
+  "section": "Edit.EditBorder_HVScroll",
+  "states": [
+   "Normal",
+   "Hot",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_edit_border_noscroll.svg",
+  "x": 2226.0,
+  "y": 1144.0,
+  "width": 5.0,
+  "height": 20.0,
+  "depth": 24,
+  "section": "Edit.EditBorder_NoScroll",
+  "states": [
+   "Normal",
+   "Hot",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_edit_border_vscroll.svg",
+  "x": 0.0,
+  "y": 1312.0,
+  "width": 5.0,
+  "height": 20.0,
+  "depth": 24,
+  "section": "Edit.EditBorder_VScroll",
+  "states": [
+   "Normal",
+   "Hot",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_13px.svg",
+  "x": 190.5,
+  "y": 1312.0,
+  "width": 13.0,
+  "height": 260.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_16px.svg",
+  "x": 289.5,
+  "y": 1312.0,
+  "width": 16.0,
+  "height": 320.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_20px.svg",
+  "x": 321.5,
+  "y": 1312.0,
+  "width": 20.0,
+  "height": 400.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_26px.svg",
+  "x": 357.5,
+  "y": 1312.0,
+  "width": 26.0,
+  "height": 520.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_32px.svg",
+  "x": 399.5,
+  "y": 1312.0,
+  "width": 32.0,
+  "height": 640.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_39px.svg",
+  "x": 447.5,
+  "y": 1312.0,
+  "width": 39.0,
+  "height": 780.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrow_glyphs_52px.svg",
+  "x": 502.5,
+  "y": 1312.0,
+  "width": 52.0,
+  "height": 1040.0,
+  "depth": 32,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_arrows.svg",
+  "x": 618.5,
+  "y": 1312.0,
+  "width": 17.0,
+  "height": 340.0,
+  "depth": 24,
+  "section": "ScrollBar.ArrowBtn",
+  "states": [
+   "Up Normal",
+   "Up Hot",
+   "Up Pressed",
+   "Up Disabled",
+   "Down Normal",
+   "Down Hot",
+   "Down Pressed",
+   "Down Disabled",
+   "Left Normal",
+   "Left Hot",
+   "Left Pressed",
+   "Left Disabled",
+   "Right Normal",
+   "Right Hot",
+   "Right Pressed",
+   "Right Disabled",
+   "Up Hover",
+   "Down Hover",
+   "Left Hover",
+   "Right Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_10px.svg",
+  "x": 786.5,
+  "y": 1312.0,
+  "width": 10.0,
+  "height": 45.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_12px.svg",
+  "x": 882.5,
+  "y": 1312.0,
+  "width": 12.0,
+  "height": 55.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_16px.svg",
+  "x": 910.5,
+  "y": 1312.0,
+  "width": 16.0,
+  "height": 70.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_20px.svg",
+  "x": 942.5,
+  "y": 1312.0,
+  "width": 20.0,
+  "height": 90.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_25px.svg",
+  "x": 978.5,
+  "y": 1312.0,
+  "width": 25.0,
+  "height": 112.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_30px.svg",
+  "x": 1019.5,
+  "y": 1312.0,
+  "width": 30.0,
+  "height": 135.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_horizontal_40px.svg",
+  "x": 1065.5,
+  "y": 1312.0,
+  "width": 40.0,
+  "height": 180.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_vertical_9px.svg",
+  "x": 1169.5,
+  "y": 1312.0,
+  "width": 9.0,
+  "height": 50.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_vertical_11px.svg",
+  "x": 1264.5,
+  "y": 1312.0,
+  "width": 11.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_vertical_14px.svg",
+  "x": 1291.5,
+  "y": 1312.0,
+  "width": 14.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_vertical_22px.svg",
+  "x": 1321.5,
+  "y": 1312.0,
+  "width": 22.0,
+  "height": 125.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_vertical_27px.svg",
+  "x": 1359.5,
+  "y": 1312.0,
+  "width": 27.0,
+  "height": 150.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_gripper_vertical_36px.svg",
+  "x": 1402.5,
+  "y": 1312.0,
+  "width": 36.0,
+  "height": 200.0,
+  "depth": 32,
+  "section": "ScrollBar.GripperVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_lower_track_horizontal.svg",
+  "x": 1502.5,
+  "y": 1312.0,
+  "width": 1.0,
+  "height": 40.0,
+  "depth": 24,
+  "section": "ScrollBar.LowerTrackHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   4,
+   3
+  ]
+ },
+ {
+  "file": "blue_scrollbar_lower_track_vertical.svg",
+  "x": 1790.5,
+  "y": 1312.0,
+  "width": 14.0,
+  "height": 5.0,
+  "depth": 24,
+  "section": "ScrollBar.LowerTrackVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   10,
+   3,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_16px.svg",
+  "x": 0.0,
+  "y": 2428.0,
+  "width": 16.0,
+  "height": 128.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_20px.svg",
+  "x": 102.0,
+  "y": 2428.0,
+  "width": 20.0,
+  "height": 160.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_24px.svg",
+  "x": 138.0,
+  "y": 2428.0,
+  "width": 24.0,
+  "height": 192.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_32px.svg",
+  "x": 178.0,
+  "y": 2428.0,
+  "width": 32.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_40px.svg",
+  "x": 226.0,
+  "y": 2428.0,
+  "width": 40.0,
+  "height": 320.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_48px.svg",
+  "x": 282.0,
+  "y": 2428.0,
+  "width": 48.0,
+  "height": 384.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_resizebox_grip_64px.svg",
+  "x": 346.0,
+  "y": 2428.0,
+  "width": 64.0,
+  "height": 512.0,
+  "depth": 32,
+  "section": "ScrollBar.SizeBox",
+  "states": [
+   "Right Align",
+   "Left Align",
+   "Topright Align",
+   "Topleft Align",
+   "Halfbottomright Align",
+   "Halfbottomleft Align",
+   "Halftopright Align",
+   "Halftopleft Align"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_scrollbar_thumb_horizontal.svg",
+  "x": 474.0,
+  "y": 2428.0,
+  "width": 20.0,
+  "height": 85.0,
+  "depth": 24,
+  "section": "ScrollBar.ThumbBtnHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   11,
+   8,
+   8,
+   8
+  ]
+ },
+ {
+  "file": "blue_scrollbar_thumb_vertical.svg",
+  "x": 717.0,
+  "y": 2428.0,
+  "width": 17.0,
+  "height": 55.0,
+  "depth": 24,
+  "section": "ScrollBar.ThumbBtnVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   8,
+   8,
+   5,
+   5
+  ]
+ },
+ {
+  "file": "blue_scrollbar_upper_track_horizontal.svg",
+  "x": 945.0,
+  "y": 2428.0,
+  "width": 1.0,
+  "height": 40.0,
+  "depth": 24,
+  "section": "ScrollBar.UpperTrackHorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   4,
+   3
+  ]
+ },
+ {
+  "file": "blue_scrollbar_upper_track_vertical.svg",
+  "x": 1233.0,
+  "y": 2428.0,
+  "width": 14.0,
+  "height": 5.0,
+  "depth": 24,
+  "section": "ScrollBar.UpperTrackVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Hover"
+  ],
+  "sizingMargins": [
+   10,
+   3,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_spin_background_down.svg",
+  "x": 1506.0,
+  "y": 2428.0,
+  "width": 8.0,
+  "height": 64.0,
+  "depth": 24,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_background_left.svg",
+  "x": 1704.0,
+  "y": 2428.0,
+  "width": 7.0,
+  "height": 64.0,
+  "depth": 24,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_background_right.svg",
+  "x": 1902.0,
+  "y": 2428.0,
+  "width": 7.0,
+  "height": 64.0,
+  "depth": 24,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_background_up.svg",
+  "x": 2107.5,
+  "y": 2428.0,
+  "width": 8.0,
+  "height": 64.0,
+  "depth": 24,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_11px.svg",
+  "x": 0.0,
+  "y": 3016.0,
+  "width": 11.0,
+  "height": 36.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_14px.svg",
+  "x": 97.0,
+  "y": 3016.0,
+  "width": 14.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_18px.svg",
+  "x": 127.0,
+  "y": 3016.0,
+  "width": 18.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_21px.svg",
+  "x": 161.0,
+  "y": 3016.0,
+  "width": 21.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_28px.svg",
+  "x": 198.0,
+  "y": 3016.0,
+  "width": 28.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_7x16px.svg",
+  "x": 290.0,
+  "y": 3016.0,
+  "width": 7.0,
+  "height": 16.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_down_7x24px.svg",
+  "x": 503.0,
+  "y": 3016.0,
+  "width": 7.0,
+  "height": 24.0,
+  "depth": 32,
+  "section": "Spin.Down",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   8,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_4px.svg",
+  "x": 716.0,
+  "y": 3016.0,
+  "width": 4.0,
+  "height": 28.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_6px.svg",
+  "x": 806.0,
+  "y": 3016.0,
+  "width": 6.0,
+  "height": 28.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_9px.svg",
+  "x": 828.0,
+  "y": 3016.0,
+  "width": 9.0,
+  "height": 44.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_12px.svg",
+  "x": 853.0,
+  "y": 3016.0,
+  "width": 12.0,
+  "height": 56.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_15px.svg",
+  "x": 881.0,
+  "y": 3016.0,
+  "width": 15.0,
+  "height": 64.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_18px.svg",
+  "x": 912.0,
+  "y": 3016.0,
+  "width": 18.0,
+  "height": 84.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_left_24px.svg",
+  "x": 946.0,
+  "y": 3016.0,
+  "width": 24.0,
+  "height": 112.0,
+  "depth": 32,
+  "section": "Spin.Downhorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   2,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_4px.svg",
+  "x": 1034.0,
+  "y": 3016.0,
+  "width": 4.0,
+  "height": 28.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_6px.svg",
+  "x": 1124.0,
+  "y": 3016.0,
+  "width": 6.0,
+  "height": 28.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_9px.svg",
+  "x": 1146.0,
+  "y": 3016.0,
+  "width": 9.0,
+  "height": 44.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_12px.svg",
+  "x": 1171.0,
+  "y": 3016.0,
+  "width": 12.0,
+  "height": 56.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_15px.svg",
+  "x": 1199.0,
+  "y": 3016.0,
+  "width": 15.0,
+  "height": 64.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_18px.svg",
+  "x": 1230.0,
+  "y": 3016.0,
+  "width": 18.0,
+  "height": 84.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_right_24px.svg",
+  "x": 1264.0,
+  "y": 3016.0,
+  "width": 24.0,
+  "height": 112.0,
+  "depth": 32,
+  "section": "Spin.Uphorz",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_11px.svg",
+  "x": 1352.0,
+  "y": 3016.0,
+  "width": 11.0,
+  "height": 36.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_14px.svg",
+  "x": 1449.0,
+  "y": 3016.0,
+  "width": 14.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_18px.svg",
+  "x": 1479.0,
+  "y": 3016.0,
+  "width": 18.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_21px.svg",
+  "x": 1513.0,
+  "y": 3016.0,
+  "width": 21.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_28px.svg",
+  "x": 1550.0,
+  "y": 3016.0,
+  "width": 28.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_7x20px.svg",
+  "x": 1642.0,
+  "y": 3016.0,
+  "width": 7.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_spin_glyph_up_7x24px.svg",
+  "x": 1840.0,
+  "y": 3016.0,
+  "width": 7.0,
+  "height": 24.0,
+  "depth": 32,
+  "section": "Spin.Up",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   3,
+   9,
+   3
+  ]
+ },
+ {
+  "file": "blue_tab_background.svg",
+  "x": 2038.0,
+  "y": 3016.0,
+  "width": 10.0,
+  "height": 600.0,
+  "depth": 24,
+  "section": "Tab.Body",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tab_item.svg",
+  "x": 2191.0,
+  "y": 3016.0,
+  "width": 5.0,
+  "height": 95.0,
+  "depth": 24,
+  "section": "Tab.TabItem",
+  "states": [
+   "Normal",
+   "Hot",
+   "Selected",
+   "Disabled",
+   "Focused"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   6,
+   6
+  ]
+ },
+ {
+  "file": "blue_tab_item_left.svg",
+  "x": 0.0,
+  "y": 3692.0,
+  "width": 5.0,
+  "height": 95.0,
+  "depth": 24,
+  "section": "Tab.TabItemLeftEdge",
+  "states": [
+   "Normal",
+   "Hot",
+   "Selected",
+   "Disabled",
+   "Focused"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   6,
+   6
+  ]
+ },
+ {
+  "file": "blue_tab_item_right.svg",
+  "x": 145.5,
+  "y": 3692.0,
+  "width": 5.0,
+  "height": 95.0,
+  "depth": 24,
+  "section": "Tab.TabItemRightEdge",
+  "states": [
+   "Normal",
+   "Hot",
+   "Selected",
+   "Disabled",
+   "Focused"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   6,
+   6
+  ]
+ },
+ {
+  "file": "blue_tab_pane_edge.svg",
+  "x": 298.5,
+  "y": 3692.0,
+  "width": 48.0,
+  "height": 48.0,
+  "depth": 24,
+  "section": "Tab.Pane",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   2,
+   4,
+   2,
+   4
+  ]
+ },
+ {
+  "file": "blue_trackbar_slider_track.svg",
+  "x": 480.5,
+  "y": 3692.0,
+  "width": 7.0,
+  "height": 10.0,
+  "depth": 24,
+  "section": "TrackBar.Track",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_11px.svg",
+  "x": 686.0,
+  "y": 3692.0,
+  "width": 11.0,
+  "height": 95.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_15px.svg",
+  "x": 783.0,
+  "y": 3692.0,
+  "width": 15.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_17px.svg",
+  "x": 814.0,
+  "y": 3692.0,
+  "width": 17.0,
+  "height": 145.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_22px.svg",
+  "x": 847.0,
+  "y": 3692.0,
+  "width": 22.0,
+  "height": 190.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_28px.svg",
+  "x": 885.0,
+  "y": 3692.0,
+  "width": 28.0,
+  "height": 240.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_33px.svg",
+  "x": 929.0,
+  "y": 3692.0,
+  "width": 33.0,
+  "height": 285.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_down_44px.svg",
+  "x": 978.0,
+  "y": 3692.0,
+  "width": 44.0,
+  "height": 380.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbBottom",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   4,
+   5,
+   8,
+   6
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_horizontal.svg",
+  "x": 1086.0,
+  "y": 3692.0,
+  "width": 11.0,
+  "height": 105.0,
+  "depth": 24,
+  "section": "TrackBar.Thumb",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_19px.svg",
+  "x": 1321.5,
+  "y": 3692.0,
+  "width": 19.0,
+  "height": 55.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_25px.svg",
+  "x": 1426.5,
+  "y": 3692.0,
+  "width": 25.0,
+  "height": 75.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_29px.svg",
+  "x": 1467.5,
+  "y": 3692.0,
+  "width": 29.0,
+  "height": 85.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_38px.svg",
+  "x": 1512.5,
+  "y": 3692.0,
+  "width": 38.0,
+  "height": 110.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_48px.svg",
+  "x": 1566.5,
+  "y": 3692.0,
+  "width": 48.0,
+  "height": 140.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_57px.svg",
+  "x": 1630.5,
+  "y": 3692.0,
+  "width": 57.0,
+  "height": 165.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_left_76px.svg",
+  "x": 1703.5,
+  "y": 3692.0,
+  "width": 76.0,
+  "height": 220.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbLeft",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_19px.svg",
+  "x": 1843.5,
+  "y": 3692.0,
+  "width": 19.0,
+  "height": 55.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_25px.svg",
+  "x": 1948.5,
+  "y": 3692.0,
+  "width": 25.0,
+  "height": 75.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_29px.svg",
+  "x": 1989.5,
+  "y": 3692.0,
+  "width": 29.0,
+  "height": 85.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_38px.svg",
+  "x": 2034.5,
+  "y": 3692.0,
+  "width": 38.0,
+  "height": 110.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_48px.svg",
+  "x": 2088.5,
+  "y": 3692.0,
+  "width": 48.0,
+  "height": 140.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_57px.svg",
+  "x": 2152.5,
+  "y": 3692.0,
+  "width": 57.0,
+  "height": 165.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_right_76px.svg",
+  "x": 2225.5,
+  "y": 3692.0,
+  "width": 76.0,
+  "height": 220.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbRight",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_11px.svg",
+  "x": 0.0,
+  "y": 4148.0,
+  "width": 11.0,
+  "height": 95.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_15px.svg",
+  "x": 97.0,
+  "y": 4148.0,
+  "width": 15.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_17px.svg",
+  "x": 128.0,
+  "y": 4148.0,
+  "width": 17.0,
+  "height": 145.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_22px.svg",
+  "x": 161.0,
+  "y": 4148.0,
+  "width": 22.0,
+  "height": 190.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_28px.svg",
+  "x": 199.0,
+  "y": 4148.0,
+  "width": 28.0,
+  "height": 240.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_33px.svg",
+  "x": 243.0,
+  "y": 4148.0,
+  "width": 33.0,
+  "height": 285.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_up_44px.svg",
+  "x": 292.0,
+  "y": 4148.0,
+  "width": 44.0,
+  "height": 380.0,
+  "depth": 32,
+  "section": "TrackBar.ThumbTop",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_trackbar_thumb_vertical.svg",
+  "x": 400.0,
+  "y": 4148.0,
+  "width": 21.0,
+  "height": 55.0,
+  "depth": 24,
+  "section": "TrackBar.ThumbVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Focused",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "file": "blue_groupbox.svg",
+  "x": 620.5,
+  "y": 4148.0,
+  "width": 22.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "Button.Groupbox",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   5,
+   5,
+   5,
+   5
+  ]
+ },
+ {
+  "file": "blue_menu_bar_background.svg",
+  "x": 776.5,
+  "y": 4148.0,
+  "width": 3.0,
+  "height": 50.0,
+  "depth": 24,
+  "section": "Menu.BarBackground",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   9,
+   15
+  ]
+ },
+ {
+  "file": "blue_menu_bar_item.svg",
+  "x": 967.0,
+  "y": 4148.0,
+  "width": 9.0,
+  "height": 54.0,
+  "depth": 32,
+  "section": "Menu.BarItem",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Disabled Hot",
+   "Disabled Pushed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_menu_popup_background.svg",
+  "x": 1112.5,
+  "y": 4148.0,
+  "width": 1.0,
+  "height": 1.0,
+  "depth": 24,
+  "section": "Menu.PopupBackground",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_borders.svg",
+  "x": 1318.0,
+  "y": 4148.0,
+  "width": 3.0,
+  "height": 3.0,
+  "depth": 24,
+  "section": "Menu.PopupBorders",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_16px.svg",
+  "x": 1501.0,
+  "y": 4148.0,
+  "width": 16.0,
+  "height": 64.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_18px.svg",
+  "x": 1603.0,
+  "y": 4148.0,
+  "width": 18.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_25px.svg",
+  "x": 1637.0,
+  "y": 4148.0,
+  "width": 25.0,
+  "height": 100.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_32px.svg",
+  "x": 1678.0,
+  "y": 4148.0,
+  "width": 32.0,
+  "height": 128.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_40px.svg",
+  "x": 1726.0,
+  "y": 4148.0,
+  "width": 40.0,
+  "height": 160.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_48px.svg",
+  "x": 1782.0,
+  "y": 4148.0,
+  "width": 48.0,
+  "height": 192.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_64px.svg",
+  "x": 1846.0,
+  "y": 4148.0,
+  "width": 64.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "Menu.PopupCheck",
+  "states": [
+   "Checkmark Normal",
+   "Checkmark Disabled",
+   "Bullet Normal",
+   "Bullet Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_check_background.svg",
+  "x": 1974.0,
+  "y": 4148.0,
+  "width": 7.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "Menu.PopupCheckBackground",
+  "states": [
+   "Disabled",
+   "Normal",
+   "Bitmap"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_menu_popup_gutter.svg",
+  "x": 2224.5,
+  "y": 4148.0,
+  "width": 3.0,
+  "height": 1.0,
+  "depth": 24,
+  "section": "Menu.PopupGutter",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   2,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_item.svg",
+  "x": 0.0,
+  "y": 4604.0,
+  "width": 7.0,
+  "height": 28.0,
+  "depth": 32,
+  "section": "Menu.PopupItem",
+  "states": [
+   "Normal",
+   "Hot",
+   "Disabled",
+   "Disabled Hot"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_menu_popup_separator.svg",
+  "x": 160.5,
+  "y": 4604.0,
+  "width": 1.0,
+  "height": 5.0,
+  "depth": 32,
+  "section": "Menu.PopupSeparator",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   3,
+   1
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_9px.svg",
+  "x": 358.5,
+  "y": 4604.0,
+  "width": 9.0,
+  "height": 18.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_11px.svg",
+  "x": 453.5,
+  "y": 4604.0,
+  "width": 11.0,
+  "height": 22.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_14px.svg",
+  "x": 480.5,
+  "y": 4604.0,
+  "width": 14.0,
+  "height": 27.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_18px.svg",
+  "x": 510.5,
+  "y": 4604.0,
+  "width": 18.0,
+  "height": 36.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_23px.svg",
+  "x": 544.5,
+  "y": 4604.0,
+  "width": 23.0,
+  "height": 46.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_27px.svg",
+  "x": 583.5,
+  "y": 4604.0,
+  "width": 27.0,
+  "height": 54.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_popup_submenu_36px.svg",
+  "x": 626.5,
+  "y": 4604.0,
+  "width": 36.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Menu.PopupSubmenu",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_11px.svg",
+  "x": 726.5,
+  "y": 4604.0,
+  "width": 11.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_14px.svg",
+  "x": 823.5,
+  "y": 4604.0,
+  "width": 14.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_17px.svg",
+  "x": 853.5,
+  "y": 4604.0,
+  "width": 17.0,
+  "height": 30.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_22px.svg",
+  "x": 886.5,
+  "y": 4604.0,
+  "width": 22.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_28px.svg",
+  "x": 924.5,
+  "y": 4604.0,
+  "width": 28.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_34px.svg",
+  "x": 968.5,
+  "y": 4604.0,
+  "width": 34.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_close_44px.svg",
+  "x": 1018.5,
+  "y": 4604.0,
+  "width": 44.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "Menu.SystemClose",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_11px.svg",
+  "x": 1126.5,
+  "y": 4604.0,
+  "width": 11.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_14px.svg",
+  "x": 1223.5,
+  "y": 4604.0,
+  "width": 14.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_17px.svg",
+  "x": 1253.5,
+  "y": 4604.0,
+  "width": 17.0,
+  "height": 30.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_22px.svg",
+  "x": 1286.5,
+  "y": 4604.0,
+  "width": 22.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_28px.svg",
+  "x": 1324.5,
+  "y": 4604.0,
+  "width": 28.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_34px.svg",
+  "x": 1368.5,
+  "y": 4604.0,
+  "width": 34.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_maximize_44px.svg",
+  "x": 1418.5,
+  "y": 4604.0,
+  "width": 44.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "Menu.SystemMaximize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_11px.svg",
+  "x": 1526.5,
+  "y": 4604.0,
+  "width": 11.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_14px.svg",
+  "x": 1623.5,
+  "y": 4604.0,
+  "width": 14.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_17px.svg",
+  "x": 1653.5,
+  "y": 4604.0,
+  "width": 17.0,
+  "height": 30.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_22px.svg",
+  "x": 1686.5,
+  "y": 4604.0,
+  "width": 22.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_28px.svg",
+  "x": 1724.5,
+  "y": 4604.0,
+  "width": 28.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_34px.svg",
+  "x": 1768.5,
+  "y": 4604.0,
+  "width": 34.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_minimize_44px.svg",
+  "x": 1818.5,
+  "y": 4604.0,
+  "width": 44.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "Menu.SystemMinimize",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_11px.svg",
+  "x": 1926.5,
+  "y": 4604.0,
+  "width": 11.0,
+  "height": 20.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_14px.svg",
+  "x": 2023.5,
+  "y": 4604.0,
+  "width": 14.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_17px.svg",
+  "x": 2053.5,
+  "y": 4604.0,
+  "width": 17.0,
+  "height": 30.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_22px.svg",
+  "x": 2086.5,
+  "y": 4604.0,
+  "width": 22.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_28px.svg",
+  "x": 2124.5,
+  "y": 4604.0,
+  "width": 28.0,
+  "height": 52.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_34px.svg",
+  "x": 2168.5,
+  "y": 4604.0,
+  "width": 34.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_menu_system_restore_44px.svg",
+  "x": 2218.5,
+  "y": 4604.0,
+  "width": 44.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "Menu.SystemRestore",
+  "states": [
+   "Normal",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header.svg",
+  "x": 0.0,
+  "y": 4760.0,
+  "width": 3.0,
+  "height": 48.0,
+  "depth": 24,
+  "section": "Header",
+  "states": [
+   "Details",
+   "Icon"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown.svg",
+  "x": 137.0,
+  "y": 4760.0,
+  "width": 3.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_filter.svg",
+  "x": 297.5,
+  "y": 4760.0,
+  "width": 3.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDownFilter",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_filter_glyph_10px.svg",
+  "x": 510.5,
+  "y": 4760.0,
+  "width": 10.0,
+  "height": 27.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDownFilter",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_filter_glyph_12px.svg",
+  "x": 606.5,
+  "y": 4760.0,
+  "width": 12.0,
+  "height": 30.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDownFilter",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_filter_glyph_15px.svg",
+  "x": 634.5,
+  "y": 4760.0,
+  "width": 15.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDownFilter",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_filter_glyph_19px.svg",
+  "x": 665.5,
+  "y": 4760.0,
+  "width": 19.0,
+  "height": 54.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDownFilter",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_filter_glyph_23px.svg",
+  "x": 700.5,
+  "y": 4760.0,
+  "width": 23.0,
+  "height": 66.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDownFilter",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_7px.svg",
+  "x": 787.5,
+  "y": 4760.0,
+  "width": 7.0,
+  "height": 12.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_9px.svg",
+  "x": 880.5,
+  "y": 4760.0,
+  "width": 9.0,
+  "height": 15.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_10px.svg",
+  "x": 905.5,
+  "y": 4760.0,
+  "width": 10.0,
+  "height": 18.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_13px.svg",
+  "x": 931.5,
+  "y": 4760.0,
+  "width": 13.0,
+  "height": 23.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_17px.svg",
+  "x": 960.5,
+  "y": 4760.0,
+  "width": 17.0,
+  "height": 27.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_21px.svg",
+  "x": 993.5,
+  "y": 4760.0,
+  "width": 21.0,
+  "height": 36.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_dropdown_glyph_29px.svg",
+  "x": 1030.5,
+  "y": 4760.0,
+  "width": 29.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Header.HeaderDropDown",
+  "states": [
+   "Normal",
+   "Soft Hot",
+   "Hot"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_item.svg",
+  "x": 1123.5,
+  "y": 4760.0,
+  "width": 6.0,
+  "height": 288.0,
+  "depth": 24,
+  "section": "Header.HeaderItem",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Sorted Normal",
+   "Sorted Hot",
+   "Sorted Pressed",
+   "Icon Normal",
+   "Icon Hot",
+   "Icon Pressed",
+   "Iconsorted Normal",
+   "Iconsorted Hot",
+   "Iconsorted Pressed"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   9,
+   14
+  ]
+ },
+ {
+  "file": "blue_header_overflow.svg",
+  "x": 1263.5,
+  "y": 4760.0,
+  "width": 8.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_8px.svg",
+  "x": 1424.0,
+  "y": 4760.0,
+  "width": 8.0,
+  "height": 14.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_10px.svg",
+  "x": 1518.0,
+  "y": 4760.0,
+  "width": 10.0,
+  "height": 18.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_12px.svg",
+  "x": 1544.0,
+  "y": 4760.0,
+  "width": 12.0,
+  "height": 22.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_16px.svg",
+  "x": 1572.0,
+  "y": 4760.0,
+  "width": 16.0,
+  "height": 28.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_20px.svg",
+  "x": 1604.0,
+  "y": 4760.0,
+  "width": 20.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_24px.svg",
+  "x": 1640.0,
+  "y": 4760.0,
+  "width": 24.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_overflow_glyph_32px.svg",
+  "x": 1680.0,
+  "y": 4760.0,
+  "width": 32.0,
+  "height": 56.0,
+  "depth": 32,
+  "section": "Header.HeaderOverflow",
+  "states": [
+   "Normal",
+   "Hot"
+  ],
+  "sizingMargins": [
+   3,
+   4,
+   9,
+   11
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_13px.svg",
+  "x": 1776.0,
+  "y": 4760.0,
+  "width": 13.0,
+  "height": 10.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_16px.svg",
+  "x": 1875.0,
+  "y": 4760.0,
+  "width": 16.0,
+  "height": 13.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_17px.svg",
+  "x": 1907.0,
+  "y": 4760.0,
+  "width": 17.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_20px.svg",
+  "x": 1940.0,
+  "y": 4760.0,
+  "width": 20.0,
+  "height": 15.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_26px.svg",
+  "x": 1976.0,
+  "y": 4760.0,
+  "width": 26.0,
+  "height": 18.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_39px.svg",
+  "x": 2018.0,
+  "y": 4760.0,
+  "width": 39.0,
+  "height": 30.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_header_sort_arrow_52px.svg",
+  "x": 2073.0,
+  "y": 4760.0,
+  "width": 52.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Header.HeaderSortArrow",
+  "states": [
+   "Sortedup",
+   "Sorteddown"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_15px.svg",
+  "x": 0.0,
+  "y": 5124.0,
+  "width": 15.0,
+  "height": 45.0,
+  "depth": 32,
+  "section": "ListView.CollapseButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_19px.svg",
+  "x": 101.0,
+  "y": 5124.0,
+  "width": 19.0,
+  "height": 57.0,
+  "depth": 32,
+  "section": "ListView.CollapseButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_23px.svg",
+  "x": 136.0,
+  "y": 5124.0,
+  "width": 23.0,
+  "height": 69.0,
+  "depth": 32,
+  "section": "ListView.CollapseButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_30px.svg",
+  "x": 175.0,
+  "y": 5124.0,
+  "width": 30.0,
+  "height": 90.0,
+  "depth": 32,
+  "section": "ListView.CollapseButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_37px.svg",
+  "x": 221.0,
+  "y": 5124.0,
+  "width": 37.0,
+  "height": 111.0,
+  "depth": 32,
+  "section": "ListView.CollapseButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_45px.svg",
+  "x": 274.0,
+  "y": 5124.0,
+  "width": 45.0,
+  "height": 135.0,
+  "depth": 32,
+  "section": null,
+  "states": [
+   "(unused)"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_collapse_button_60px.svg",
+  "x": 335.0,
+  "y": 5124.0,
+  "width": 60.0,
+  "height": 180.0,
+  "depth": 32,
+  "section": "ListView.CollapseButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_column_detail.svg",
+  "x": 459.0,
+  "y": 5124.0,
+  "width": 2.0,
+  "height": 1.0,
+  "depth": 32,
+  "section": "ListView.ColumnDetail",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_15px.svg",
+  "x": 672.0,
+  "y": 5124.0,
+  "width": 15.0,
+  "height": 45.0,
+  "depth": 32,
+  "section": "ListView.ExpandButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_19px.svg",
+  "x": 773.0,
+  "y": 5124.0,
+  "width": 19.0,
+  "height": 57.0,
+  "depth": 32,
+  "section": "ListView.ExpandButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_23px.svg",
+  "x": 808.0,
+  "y": 5124.0,
+  "width": 23.0,
+  "height": 69.0,
+  "depth": 32,
+  "section": "ListView.ExpandButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_30px.svg",
+  "x": 847.0,
+  "y": 5124.0,
+  "width": 30.0,
+  "height": 90.0,
+  "depth": 32,
+  "section": "ListView.ExpandButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_37px.svg",
+  "x": 893.0,
+  "y": 5124.0,
+  "width": 37.0,
+  "height": 111.0,
+  "depth": 32,
+  "section": "ListView.ExpandButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_45px.svg",
+  "x": 946.0,
+  "y": 5124.0,
+  "width": 45.0,
+  "height": 135.0,
+  "depth": 32,
+  "section": null,
+  "states": [
+   "(unused)"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_expand_button_60px.svg",
+  "x": 1007.0,
+  "y": 5124.0,
+  "width": 60.0,
+  "height": 180.0,
+  "depth": 32,
+  "section": "ListView.ExpandButton",
+  "states": [
+   "Normal",
+   "Hover",
+   "Pushed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_hot.svg",
+  "x": 1131.0,
+  "y": 5124.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_mixed_selection.svg",
+  "x": 1411.5,
+  "y": 5124.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseMixedSelection)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_mixed_selection_hot.svg",
+  "x": 1782.0,
+  "y": 5124.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseMixedSelectionHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_selected.svg",
+  "x": 0.0,
+  "y": 5380.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseSelected)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_selected_hot.svg",
+  "x": 318.0,
+  "y": 5380.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseSelectedHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_selected_not_focused.svg",
+  "x": 666.0,
+  "y": 5380.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseSelectedNotFocused)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_close_selected_not_focused_hot.svg",
+  "x": 1074.0,
+  "y": 5380.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(CloseSelectedNotFocusedHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_line.svg",
+  "x": 1512.0,
+  "y": 5380.0,
+  "width": 1.0,
+  "height": 16.0,
+  "depth": 32,
+  "section": "ListView.GroupHeaderLine",
+  "states": [
+   "Open",
+   "Open Hot",
+   "Openselected",
+   "Openselected Hot",
+   "Openselectednot Focused",
+   "Openselectednotfocused Hot",
+   "Openmixedselection",
+   "Openmixedselection Hot",
+   "Close",
+   "Close Hot",
+   "Closeselected",
+   "Closeselected Hot",
+   "Closeselectednot Focused",
+   "Closeselectednotfocused Hot",
+   "Closemixedselection",
+   "Closemixedselection Hot"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_open_hot.svg",
+  "x": 1755.0,
+  "y": 5380.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(OpenHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_open_mixed_selection_hot.svg",
+  "x": 2028.0,
+  "y": 5380.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(OpenMixedSelectionHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_open_selected_hot.svg",
+  "x": 0.0,
+  "y": 5472.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(OpenSelectedHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_listview_group_header_open_selected_not_focused_hot.svg",
+  "x": 340.5,
+  "y": 5472.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "ListView.GroupHeader(OpenSelectedNotFocusedHot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_9px.svg",
+  "x": 771.0,
+  "y": 5472.0,
+  "width": 9.0,
+  "height": 18.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_11px.svg",
+  "x": 866.0,
+  "y": 5472.0,
+  "width": 11.0,
+  "height": 22.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_13px.svg",
+  "x": 893.0,
+  "y": 5472.0,
+  "width": 13.0,
+  "height": 26.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_16px.svg",
+  "x": 922.0,
+  "y": 5472.0,
+  "width": 16.0,
+  "height": 32.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_18px.svg",
+  "x": 954.0,
+  "y": 5472.0,
+  "width": 18.0,
+  "height": 36.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_20px.svg",
+  "x": 988.0,
+  "y": 5472.0,
+  "width": 20.0,
+  "height": 40.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_treeview_expand_collapse_23px.svg",
+  "x": 1024.0,
+  "y": 5472.0,
+  "width": 23.0,
+  "height": 46.0,
+  "depth": 24,
+  "section": "TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_listview_item_hot.svg",
+  "x": 1111.0,
+  "y": 5472.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::ListView.ListItem(Hot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_listview_item_hot_selected.svg",
+  "x": 1354.0,
+  "y": 5472.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::ListView.ListItem(HotSelected)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_listview_item_selected.svg",
+  "x": 1664.5,
+  "y": 5472.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::ListView.ListItem(Selected)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_listview_item_selected_not_focus.svg",
+  "x": 1945.0,
+  "y": 5472.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::ListView.ListItem(SelectedNotFocus)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_16px.svg",
+  "x": 0.0,
+  "y": 5594.0,
+  "width": 16.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_20px.svg",
+  "x": 102.0,
+  "y": 5594.0,
+  "width": 20.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_24px.svg",
+  "x": 138.0,
+  "y": 5594.0,
+  "width": 24.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_32px.svg",
+  "x": 178.0,
+  "y": 5594.0,
+  "width": 32.0,
+  "height": 64.0,
+  "depth": 32,
+  "section": null,
+  "states": [
+   "(unused)"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_40px.svg",
+  "x": 226.0,
+  "y": 5594.0,
+  "width": 40.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": null,
+  "states": [
+   "(unused)"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_48px.svg",
+  "x": 282.0,
+  "y": 5594.0,
+  "width": 48.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_glyph_64px.svg",
+  "x": 346.0,
+  "y": 5594.0,
+  "width": 64.0,
+  "height": 128.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.Glyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_16px.svg",
+  "x": 474.0,
+  "y": 5594.0,
+  "width": 16.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_20px.svg",
+  "x": 576.0,
+  "y": 5594.0,
+  "width": 20.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_24px.svg",
+  "x": 612.0,
+  "y": 5594.0,
+  "width": 24.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_32px.svg",
+  "x": 652.0,
+  "y": 5594.0,
+  "width": 32.0,
+  "height": 64.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_40px.svg",
+  "x": 700.0,
+  "y": 5594.0,
+  "width": 40.0,
+  "height": 80.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_48px.svg",
+  "x": 756.0,
+  "y": 5594.0,
+  "width": 48.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_hot_glyph_64px.svg",
+  "x": 820.0,
+  "y": 5594.0,
+  "width": 64.0,
+  "height": 128.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.HotGlyph",
+  "states": [
+   "Closed",
+   "Opened"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_item_hot.svg",
+  "x": 948.0,
+  "y": 5594.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.TreeItem(Hot)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_item_hot_selected.svg",
+  "x": 1191.0,
+  "y": 5594.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.TreeItem(HotSelected)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_item_selected.svg",
+  "x": 1501.5,
+  "y": 5594.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.TreeItem(Selected)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_explorer_treeview_item_selected_not_focus.svg",
+  "x": 1782.0,
+  "y": 5594.0,
+  "width": 7.0,
+  "height": 7.0,
+  "depth": 32,
+  "section": "Explorer::TreeView.TreeItem(SelectedNotFocus)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   3,
+   3
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons.svg",
+  "x": 2137.5,
+  "y": 5594.0,
+  "width": 7.0,
+  "height": 144.0,
+  "depth": 32,
+  "section": "Toolbar.Button",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split.svg",
+  "x": 0.0,
+  "y": 5814.0,
+  "width": 6.0,
+  "height": 144.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   3,
+   2,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown.svg",
+  "x": 205.5,
+  "y": 5814.0,
+  "width": 5.0,
+  "height": 144.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_7px.svg",
+  "x": 478.5,
+  "y": 5814.0,
+  "width": 7.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_9px.svg",
+  "x": 571.5,
+  "y": 5814.0,
+  "width": 9.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_11px.svg",
+  "x": 596.5,
+  "y": 5814.0,
+  "width": 11.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_14px.svg",
+  "x": 623.5,
+  "y": 5814.0,
+  "width": 14.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_17px.svg",
+  "x": 653.5,
+  "y": 5814.0,
+  "width": 17.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_21px.svg",
+  "x": 686.5,
+  "y": 5814.0,
+  "width": 21.0,
+  "height": 144.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_buttons_split_dropdown_glyph_28px.svg",
+  "x": 723.5,
+  "y": 5814.0,
+  "width": 28.0,
+  "height": 192.0,
+  "depth": 32,
+  "section": "Toolbar.SplitButtonDropdown",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   1,
+   3,
+   13,
+   4
+  ]
+ },
+ {
+  "file": "blue_toolbar_dropdown_button_glyph_7px.svg",
+  "x": 815.5,
+  "y": 5814.0,
+  "width": 7.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Toolbar.DropDownButtonGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_toolbar_dropdown_button_glyph_9px.svg",
+  "x": 908.5,
+  "y": 5814.0,
+  "width": 9.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Toolbar.DropDownButtonGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_toolbar_dropdown_button_glyph_11px.svg",
+  "x": 933.5,
+  "y": 5814.0,
+  "width": 11.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Toolbar.DropDownButtonGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_toolbar_dropdown_button_glyph_14px.svg",
+  "x": 960.5,
+  "y": 5814.0,
+  "width": 14.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Toolbar.DropDownButtonGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_toolbar_dropdown_button_glyph_17px.svg",
+  "x": 990.5,
+  "y": 5814.0,
+  "width": 17.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "Toolbar.DropDownButtonGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Checked",
+   "Hotchecked",
+   "Near Hot",
+   "Otherside Hot"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_toolbar_separator_horizontal.svg",
+  "x": 1081.0,
+  "y": 5814.0,
+  "width": 6.0,
+  "height": 5.0,
+  "depth": 32,
+  "section": "Toolbar.Separator",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   4,
+   1,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_toolbar_separator_vertical.svg",
+  "x": 1339.0,
+  "y": 5814.0,
+  "width": 5.0,
+  "height": 6.0,
+  "depth": 32,
+  "section": "Toolbar.SeparatorVert",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   4,
+   1
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon.svg",
+  "x": 1582.0,
+  "y": 5814.0,
+  "width": 9.0,
+  "height": 22.0,
+  "depth": 24,
+  "section": "Tooltip.Ballon",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_21px.svg",
+  "x": 1735.0,
+  "y": 5814.0,
+  "width": 21.0,
+  "height": 126.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_26px.svg",
+  "x": 1842.0,
+  "y": 5814.0,
+  "width": 26.0,
+  "height": 156.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_32px.svg",
+  "x": 1884.0,
+  "y": 5814.0,
+  "width": 32.0,
+  "height": 192.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_42px.svg",
+  "x": 1932.0,
+  "y": 5814.0,
+  "width": 42.0,
+  "height": 252.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_53px.svg",
+  "x": 1990.0,
+  "y": 5814.0,
+  "width": 53.0,
+  "height": 315.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_63px.svg",
+  "x": 2059.0,
+  "y": 5814.0,
+  "width": 63.0,
+  "height": 378.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_ballon_stem_84px.svg",
+  "x": 2138.0,
+  "y": 5814.0,
+  "width": 84.0,
+  "height": 504.0,
+  "depth": 32,
+  "section": "Tooltip.BallonStem",
+  "states": [
+   "Pointingupleftwall",
+   "Pointingupcentered",
+   "Pointinguprightwall",
+   "Pointingdownrightwall",
+   "Pointingdowncentered",
+   "Pointingdownleftwall"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_16px.svg",
+  "x": 0.0,
+  "y": 6394.0,
+  "width": 16.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_20px.svg",
+  "x": 102.0,
+  "y": 6394.0,
+  "width": 20.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_24px.svg",
+  "x": 138.0,
+  "y": 6394.0,
+  "width": 24.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_28px.svg",
+  "x": 178.0,
+  "y": 6394.0,
+  "width": 28.0,
+  "height": 84.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_32px.svg",
+  "x": 222.0,
+  "y": 6394.0,
+  "width": 32.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_36px.svg",
+  "x": 270.0,
+  "y": 6394.0,
+  "width": 36.0,
+  "height": 108.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_close_40px.svg",
+  "x": 322.0,
+  "y": 6394.0,
+  "width": 40.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "Tooltip.Close",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_standard.svg",
+  "x": 426.0,
+  "y": 6394.0,
+  "width": 9.0,
+  "height": 22.0,
+  "depth": 24,
+  "section": "Tooltip.Standard",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_17px.svg",
+  "x": 594.0,
+  "y": 6394.0,
+  "width": 17.0,
+  "height": 48.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_21px.svg",
+  "x": 697.0,
+  "y": 6394.0,
+  "width": 21.0,
+  "height": 60.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_26px.svg",
+  "x": 734.0,
+  "y": 6394.0,
+  "width": 26.0,
+  "height": 72.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_34px.svg",
+  "x": 776.0,
+  "y": 6394.0,
+  "width": 34.0,
+  "height": 96.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_42px.svg",
+  "x": 826.0,
+  "y": 6394.0,
+  "width": 42.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_51px.svg",
+  "x": 884.0,
+  "y": 6394.0,
+  "width": 51.0,
+  "height": 144.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_tooltip_wrench_68px.svg",
+  "x": 951.0,
+  "y": 6394.0,
+  "width": 68.0,
+  "height": 192.0,
+  "depth": 32,
+  "section": "Tooltip.Wrench",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_status_background.svg",
+  "x": 1083.0,
+  "y": 6394.0,
+  "width": 3.0,
+  "height": 4.0,
+  "depth": 24,
+  "section": "Status",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   2,
+   1
+  ]
+ },
+ {
+  "file": "blue_status_pane.svg",
+  "x": 1258.5,
+  "y": 6394.0,
+  "width": 3.0,
+  "height": 15.0,
+  "depth": 32,
+  "section": "Status.Pane",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   2,
+   2,
+   2
+  ]
+ },
+ {
+  "file": "blue_rebar_background.svg",
+  "x": 1395.5,
+  "y": 6394.0,
+  "width": 3.0,
+  "height": 25.0,
+  "depth": 24,
+  "section": "Rebar",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   9,
+   2
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_background.svg",
+  "x": 1563.5,
+  "y": 6394.0,
+  "width": 19.0,
+  "height": 69.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_10px.svg",
+  "x": 1791.5,
+  "y": 6394.0,
+  "width": 10.0,
+  "height": 27.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_13px.svg",
+  "x": 1887.5,
+  "y": 6394.0,
+  "width": 13.0,
+  "height": 33.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_15px.svg",
+  "x": 1916.5,
+  "y": 6394.0,
+  "width": 15.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_20px.svg",
+  "x": 1947.5,
+  "y": 6394.0,
+  "width": 20.0,
+  "height": 54.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_25px.svg",
+  "x": 1983.5,
+  "y": 6394.0,
+  "width": 25.0,
+  "height": 66.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_30px.svg",
+  "x": 2024.5,
+  "y": 6394.0,
+  "width": 30.0,
+  "height": 81.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_glyph_40px.svg",
+  "x": 2070.5,
+  "y": 6394.0,
+  "width": 40.0,
+  "height": 108.0,
+  "depth": 32,
+  "section": "Rebar.Chevron",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_vertical_background.svg",
+  "x": 0.0,
+  "y": 6662.0,
+  "width": 19.0,
+  "height": 69.0,
+  "depth": 32,
+  "section": "Rebar.ChevronVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_vertical_glyph_10px.svg",
+  "x": 295.5,
+  "y": 6662.0,
+  "width": 10.0,
+  "height": 27.0,
+  "depth": 32,
+  "section": "Rebar.ChevronVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_vertical_glyph_13px.svg",
+  "x": 391.5,
+  "y": 6662.0,
+  "width": 13.0,
+  "height": 33.0,
+  "depth": 32,
+  "section": "Rebar.ChevronVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_chevron_vertical_glyph_15px.svg",
+  "x": 420.5,
+  "y": 6662.0,
+  "width": 15.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "Rebar.ChevronVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ {
+  "file": "blue_rebar_gripper_horizontal.svg",
+  "x": 553.5,
+  "y": 6662.0,
+  "width": 6.0,
+  "height": 10.0,
+  "depth": 32,
+  "section": "Rebar.Gripper",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   2,
+   1,
+   4,
+   2
+  ]
+ },
+ {
+  "file": "blue_rebar_gripper_vertical.svg",
+  "x": 781.5,
+  "y": 6662.0,
+  "width": 10.0,
+  "height": 6.0,
+  "depth": 32,
+  "section": "Rebar.GripperVert",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   3,
+   3,
+   2,
+   1
+  ]
+ },
+ {
+  "file": "blue_rebar_splitter.svg",
+  "x": 994.5,
+  "y": 6662.0,
+  "width": 3.0,
+  "height": 9.0,
+  "depth": 32,
+  "section": "Rebar.Splitter",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "file": "blue_rebar_splitter_vertical.svg",
+  "x": 1147.5,
+  "y": 6662.0,
+  "width": 3.0,
+  "height": 9.0,
+  "depth": 32,
+  "section": "Rebar.SplitterVert",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed"
+  ],
+  "sizingMargins": [
+   1,
+   1,
+   1,
+   1
+  ]
+ },
+ {
+  "file": "blue_commandlink.svg",
+  "x": 1368.0,
+  "y": 6662.0,
+  "width": 11.0,
+  "height": 294.0,
+  "depth": 32,
+  "section": "Button.Commandlink",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted",
+   "Defaulted Animating"
+  ],
+  "sizingMargins": [
+   5,
+   5,
+   24,
+   24
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_30px.svg",
+  "x": 1513.0,
+  "y": 6662.0,
+  "width": 30.0,
+  "height": 150.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_37px.svg",
+  "x": 1629.0,
+  "y": 6662.0,
+  "width": 37.0,
+  "height": 185.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_45px.svg",
+  "x": 1682.0,
+  "y": 6662.0,
+  "width": 45.0,
+  "height": 225.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_52px.svg",
+  "x": 1743.0,
+  "y": 6662.0,
+  "width": 52.0,
+  "height": 260.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_60px.svg",
+  "x": 1811.0,
+  "y": 6662.0,
+  "width": 60.0,
+  "height": 300.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_67px.svg",
+  "x": 1887.0,
+  "y": 6662.0,
+  "width": 67.0,
+  "height": 335.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_commandlink_glyph_75px.svg",
+  "x": 1970.0,
+  "y": 6662.0,
+  "width": 75.0,
+  "height": 375.0,
+  "depth": 32,
+  "section": "Button.CommandlinkGlyph",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pressed",
+   "Disabled",
+   "Defaulted"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_30px.svg",
+  "x": 0.0,
+  "y": 7113.0,
+  "width": 30.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_38px.svg",
+  "x": 116.0,
+  "y": 7113.0,
+  "width": 38.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_45px.svg",
+  "x": 170.0,
+  "y": 7113.0,
+  "width": 45.0,
+  "height": 180.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_60px.svg",
+  "x": 231.0,
+  "y": 7113.0,
+  "width": 60.0,
+  "height": 240.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_74px.svg",
+  "x": 307.0,
+  "y": 7113.0,
+  "width": 74.0,
+  "height": 296.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_90px.svg",
+  "x": 397.0,
+  "y": 7113.0,
+  "width": 90.0,
+  "height": 360.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_back_button_120px.svg",
+  "x": 503.0,
+  "y": 7113.0,
+  "width": 120.0,
+  "height": 480.0,
+  "depth": 32,
+  "section": "Navigation.BackButton",
+  "states": [
+   "Bb Normal",
+   "Bb Hot",
+   "Bb Pressed",
+   "Bb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_30px.svg",
+  "x": 687.0,
+  "y": 7113.0,
+  "width": 30.0,
+  "height": 120.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_38px.svg",
+  "x": 803.0,
+  "y": 7113.0,
+  "width": 38.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_45px.svg",
+  "x": 857.0,
+  "y": 7113.0,
+  "width": 45.0,
+  "height": 180.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_60px.svg",
+  "x": 918.0,
+  "y": 7113.0,
+  "width": 60.0,
+  "height": 240.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_74px.svg",
+  "x": 994.0,
+  "y": 7113.0,
+  "width": 74.0,
+  "height": 296.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_90px.svg",
+  "x": 1084.0,
+  "y": 7113.0,
+  "width": 90.0,
+  "height": 360.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_forward_button_120px.svg",
+  "x": 1190.0,
+  "y": 7113.0,
+  "width": 120.0,
+  "height": 480.0,
+  "depth": 32,
+  "section": "Navigation.ForwardButton",
+  "states": [
+   "Fb Normal",
+   "Fb Hot",
+   "Fb Pressed",
+   "Fb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_13px.svg",
+  "x": 1374.0,
+  "y": 7113.0,
+  "width": 13.0,
+  "height": 108.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_17px.svg",
+  "x": 1473.0,
+  "y": 7113.0,
+  "width": 17.0,
+  "height": 136.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_19px.svg",
+  "x": 1506.0,
+  "y": 7113.0,
+  "width": 19.0,
+  "height": 160.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_26px.svg",
+  "x": 1541.0,
+  "y": 7113.0,
+  "width": 26.0,
+  "height": 216.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_32px.svg",
+  "x": 1583.0,
+  "y": 7113.0,
+  "width": 32.0,
+  "height": 268.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_39px.svg",
+  "x": 1631.0,
+  "y": 7113.0,
+  "width": 39.0,
+  "height": 324.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_navigation_menu_button_52px.svg",
+  "x": 1686.0,
+  "y": 7113.0,
+  "width": 52.0,
+  "height": 432.0,
+  "depth": 32,
+  "section": "Navigation.MenuButton",
+  "states": [
+   "Mb Normal",
+   "Mb Hot",
+   "Mb Pressed",
+   "Mb Disabled"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_19px.svg",
+  "x": 1802.0,
+  "y": 7113.0,
+  "width": 19.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_24px.svg",
+  "x": 1907.0,
+  "y": 7113.0,
+  "width": 24.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_29px.svg",
+  "x": 1947.0,
+  "y": 7113.0,
+  "width": 29.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_33px.svg",
+  "x": 1992.0,
+  "y": 7113.0,
+  "width": 33.0,
+  "height": 37.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_38px.svg",
+  "x": 2041.0,
+  "y": 7113.0,
+  "width": 38.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_43px.svg",
+  "x": 2095.0,
+  "y": 7113.0,
+  "width": 43.0,
+  "height": 47.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_hover_48px.svg",
+  "x": 2154.0,
+  "y": 7113.0,
+  "width": 48.0,
+  "height": 53.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedHover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_19px.svg",
+  "x": 0.0,
+  "y": 7669.0,
+  "width": 19.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_24px.svg",
+  "x": 105.0,
+  "y": 7669.0,
+  "width": 24.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_29px.svg",
+  "x": 145.0,
+  "y": 7669.0,
+  "width": 29.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_33px.svg",
+  "x": 190.0,
+  "y": 7669.0,
+  "width": 33.0,
+  "height": 37.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_38px.svg",
+  "x": 239.0,
+  "y": 7669.0,
+  "width": 38.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_43px.svg",
+  "x": 293.0,
+  "y": 7669.0,
+  "width": 43.0,
+  "height": 47.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_normal_48px.svg",
+  "x": 352.0,
+  "y": 7669.0,
+  "width": 48.0,
+  "height": 53.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedNormal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_19px.svg",
+  "x": 464.0,
+  "y": 7669.0,
+  "width": 19.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_24px.svg",
+  "x": 569.0,
+  "y": 7669.0,
+  "width": 24.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_29px.svg",
+  "x": 609.0,
+  "y": 7669.0,
+  "width": 29.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_33px.svg",
+  "x": 654.0,
+  "y": 7669.0,
+  "width": 33.0,
+  "height": 37.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_38px.svg",
+  "x": 703.0,
+  "y": 7669.0,
+  "width": 38.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_43px.svg",
+  "x": 757.0,
+  "y": 7669.0,
+  "width": 43.0,
+  "height": 47.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_expanded_pressed_48px.svg",
+  "x": 816.0,
+  "y": 7669.0,
+  "width": 48.0,
+  "height": 53.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(ExpandedPressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_19px.svg",
+  "x": 928.0,
+  "y": 7669.0,
+  "width": 19.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_24px.svg",
+  "x": 1033.0,
+  "y": 7669.0,
+  "width": 24.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_29px.svg",
+  "x": 1073.0,
+  "y": 7669.0,
+  "width": 29.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_33px.svg",
+  "x": 1118.0,
+  "y": 7669.0,
+  "width": 33.0,
+  "height": 37.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_38px.svg",
+  "x": 1167.0,
+  "y": 7669.0,
+  "width": 38.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_43px.svg",
+  "x": 1221.0,
+  "y": 7669.0,
+  "width": 43.0,
+  "height": 47.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_hover_48px.svg",
+  "x": 1280.0,
+  "y": 7669.0,
+  "width": 48.0,
+  "height": 53.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Hover)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_19px.svg",
+  "x": 1392.0,
+  "y": 7669.0,
+  "width": 19.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_24px.svg",
+  "x": 1497.0,
+  "y": 7669.0,
+  "width": 24.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_29px.svg",
+  "x": 1537.0,
+  "y": 7669.0,
+  "width": 29.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_33px.svg",
+  "x": 1582.0,
+  "y": 7669.0,
+  "width": 33.0,
+  "height": 37.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_38px.svg",
+  "x": 1631.0,
+  "y": 7669.0,
+  "width": 38.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_43px.svg",
+  "x": 1685.0,
+  "y": 7669.0,
+  "width": 43.0,
+  "height": 47.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_normal_48px.svg",
+  "x": 1744.0,
+  "y": 7669.0,
+  "width": 48.0,
+  "height": 53.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Normal)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_19px.svg",
+  "x": 1856.0,
+  "y": 7669.0,
+  "width": 19.0,
+  "height": 21.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_24px.svg",
+  "x": 1961.0,
+  "y": 7669.0,
+  "width": 24.0,
+  "height": 26.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_29px.svg",
+  "x": 2001.0,
+  "y": 7669.0,
+  "width": 29.0,
+  "height": 32.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_33px.svg",
+  "x": 2046.0,
+  "y": 7669.0,
+  "width": 33.0,
+  "height": 37.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_38px.svg",
+  "x": 2095.0,
+  "y": 7669.0,
+  "width": 38.0,
+  "height": 42.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_43px.svg",
+  "x": 2149.0,
+  "y": 7669.0,
+  "width": 43.0,
+  "height": 47.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_expando_button_pressed_48px.svg",
+  "x": 2208.0,
+  "y": 7669.0,
+  "width": 48.0,
+  "height": 53.0,
+  "depth": 32,
+  "section": "TaskDialog.ExpandoButton(Pressed)",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_footnote_separator.svg",
+  "x": 0.0,
+  "y": 7798.0,
+  "width": 1.0,
+  "height": 2.0,
+  "depth": 24,
+  "section": "TaskDialog.FootnoteSeparator",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_taskdialog_secondary_panel.svg",
+  "x": 265.5,
+  "y": 7798.0,
+  "width": 1.0,
+  "height": 2.0,
+  "depth": 24,
+  "section": "TaskDialog.SecondaryPanel",
+  "states": [
+   "Image"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   1,
+   0
+  ]
+ },
+ {
+  "file": "blue_window_caption.svg",
+  "x": 508.5,
+  "y": 7798.0,
+  "width": 66.0,
+  "height": 58.0,
+  "depth": 32,
+  "section": "Window.Caption",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   28,
+   35,
+   9,
+   17
+  ]
+ },
+ {
+  "file": "blue_window_caption_sizing_template.svg",
+  "x": 708.5,
+  "y": 7798.0,
+  "width": 66.0,
+  "height": 58.0,
+  "depth": 24,
+  "section": "Window.CaptionSizingTemplate",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   28,
+   35,
+   9,
+   17
+  ]
+ },
+ {
+  "file": "blue_window_close_button_background.svg",
+  "x": 981.5,
+  "y": 7798.0,
+  "width": 28.0,
+  "height": 136.0,
+  "depth": 24,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_13px.svg",
+  "x": 1254.5,
+  "y": 7798.0,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_19px.svg",
+  "x": 1353.5,
+  "y": 7798.0,
+  "width": 19.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_23px.svg",
+  "x": 1388.5,
+  "y": 7798.0,
+  "width": 23.0,
+  "height": 184.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_26px.svg",
+  "x": 1427.5,
+  "y": 7798.0,
+  "width": 26.0,
+  "height": 208.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_32px.svg",
+  "x": 1469.5,
+  "y": 7798.0,
+  "width": 32.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_39px.svg",
+  "x": 1517.5,
+  "y": 7798.0,
+  "width": 39.0,
+  "height": 312.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_close_button_glyph_52px.svg",
+  "x": 1572.5,
+  "y": 7798.0,
+  "width": 52.0,
+  "height": 416.0,
+  "depth": 32,
+  "section": "Window.CloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_frame_bottom.svg",
+  "x": 1688.5,
+  "y": 7798.0,
+  "width": 5.0,
+  "height": 6.0,
+  "depth": 24,
+  "section": "Window.FrameBottom",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   0,
+   2
+  ]
+ },
+ {
+  "file": "blue_window_frame_left.svg",
+  "x": 1879.0,
+  "y": 7798.0,
+  "width": 8.0,
+  "height": 184.0,
+  "depth": 24,
+  "section": "Window.FrameLeft",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   2,
+   1,
+   91,
+   0
+  ]
+ },
+ {
+  "file": "blue_window_frame_right.svg",
+  "x": 2054.5,
+  "y": 7798.0,
+  "width": 8.0,
+  "height": 184.0,
+  "depth": 24,
+  "section": "Window.FrameRight",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   1,
+   2,
+   91,
+   0
+  ]
+ },
+ {
+  "file": "blue_window_help_button_background.svg",
+  "x": 0.0,
+  "y": 8290.0,
+  "width": 5.0,
+  "height": 136.0,
+  "depth": 24,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_13px.svg",
+  "x": 265.5,
+  "y": 8290.0,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_19px.svg",
+  "x": 364.5,
+  "y": 8290.0,
+  "width": 19.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_23px.svg",
+  "x": 399.5,
+  "y": 8290.0,
+  "width": 23.0,
+  "height": 184.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_26px.svg",
+  "x": 438.5,
+  "y": 8290.0,
+  "width": 26.0,
+  "height": 208.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_32px.svg",
+  "x": 480.5,
+  "y": 8290.0,
+  "width": 32.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_39px.svg",
+  "x": 528.5,
+  "y": 8290.0,
+  "width": 39.0,
+  "height": 312.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_help_button_glyph_52px.svg",
+  "x": 583.5,
+  "y": 8290.0,
+  "width": 52.0,
+  "height": 416.0,
+  "depth": 32,
+  "section": "Window.HelpButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_background.svg",
+  "x": 699.5,
+  "y": 8290.0,
+  "width": 5.0,
+  "height": 136.0,
+  "depth": 24,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_13px.svg",
+  "x": 957.5,
+  "y": 8290.0,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_19px.svg",
+  "x": 1056.5,
+  "y": 8290.0,
+  "width": 19.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_23px.svg",
+  "x": 1091.5,
+  "y": 8290.0,
+  "width": 23.0,
+  "height": 184.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_26px.svg",
+  "x": 1130.5,
+  "y": 8290.0,
+  "width": 26.0,
+  "height": 208.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_32px.svg",
+  "x": 1172.5,
+  "y": 8290.0,
+  "width": 32.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_39px.svg",
+  "x": 1220.5,
+  "y": 8290.0,
+  "width": 39.0,
+  "height": 312.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_button_glyph_52px.svg",
+  "x": 1275.5,
+  "y": 8290.0,
+  "width": 52.0,
+  "height": 416.0,
+  "depth": 32,
+  "section": "Window.MaxButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_max_caption.svg",
+  "x": 1391.5,
+  "y": 8290.0,
+  "width": 1.0,
+  "height": 58.0,
+  "depth": 24,
+  "section": "Window.MaxCaption",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   0,
+   0,
+   6,
+   0
+  ]
+ },
+ {
+  "file": "blue_window_mdi_close_button_background.svg",
+  "x": 1574.5,
+  "y": 8290.0,
+  "width": 6.0,
+  "height": 40.0,
+  "depth": 24,
+  "section": "Window.MdiCloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   5,
+   4
+  ]
+ },
+ {
+  "file": "blue_window_mdi_close_button_glyph.svg",
+  "x": 1877.5,
+  "y": 8290.0,
+  "width": 10.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Window.MdiCloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   5,
+   4
+  ]
+ },
+ {
+  "file": "blue_window_mdi_min_button_background.svg",
+  "x": 2143.0,
+  "y": 8290.0,
+  "width": 6.0,
+  "height": 40.0,
+  "depth": 24,
+  "section": "Window.MdiMinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   5,
+   4
+  ]
+ },
+ {
+  "file": "blue_window_mdi_min_button_glyph.svg",
+  "x": 0.0,
+  "y": 8782.0,
+  "width": 10.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Window.MdiMinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   5,
+   4
+  ]
+ },
+ {
+  "file": "blue_window_mdi_restore_button_background.svg",
+  "x": 250.5,
+  "y": 8782.0,
+  "width": 6.0,
+  "height": 40.0,
+  "depth": 24,
+  "section": "Window.MdiRestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   5,
+   4
+  ]
+ },
+ {
+  "file": "blue_window_mdi_restore_button_glyph.svg",
+  "x": 568.5,
+  "y": 8782.0,
+  "width": 10.0,
+  "height": 40.0,
+  "depth": 32,
+  "section": "Window.MdiRestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled"
+  ],
+  "sizingMargins": [
+   2,
+   3,
+   5,
+   4
+  ]
+ },
+ {
+  "file": "blue_window_min_button_background.svg",
+  "x": 849.0,
+  "y": 8782.0,
+  "width": 5.0,
+  "height": 136.0,
+  "depth": 24,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_13px.svg",
+  "x": 1107.0,
+  "y": 8782.0,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_19px.svg",
+  "x": 1206.0,
+  "y": 8782.0,
+  "width": 19.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_23px.svg",
+  "x": 1241.0,
+  "y": 8782.0,
+  "width": 23.0,
+  "height": 184.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_26px.svg",
+  "x": 1280.0,
+  "y": 8782.0,
+  "width": 26.0,
+  "height": 208.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_32px.svg",
+  "x": 1322.0,
+  "y": 8782.0,
+  "width": 32.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_39px.svg",
+  "x": 1370.0,
+  "y": 8782.0,
+  "width": 39.0,
+  "height": 312.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_button_glyph_52px.svg",
+  "x": 1425.0,
+  "y": 8782.0,
+  "width": 52.0,
+  "height": 416.0,
+  "depth": 32,
+  "section": "Window.MinButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_min_caption.svg",
+  "x": 1541.0,
+  "y": 8782.0,
+  "width": 13.0,
+  "height": 58.0,
+  "depth": 32,
+  "section": "Window.MinCaption",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   6,
+   6,
+   6,
+   2
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_background.svg",
+  "x": 1724.0,
+  "y": 8782.0,
+  "width": 5.0,
+  "height": 136.0,
+  "depth": 24,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_13px.svg",
+  "x": 2012.0,
+  "y": 8782.0,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_19px.svg",
+  "x": 2111.0,
+  "y": 8782.0,
+  "width": 19.0,
+  "height": 152.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_23px.svg",
+  "x": 2146.0,
+  "y": 8782.0,
+  "width": 23.0,
+  "height": 184.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_26px.svg",
+  "x": 2185.0,
+  "y": 8782.0,
+  "width": 26.0,
+  "height": 208.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_32px.svg",
+  "x": 2227.0,
+  "y": 8782.0,
+  "width": 32.0,
+  "height": 256.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_39px.svg",
+  "x": 2275.0,
+  "y": 8782.0,
+  "width": 39.0,
+  "height": 312.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_restore_button_glyph_52px.svg",
+  "x": 2330.0,
+  "y": 8782.0,
+  "width": 52.0,
+  "height": 416.0,
+  "depth": 32,
+  "section": "Window.RestoreButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   7,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_small_caption.svg",
+  "x": 0.0,
+  "y": 9274.0,
+  "width": 5.0,
+  "height": 38.0,
+  "depth": 24,
+  "section": "Window.SmallCaption",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   2,
+   0
+  ]
+ },
+ {
+  "file": "blue_window_small_caption_sizing_template.svg",
+  "x": 198.0,
+  "y": 9274.0,
+  "width": 62.0,
+  "height": 38.0,
+  "depth": 32,
+  "section": "Window.SmallCaptionSizingTemplate",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   24,
+   37,
+   9,
+   8
+  ]
+ },
+ {
+  "file": "blue_window_small_close_button_background.svg",
+  "x": 516.0,
+  "y": 9274.0,
+  "width": 13.0,
+  "height": 104.0,
+  "depth": 32,
+  "section": "Window.SmallCloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   5,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_small_close_button_glyph.svg",
+  "x": 834.0,
+  "y": 9274.0,
+  "width": 7.0,
+  "height": 56.0,
+  "depth": 32,
+  "section": "Window.SmallCloseButton",
+  "states": [
+   "Normal",
+   "Hot",
+   "Pushed",
+   "Disabled",
+   "Normal (Inactive)",
+   "Hot (Inactive)",
+   "Pushed (Inactive)",
+   "Disabled (Inactive)"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   5,
+   7
+  ]
+ },
+ {
+  "file": "blue_window_small_frame_bottom.svg",
+  "x": 1114.5,
+  "y": 9274.0,
+  "width": 5.0,
+  "height": 6.0,
+  "depth": 24,
+  "section": "Window.SmallFrameBottom",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   2,
+   2,
+   0,
+   2
+  ]
+ },
+ {
+  "file": "blue_window_small_frame_left.svg",
+  "x": 1350.0,
+  "y": 9274.0,
+  "width": 3.0,
+  "height": 2.0,
+  "depth": 24,
+  "section": "Window.SmallFrameLeft",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   2,
+   0,
+   0,
+   0
+  ]
+ },
+ {
+  "file": "blue_window_small_frame_right.svg",
+  "x": 1570.5,
+  "y": 9274.0,
+  "width": 3.0,
+  "height": 2.0,
+  "depth": 24,
+  "section": "Window.SmallFrameRight",
+  "states": [
+   "Active",
+   "Inactive"
+  ],
+  "sizingMargins": [
+   0,
+   2,
+   0,
+   0
+  ]
+ }
+]
