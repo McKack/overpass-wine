@@ -107,6 +107,7 @@ struct entitled_snapshot
     LONG refs;
     UINT32 count;
     UINT64 valid_until;
+    UINT64 proof_until; /* Only set after actual signed-receipt verification. */
     XStoreProduct *products;
 };
 struct entitled_page

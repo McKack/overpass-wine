@@ -466,3 +466,36 @@ static HRESULT content_query_identifier( const char *store, SIZE_T size, char *i
     memcpy(identifier, query.identifier, sizeof(query.identifier));
     return S_OK;
 }
+
+struct content_store_query
+{
+    const char *identifier;
+    char store[13];
+    BOOL found, ambiguous;
+};
+
+static BOOLEAN WINAPI content_store_match( void *arg, const XPackageDetails *details )
+{
+    struct content_store_query *query = arg;
+    if (strcmp(query->identifier, details->packageIdentifier)) return TRUE;
+    if (query->found && strcmp(query->store, details->storeId)) query->ambiguous = TRUE;
+    else { memcpy(query->store, details->storeId, sizeof(query->store)); query->found = TRUE; }
+    return TRUE;
+}
+
+HRESULT xpackage_query_content_store( const char *identifier, SIZE_T size, char *store )
+{
+    struct content_store_query query = {0};
+    HRESULT hr;
+    UINT i;
+    if (store && size) store[0] = 0;
+    if (!store || !identifier || strlen(identifier) != 32) return E_INVALIDARG;
+    for (i = 0; i < 32; i++)
+        if (!((identifier[i] >= '0' && identifier[i] <= '9') || (identifier[i] >= 'a' && identifier[i] <= 'f'))) return E_INVALIDARG;
+    if (size < sizeof(query.store)) return E_NOT_SUFFICIENT_BUFFER;
+    query.identifier = identifier;
+    if (FAILED(hr = enumerate_content_packages(XPackageEnumerationScope_ThisAndRelated, &query, content_store_match))) return hr;
+    if (!query.found || query.ambiguous) return E_GAMEPACKAGE_NO_PACKAGE_IDENTIFIER;
+    memcpy(store, query.store, sizeof(query.store));
+    return S_OK;
+}

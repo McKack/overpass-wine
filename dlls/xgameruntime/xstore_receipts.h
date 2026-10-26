@@ -440,7 +440,7 @@ static HRESULT entitled_fetch( const char *request, LONG *canceled, struct entit
     char *ids[ENTITLED_MAX_PRODUCTS] = {0}, *market = NULL, *language = NULL;
     struct receipt_license licenses[ENTITLED_MAX_PRODUCTS];
     UINT32 count = 0, license_count = 0, i, j, batch;
-    UINT64 kinds, expiry = UINT64_MAX;
+    UINT64 kinds, expiry = UINT64_MAX, proof_until = 0;
     ULONGLONG deadline = GetTickCount64() + 120000;
     char number[32];
     HRESULT hr = E_UNEXPECTED, com = CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -496,6 +496,7 @@ static HRESULT entitled_fetch( const char *request, LONG *canceled, struct entit
         xodus_store_license_note("store-entitled-metadata", hr);
         if (FAILED(hr)) goto done;
     }
+    proof_until = expiry;
     if (expiry > (UINT64)time(NULL) + 60) expiry = (UINT64)time(NULL) + 60;
     snprintf(number, sizeof(number), "%llu", (unsigned long long)expiry);
     xmlNewTextChild(response_root, NULL, BAD_CAST "ValidUntil", BAD_CAST number);
@@ -504,6 +505,7 @@ static HRESULT entitled_fetch( const char *request, LONG *canceled, struct entit
         xmlDocDumpMemory(result, &bytes, &size);
         if (!bytes) { hr = E_OUTOFMEMORY; goto done; }
         hr = size <= 60000 ? entitled_parse((char *)bytes, size, out) : HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
+        if (SUCCEEDED(hr)) (*out)->proof_until = proof_until;
         xmlFree(bytes);
     }
 done:

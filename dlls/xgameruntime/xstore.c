@@ -26,6 +26,7 @@
 WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
 #include "xstore_entitled.h"
+#include "xstore_package_license.h"
 
 struct x_store
 {
@@ -172,25 +173,22 @@ static void WINAPI x_store_XStoreCloseProductsQueryHandle( IXStoreImpl6 *iface, 
 
 static HRESULT WINAPI x_store_XStoreAcquireLicenseForPackageAsync( IXStoreImpl6 *iface, const XStoreProductQueryHandle productQueryHandle, const char *packageIdentifier, XAsyncBlock *async )
 {
-    FIXME( "iface %p, productQueryHandle %p, packageIdentifier %s, async %p stub!\n", iface, productQueryHandle, debugstr_a( packageIdentifier ), async );
-    return E_NOTIMPL;
+    return package_license_begin((XStoreContextHandle)productQueryHandle, packageIdentifier, async);
 }
 
 static HRESULT WINAPI x_store_XStoreAcquireLicenseForPackageResult( IXStoreImpl6 *iface, XAsyncBlock *async, XStoreLicenseHandle *storeLicenseHandle )
 {
-    FIXME( "iface %p, async %p, storeLicenseHandle %p stub!\n", iface, async, storeLicenseHandle );
-    return E_NOTIMPL;
+    return package_license_result(async, storeLicenseHandle);
 }
 
 static BOOLEAN WINAPI x_store_XStoreIsLicenseValid( IXStoreImpl6 *iface, const XStoreLicenseHandle storeLicenseHandle )
 {
-    FIXME( "iface %p, storeLicenseHandle %p stub!\n", iface, storeLicenseHandle );
-    return FALSE;
+    return package_license_valid(storeLicenseHandle);
 }
 
 static void WINAPI x_store_XStoreCloseLicenseHandle( IXStoreImpl6 *iface, XStoreLicenseHandle storeLicenseHandle )
 {
-    FIXME( "iface %p, storeLicenseHandle %p stub!\n", iface, storeLicenseHandle );
+    package_license_close(storeLicenseHandle);
 }
 
 static HRESULT WINAPI x_store_XStoreCanAcquireLicenseForStoreIdAsync( IXStoreImpl6 *iface, const XStoreContextHandle storeContextHandle, const char *storeProductId, XAsyncBlock *async )
@@ -738,14 +736,12 @@ static BOOLEAN WINAPI x_store_XStoreUnregisterGameLicenseChanged( IXStoreImpl6 *
 
 static HRESULT WINAPI x_store_XStoreRegisterPackageLicenseLost( IXStoreImpl6 *iface, XStoreLicenseHandle storeLicenseHandle, XTaskQueueHandle queue, void *context, XStorePackageLicenseLostCallback *callback, XTaskQueueRegistrationToken *token)
 {
-    FIXME( "iface %p, storeLicenseHandle %p, queue %p, context %p, callback %p, token %p stub!\n", iface, storeLicenseHandle, queue, context, callback, token );
-    return E_NOTIMPL;
+    return package_license_register(storeLicenseHandle, queue, context, callback, token);
 }
 
 static BOOLEAN WINAPI x_store_XStoreUnregisterPackageLicenseLost( IXStoreImpl6 *iface, XStoreLicenseHandle licenseHandle, XTaskQueueRegistrationToken token, BOOLEAN wait )
 {
-    FIXME( "iface %p, licenseHandle %p, token %p, wait %d stub!\n", iface, licenseHandle, &token, wait );
-    return FALSE;
+    return package_license_unregister(licenseHandle, token, wait);
 }
 
 static BOOLEAN WINAPI x_store_XStoreIsAvailabilityPurchasable( IXStoreImpl6 *iface, const XStoreAvailability availability )

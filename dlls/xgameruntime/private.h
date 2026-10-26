@@ -71,6 +71,7 @@ struct _xmlNode;
 HRESULT xstore_configure( struct _xmlNode *root );
 void xpackage_configure( struct _xmlNode *root );
 HRESULT xpackage_query_identifier( const char *store, SIZE_T size, char *identifier );
+HRESULT xpackage_query_content_store( const char *identifier, SIZE_T size, char *store );
 extern char *packageFamilyName;
 UINT64 xuser_get_xuid( XUserHandle user );
 HRESULT xuser_device_authorization( XUserHandle user, const char *relyingParty, char **auth );
