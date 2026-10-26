@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include "private.h"
 #include "util.h"
+#include <bcrypt.h>
 
 struct x_game_save
 {
@@ -105,11 +106,13 @@ struct XGameSaveProvider
 {
     XUserHandle user;
     char *scid;
-    char root[MAX_PATH];
+    char root[2048];
     char base[512];
     char *auth;
     BOOL cloud;
     BOOL locked;
+    BOOL files;
+    BOOL session_lock;
     INT64 quota;
     UINT32 downloaded;
     UINT32 uploaded;
@@ -340,14 +343,42 @@ static UINT64 unix_now( void )
     return filetime_to_unix( &ft );
 }
 
+static BOOL save_wide_path( const char *path, WCHAR out[4096] )
+{
+    if (path[0] && path[1] == ':')
+    {
+        wcscpy( out, L"\\\\?\\" );
+        return MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, path, -1, out + 4, 4092 ) != 0;
+    }
+    return MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, path, -1, out, 4096 ) != 0;
+}
+
+static HANDLE save_find_first( const char *path, WIN32_FIND_DATAA *out )
+{
+    WCHAR wide[4096];
+    WIN32_FIND_DATAW data;
+    HANDLE find;
+    if (!save_wide_path( path, wide )) return INVALID_HANDLE_VALUE;
+    find = FindFirstFileW( wide, &data );
+    if (find != INVALID_HANDLE_VALUE)
+    {
+        memcpy( out, &data, offsetof(WIN32_FIND_DATAA, cFileName) );
+        WideCharToMultiByte( CP_UTF8, 0, data.cFileName, -1, out->cFileName, sizeof(out->cFileName), NULL, NULL );
+    }
+    return find;
+}
+
 static HRESULT read_file( const char *path, BYTE **data, SIZE_T *size )
 {
-    HANDLE file = CreateFileA( path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
+    WCHAR wide[4096];
+    HANDLE file;
     LARGE_INTEGER li;
     DWORD read;
 
     *data = NULL;
     *size = 0;
+    if (!save_wide_path( path, wide )) return HRESULT_FROM_WIN32( GetLastError() );
+    file = CreateFileW( wide, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL );
     if (file == INVALID_HANDLE_VALUE) return HRESULT_FROM_WIN32( GetLastError() );
     if (!GetFileSizeEx( file, &li ) || !(*data = calloc( 1, li.QuadPart + 1 )))
     {
@@ -368,46 +399,40 @@ static HRESULT read_file( const char *path, BYTE **data, SIZE_T *size )
 
 static HRESULT write_file( const char *path, const void *data, SIZE_T size )
 {
-    char tmp[MAX_PATH + 8];
+    char tmp[2048 + 8];
+    WCHAR wide[4096], temporary[4096];
     HANDLE file;
     DWORD written;
     BOOL ok;
 
     snprintf( tmp, sizeof(tmp), "%s.tmp", path );
-    file = CreateFileA( tmp, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL );
+    if (!save_wide_path( path, wide ) || !save_wide_path( tmp, temporary )) return HRESULT_FROM_WIN32( GetLastError() );
+    file = CreateFileW( temporary, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL );
     if (file == INVALID_HANDLE_VALUE) return HRESULT_FROM_WIN32( GetLastError() );
     ok = (!size || (WriteFile( file, data, size, &written, NULL ) && written == size)) && FlushFileBuffers( file );
     CloseHandle( file );
-    if (!ok || !MoveFileExA( tmp, path, MOVEFILE_REPLACE_EXISTING ))
+    if (!ok || !MoveFileExW( temporary, wide, MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH ))
     {
-        DeleteFileA( tmp );
+        DeleteFileW( temporary );
         return HRESULT_FROM_WIN32( GetLastError() );
     }
     return S_OK;
 }
 
+static HRESULT files_mkdir( const char *path );
 static void create_directories( const char *path )
 {
-    char buf[MAX_PATH];
-    lstrcpynA( buf, path, sizeof(buf) );
-    for (char *p = buf + 3; *p; p++)
-        if (*p == '\\')
-        {
-            *p = 0;
-            CreateDirectoryA( buf, NULL );
-            *p = '\\';
-        }
-    CreateDirectoryA( buf, NULL );
+    files_mkdir( path );
 }
 
 static void delete_directory( const char *path )
 {
-    char pattern[MAX_PATH], child[MAX_PATH];
+    char pattern[2048], child[2048];
     WIN32_FIND_DATAA data;
     HANDLE find;
 
     snprintf( pattern, sizeof(pattern), "%s\\*", path );
-    if ((find = FindFirstFileA( pattern, &data )) != INVALID_HANDLE_VALUE)
+    if ((find = save_find_first( pattern, &data )) != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -421,20 +446,33 @@ static void delete_directory( const char *path )
     RemoveDirectoryA( path );
 }
 
+static char *files_cache_key( const char *name )
+{
+    BCRYPT_ALG_HANDLE algorithm;
+    BYTE digest[32];
+    char *hex;
+    if (BCryptOpenAlgorithmProvider( &algorithm, BCRYPT_SHA256_ALGORITHM, NULL, 0 )) return NULL;
+    NTSTATUS status = BCryptHash( algorithm, NULL, 0, (BYTE *)name, strlen(name), digest, sizeof(digest) );
+    BCryptCloseAlgorithmProvider( algorithm, 0 );
+    if (status || !(hex = malloc(65))) return NULL;
+    for (UINT i = 0; i < 32; i++) sprintf( hex + i * 2, "%02x", digest[i] );
+    return hex;
+}
+
 static BOOL container_dir( struct XGameSaveProvider *provider, const char *name, char *out, SIZE_T size )
 {
-    char *hex = hex_encode( name );
+    char *hex = provider->files ? files_cache_key( name ) : hex_encode( name );
     if (!hex) return FALSE;
-    snprintf( out, size, "%s\\%s", provider->root, hex );
+    if (snprintf( out, size, "%s\\%s", provider->root, hex ) >= size) { free( hex ); return FALSE; }
     free( hex );
     return TRUE;
 }
 
 static BOOL blob_path( struct XGameSaveProvider *provider, const char *container, const char *blob, char *out, SIZE_T size )
 {
-    char dir[MAX_PATH], *hex = hex_encode( blob );
+    char dir[2048], *hex = provider->files ? files_cache_key( blob ) : hex_encode( blob );
     BOOL ok = hex && container_dir( provider, container, dir, sizeof(dir) );
-    if (ok) snprintf( out, size, "%s\\b_%s", dir, hex );
+    if (ok) ok = snprintf( out, size, "%s\\b_%s", dir, hex ) < size;
     free( hex );
     return ok;
 }
@@ -486,7 +524,7 @@ static UINT64 state_total_size( const struct container_state *state )
 
 static HRESULT load_state( struct XGameSaveProvider *provider, const char *name, struct container_state *state )
 {
-    char dir[MAX_PATH], path[MAX_PATH];
+    char dir[2048], path[2048];
     char *line, *next, *text;
     SIZE_T size;
     BYTE *data;
@@ -500,14 +538,14 @@ static HRESULT load_state( struct XGameSaveProvider *provider, const char *name,
     text = (char *)data;
     for (line = text; line && *line; line = next)
     {
-        char a[128] = { 0 }, b[128] = { 0 };
+        char a[1024] = { 0 }, b[128] = { 0 };
         unsigned int blobSize = 0;
         if ((next = strchr( line, '\n' ))) *next++ = 0;
         if (!strncmp( line, "display ", 8 )) state->display = hex_decode( line + 8 );
         else if (!strncmp( line, "time ", 5 )) state->time = _strtoui64( line + 5, NULL, 10 );
         else if (!strncmp( line, "remote ", 7 )) lstrcpynA( state->remote, strcmp( line + 7, "-" ) ? line + 7 : "", sizeof(state->remote) );
         else if (!strncmp( line, "dirty ", 6 )) state->dirty = atoi( line + 6 );
-        else if (sscanf( line, "blob %127s %u %127s", a, &blobSize, b ) == 3)
+        else if (sscanf( line, "blob %1023s %u %127s", a, &blobSize, b ) == 3)
         {
             char *blobName = hex_decode( a );
             struct blob_entry *entry = blobName ? add_blob( state, blobName ) : NULL;
@@ -523,8 +561,8 @@ static HRESULT load_state( struct XGameSaveProvider *provider, const char *name,
 
 static HRESULT save_state( struct XGameSaveProvider *provider, const struct container_state *state )
 {
-    char dir[MAX_PATH], path[MAX_PATH], *hex, *text;
-    SIZE_T size = 256 + (state->display ? strlen( state->display ) * 2 : 0), len = 0;
+    char dir[2048], path[2048], *hex, *text;
+    SIZE_T size = 256 + (provider->files ? strlen(state->name) * 2 + 8 : 0) + (state->display ? strlen( state->display ) * 2 : 0), len = 0;
     HRESULT hr;
 
     for (UINT32 i = 0; i < state->count; i++) size += strlen( state->blobs[i].name ) * 2 + 80;
@@ -534,6 +572,14 @@ static HRESULT save_state( struct XGameSaveProvider *provider, const struct cont
     hex = hex_encode( state->display ? state->display : "" );
     len += snprintf( text + len, size - len, "display %s\ntime %I64u\nremote %s\ndirty %d\n", hex ? hex : "", state->time, state->remote[0] ? state->remote : "-", state->dirty );
     free( hex );
+    if (provider->files)
+    {
+        hex = hex_encode( state->name );
+        if (!hex) { free( text ); return E_OUTOFMEMORY; }
+        /* Persist file-provider metadata separately from the exposed files. */
+        len += snprintf( text + len, size - len, "name %s\n", hex );
+        free( hex );
+    }
     for (UINT32 i = 0; i < state->count; i++)
     {
         hex = hex_encode( state->blobs[i].name );
@@ -550,20 +596,37 @@ typedef BOOL (*container_callback)( struct XGameSaveProvider *provider, const ch
 
 static void enumerate_local( struct XGameSaveProvider *provider, container_callback callback, void *context )
 {
-    char pattern[MAX_PATH], index[MAX_PATH];
+    char pattern[2048], index[2048];
     WIN32_FIND_DATAA data;
     HANDLE find;
 
     snprintf( pattern, sizeof(pattern), "%s\\*", provider->root );
-    if ((find = FindFirstFileA( pattern, &data )) == INVALID_HANDLE_VALUE) return;
+    if ((find = save_find_first( pattern, &data )) == INVALID_HANDLE_VALUE) return;
     do
     {
         char *name;
         BOOL more;
         if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) || data.cFileName[0] == '.') continue;
         snprintf( index, sizeof(index), "%s\\%s\\index", provider->root, data.cFileName );
-        if (GetFileAttributesA( index ) == INVALID_FILE_ATTRIBUTES) continue;
-        if (!(name = hex_decode( data.cFileName ))) continue;
+        if (provider->files)
+        {
+            BYTE *text;
+            SIZE_T size;
+            char *line, *end;
+            /* Hash directories are indexes, not container names. Recovery
+             * backups/incomplete downloads must never enter the cloud set. */
+            if (strlen(data.cFileName) != 64 || strspn(data.cFileName, "0123456789abcdef") != 64) continue;
+            if (FAILED(read_file( index, &text, &size ))) continue;
+            line = strstr( (char *)text, "\nname " );
+            if (!line || !(end = strchr( line + 6, '\n' ))) { free(text); continue; }
+            *end = 0; name = hex_decode( line + 6 ); free(text);
+            if (!name) continue;
+        }
+        else
+        {
+            if (GetFileAttributesA( index ) == INVALID_FILE_ATTRIBUTES) continue;
+            if (!(name = hex_decode( data.cFileName ))) continue;
+        }
         more = callback( provider, name, context );
         free( name );
         if (!more) break;
@@ -594,6 +657,7 @@ static BOOL cloud_lock( struct XGameSaveProvider *provider )
     DWORD status;
     HRESULT hr;
 
+    if (provider->session_lock && provider->locked) return TRUE;
     hr = cloud_request( provider, "PUT", "/lock?friendlyName=Xodus", "x-xbl-lock-ver: 1\r\nContent-Type: application/json\r\n", NULL, 0, &status, &buffer, &size );
     if (FAILED(hr)) return FALSE;
     if (status == 200 || status == 201)
@@ -612,7 +676,7 @@ static void cloud_unlock( struct XGameSaveProvider *provider, BOOL uploaded )
     BYTE *buffer;
     DWORD status;
 
-    if (!provider->locked) return;
+    if (!provider->locked || provider->session_lock) return;
     if (SUCCEEDED(cloud_request( provider, "DELETE", uploaded ? "/lock?newSavesUploaded=true" : "/lock?newSavesUploaded=false", NULL, NULL, 0, &status, &buffer, &size )))
         free( buffer );
     provider->locked = FALSE;
@@ -627,7 +691,7 @@ static void cloud_disable( struct XGameSaveProvider *provider )
 static HRESULT cloud_download( struct XGameSaveProvider *provider, const char *name, const char *display, const char *remoteTime )
 {
     struct container_state state = { 0 };
-    char path[1024], dir[MAX_PATH], blob[MAX_PATH], *enc, *key;
+    char path[1024], dir[2048], blob[2048], *enc, *key;
     SIZE_T size, dataSize;
     BYTE *buffer, *data;
     const char *atoms, *value;
@@ -775,7 +839,7 @@ static HRESULT upload_large_atom( struct XGameSaveProvider *provider, const char
 
 static HRESULT cloud_upload( struct XGameSaveProvider *provider, struct container_state *state )
 {
-    char path[2048], blob[MAX_PATH], timestamp[48], *enc, *encDisplay, *json, *p;
+    char path[2048], blob[2048], timestamp[48], *enc, *encDisplay, *json, *p;
     SIZE_T size, jsonSize = 32;
     BYTE *buffer, *data;
     DWORD status;
@@ -914,7 +978,7 @@ static BOOL sync_local_callback( struct XGameSaveProvider *provider, const char 
 {
     struct remote_container *remote = context;
     struct container_state state;
-    char dir[MAX_PATH];
+    char dir[2048];
 
     for (; remote->name; remote++) if (!strcmp( remote->name, name )) return TRUE;
     if (FAILED(load_state( provider, name, &state )))
@@ -948,6 +1012,8 @@ static void force_upload( struct XGameSaveProvider *provider, struct container_s
     if (SUCCEEDED(cloud_upload( provider, state ))) provider->uploaded++;
     save_state( provider, state );
 }
+
+static HRESULT files_cloud_download( struct XGameSaveProvider *, const char *, const char *, const char * );
 
 static HRESULT cloud_sync( struct XGameSaveProvider *provider )
 {
@@ -1007,13 +1073,22 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
         struct container_state state;
         BOOL exists = SUCCEEDED(load_state( provider, remote[i].name, &state ));
         BOOL remoteChanged = !exists || strcmp( state.remote, remote[i].time ? remote[i].time : "" );
+        if (provider->files && exists && state.dirty && remoteChanged && mode == SYNC_AUTO)
+        {
+            /* Never silently overwrite either side of a file-save conflict. */
+            free_state( &state );
+            hr = E_GS_CONTAINER_NOT_IN_SYNC;
+            goto done;
+        }
         if (mode == SYNC_UPLOAD)
         {
             if (exists) force_upload( provider, &state );
         }
         else if (mode == SYNC_DOWNLOAD || !exists || (remoteChanged && !state.dirty) || (remoteChanged && state.dirty && parse_iso_time( remote[i].time ) > state.time))
         {
-            if (SUCCEEDED(cloud_download( provider, remote[i].name, remote[i].display, remote[i].time ))) provider->downloaded++;
+            hr = provider->files ? files_cloud_download( provider, remote[i].name, remote[i].display, remote[i].time ) :
+                                  cloud_download( provider, remote[i].name, remote[i].display, remote[i].time );
+            if (SUCCEEDED(hr)) provider->downloaded++;
         }
         else if (state.dirty && SUCCEEDED(cloud_upload( provider, &state )))
         {
@@ -1021,10 +1096,12 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
             provider->uploaded++;
         }
         free_state( &state );
+        if (provider->files && FAILED(hr)) goto done;
     }
+done:
     if (remote)
     {
-        enumerate_local( provider, sync_local_callback, remote );
+        if (SUCCEEDED(hr)) enumerate_local( provider, sync_local_callback, remote );
         for (UINT32 i = 0; i < count; i++)
         {
             free( remote[i].name );
@@ -1038,13 +1115,13 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
         struct remote_container empty = { 0 };
         enumerate_local( provider, sync_local_callback, &empty );
     }
-    return S_OK;
+    return provider->files ? hr : S_OK;
 }
 
 static HRESULT initialize_provider( XUserHandle user, const char *configurationId, XGameSaveProviderHandle *out )
 {
     struct XGameSaveProvider *provider;
-    char localAppData[MAX_PATH], scid[128];
+    char localAppData[2048], scid[128];
     UINT64 xuid;
     HRESULT hr;
 
@@ -1116,7 +1193,7 @@ static INT64 remaining_quota( struct XGameSaveProvider *provider )
 
 static HRESULT delete_container( struct XGameSaveProvider *provider, const char *name )
 {
-    char dir[MAX_PATH];
+    char dir[2048];
     HRESULT hr;
 
     if (!provider || !name || !*name) return E_INVALIDARG;
@@ -1213,7 +1290,7 @@ struct read_request
 static HRESULT prepare_read( struct read_request *req )
 {
     struct container_state state;
-    char path[MAX_PATH];
+    char path[2048];
     SIZE_T size = 0, offset;
     UINT32 count;
     HRESULT hr;
@@ -1310,7 +1387,7 @@ static HRESULT submit_update( struct XGameSaveUpdate *update )
 {
     struct XGameSaveProvider *provider = update->container->provider;
     struct container_state state;
-    char path[MAX_PATH];
+    char path[2048];
     UINT64 total = 0;
     HRESULT hr = S_OK;
 
@@ -1331,7 +1408,7 @@ static HRESULT submit_update( struct XGameSaveUpdate *update )
     else if (!state.display) state.display = strdup( update->container->name );
     if (SUCCEEDED(hr))
     {
-        char dir[MAX_PATH];
+        char dir[2048];
         container_dir( provider, state.name, dir, sizeof(dir) );
         create_directories( dir );
     }
@@ -1823,23 +1900,7 @@ static HRESULT WINAPI x_game_save_XGameSaveSubmitUpdateResult( IXGameSaveImpl3 *
     return get_save_result( async, 0, NULL );
 }
 
-static HRESULT WINAPI x_game_save_XGameSaveFilesGetFolderWithUiAsync( IXGameSaveImpl3 *iface, XUserHandle requestingUser, const char *configurationId, XAsyncBlock *async )
-{
-    FIXME( "iface %p, requestingUser %p, configurationId %s, async %p stub!\n", iface, requestingUser, debugstr_a( configurationId ), async );
-    return E_NOTIMPL;
-}
-
-static HRESULT WINAPI x_game_save_XGameSaveFilesGetFolderWithUiResult( IXGameSaveImpl3 *iface, XAsyncBlock *async, SIZE_T folderSize, char *folderResult )
-{
-    FIXME( "iface %p, async %p, folderSize %Iu, folderResult %p stub!\n", iface, async, folderSize, folderResult );
-    return E_NOTIMPL;
-}
-
-static HRESULT WINAPI x_game_save_XGameSaveFilesGetRemainingQuota( IXGameSaveImpl3 *iface, XUserHandle userContext, const char *configurationId, INT64 *remainingQuota )
-{
-    FIXME( "iface %p, userContext %p, configurationId %s, remainingQuota %p stub!\n", iface, userContext, debugstr_a( configurationId ), remainingQuota );
-    return E_NOTIMPL;
-}
+#include "xgamesavefiles.h"
 
 #define UNKNOWN_SLOT(n) \
 static HRESULT WINAPI x_game_save_unknown##n( void *iface, void *a, void *b, void *c, void *d ) \

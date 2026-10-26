@@ -5,3 +5,4 @@
 @ stdcall -private QueryApiImpl(ptr ptr ptr)
 @ stdcall -private UninitializeApiImpl()
 @ stub -private XErrorReport(long str)
+@ stdcall -private XodusSaveFilesMonitor(long long str long)
