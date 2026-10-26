@@ -1,6 +1,6 @@
 /* OverPass Wine: game video through Media Foundation (winegstreamer and GStreamer). Opens a file with a source
  * reader, the way games' video players do, asks for decoded video (NV12) and audio (PCM), and reads the first
- * samples. Exits 0 when the video, and the audio if the file has any, decode.
+ * samples. Exits 0 when every video and audio stream the file has decodes.
  *   x86_64-w64-mingw32-gcc -O1 mfplay.c -o mfplay.exe -lmfplat -lmfreadwrite -lmfuuid -lole32
  *   mfplay.exe C:\path\to\video.mp4 */
 #define COBJMACROS
@@ -71,15 +71,29 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    int failures = decode(reader, MF_SOURCE_READER_FIRST_VIDEO_STREAM, &MFMediaType_Video, &MFVideoFormat_NV12, "video");
-    IMFMediaType *audio;
-    if (SUCCEEDED(IMFSourceReader_GetNativeMediaType(reader, MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, &audio)))
+    int failures = 0, streams = 0;
+    IMFMediaType *native;
+    if (SUCCEEDED(IMFSourceReader_GetNativeMediaType(reader, MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &native)))
     {
-        IMFMediaType_Release(audio);
+        IMFMediaType_Release(native);
+        failures += decode(reader, MF_SOURCE_READER_FIRST_VIDEO_STREAM, &MFMediaType_Video, &MFVideoFormat_NV12, "video");
+        streams++;
+    }
+    else
+        printf("     (no video stream)\n");
+    if (SUCCEEDED(IMFSourceReader_GetNativeMediaType(reader, MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, &native)))
+    {
+        IMFMediaType_Release(native);
         failures += decode(reader, MF_SOURCE_READER_FIRST_AUDIO_STREAM, &MFMediaType_Audio, &MFAudioFormat_PCM, "audio");
+        streams++;
     }
     else
         printf("     (no audio stream)\n");
+    if (!streams)
+    {
+        printf("FAIL %s: no video or audio stream\n", argv[1]);
+        failures++;
+    }
 
     IMFSourceReader_Release(reader);
     MFShutdown();
