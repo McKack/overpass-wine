@@ -1,10 +1,8 @@
 name: Build OverPass Wine
 
+# Started by hand only: a full build takes about as long as GitHub's 3-hour limit, so releases are built on a Mac
+# (overpass/build.sh) and uploaded with gh release create.
 on:
-  push:
-    branches: [main]
-    tags: ["overpass-wine-*"]
-  pull_request:
   workflow_dispatch:
 
 permissions:
