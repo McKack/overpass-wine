@@ -75,28 +75,77 @@ static HRESULT WINAPI x_networking_XNetworkingQueryPreferredLocalUdpMultiplayerP
     return E_NOTIMPL;
 }
 
+/* The platform has no actual port preference on this runtime; completing
+ * with 0 lets the caller's socket bind choose freely, which is what native
+ * GDK reports when no preference applies. */
+static HRESULT WINAPI XNetworkingPreferredPortProvider( XAsyncOp op, const XAsyncProviderData *data )
+{
+    IXThreadingImpl *threading;
+    HRESULT hr;
+
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&threading ))) return hr;
+    switch (op)
+    {
+    case XAsyncOp_Begin:
+        hr = IXThreadingImpl_XAsyncSchedule( threading, data->async, 0 );
+        break;
+    case XAsyncOp_DoWork:
+        IXThreadingImpl_XAsyncComplete( threading, data->async, S_OK, sizeof(UINT16) );
+        hr = S_OK;
+        break;
+    case XAsyncOp_GetResult:
+        if (!data->buffer || data->bufferSize < sizeof(UINT16)) hr = HRESULT_FROM_WIN32( ERROR_INSUFFICIENT_BUFFER );
+        else { *(UINT16 *)data->buffer = 0; hr = S_OK; }
+        break;
+    default:
+        hr = S_OK;
+        break;
+    }
+    IXThreadingImpl_Release( threading );
+    return hr;
+}
+
 static HRESULT WINAPI x_networking_XNetworkingQueryPreferredLocalUdpMultiplayerPortAsync( IXNetworkingImpl2 *iface, XAsyncBlock *asyncBlock )
 {
-    FIXME( "iface %p, asyncBlock %p stub!\n", iface, asyncBlock );
-    return E_NOTIMPL;
+    IXThreadingImpl *threading;
+    HRESULT hr;
+
+    TRACE( "iface %p, asyncBlock %p.\n", iface, asyncBlock );
+
+    if (!asyncBlock) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&threading ))) return hr;
+    hr = IXThreadingImpl_XAsyncBegin( threading, asyncBlock, NULL, NULL, "XNetworkingQueryPreferredLocalUdpMultiplayerPort", XNetworkingPreferredPortProvider );
+    IXThreadingImpl_Release( threading );
+    return hr;
 }
 
 static HRESULT WINAPI x_networking_XNetworkingQueryPreferredLocalUdpMultiplayerPortAsyncResult( IXNetworkingImpl2 *iface, XAsyncBlock *asyncBlock, UINT16 *preferredLocalUdpMultiplayerPort )
 {
-    FIXME( "iface %p, asyncBlock %p, preferredLocalUdpMultiplayerPort %p stub!\n", iface, asyncBlock, preferredLocalUdpMultiplayerPort );
-    return E_NOTIMPL;
+    IXThreadingImpl *threading;
+    HRESULT hr;
+
+    TRACE( "iface %p, asyncBlock %p, preferredLocalUdpMultiplayerPort %p.\n", iface, asyncBlock, preferredLocalUdpMultiplayerPort );
+
+    if (!preferredLocalUdpMultiplayerPort) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&threading ))) return hr;
+    hr = IXThreadingImpl_XAsyncGetResult( threading, asyncBlock, NULL, sizeof(UINT16), preferredLocalUdpMultiplayerPort, NULL );
+    IXThreadingImpl_Release( threading );
+    return hr;
 }
 
 static HRESULT WINAPI x_networking_XNetworkingRegisterPreferredLocalUdpMultiplayerPortChanged( IXNetworkingImpl2 *iface, XTaskQueueHandle queue, void *context, XNetworkingPreferredLocalUdpMultiplayerPortChangedCallback *callback, XTaskQueueRegistrationToken *token )
 {
-    FIXME( "iface %p, queue %p, context %p, callback %p, token %p stub!\n", iface, queue, context, callback, token );
-    return E_NOTIMPL;
+    static LONG64 next_token;
+    TRACE( "iface %p, queue %p, context %p, callback %p, token %p.\n", iface, queue, context, callback, token );
+    if (!callback || !token) return E_POINTER;
+    token->token = InterlockedIncrement64( &next_token );
+    return S_OK;
 }
 
 static BOOLEAN WINAPI x_networking_XNetworkingUnregisterPreferredLocalUdpMultiplayerPortChanged( IXNetworkingImpl2 *iface, XTaskQueueRegistrationToken token, BOOLEAN wait )
 {
-    FIXME( "iface %p, token %p, wait %d stub!\n", iface, &token, wait );
-    return FALSE;
+    TRACE( "iface %p, token %p, wait %d.\n", iface, &token, wait );
+    return TRUE;
 }
 
 static HRESULT WINAPI x_networking_XNetworkingQuerySecurityInformationForUrlAsync( IXNetworkingImpl2 *iface, const char *url, XAsyncBlock *asyncBlock )
@@ -143,20 +192,31 @@ static HRESULT WINAPI x_networking_XNetworkingVerifyServerCertificate( IXNetwork
 
 static HRESULT WINAPI x_networking_XNetworkingGetConnectivityHint( IXNetworkingImpl2 *iface, XNetworkingConnectivityHint *connectivityHint )
 {
-    FIXME( "iface %p, connectivityHint %p stub!\n", iface, connectivityHint );
-    return E_NOTIMPL;
+    TRACE( "iface %p, connectivityHint %p.\n", iface, connectivityHint );
+    if (!connectivityHint) return E_POINTER;
+    connectivityHint->connectivityLevel = XNetworkingConnectivityLevelHint_InternetAccess;
+    connectivityHint->connectivityCost = XNetworkingConnectivityCostHint_Unrestricted;
+    connectivityHint->ianaInterfaceType = 6;
+    connectivityHint->networkInitialized = TRUE;
+    connectivityHint->approachingDataLimit = FALSE;
+    connectivityHint->overDataLimit = FALSE;
+    connectivityHint->roaming = FALSE;
+    return S_OK;
 }
 
 static HRESULT WINAPI x_networking_XNetworkingRegisterConnectivityHintChanged( IXNetworkingImpl2 *iface, XTaskQueueHandle queue, void *context, XNetworkingConnectivityHintChangedCallback *callback, XTaskQueueRegistrationToken *token )
 {
-    FIXME( "iface %p, queue %p, context %p, callback %p, token %p stub!\n", iface, queue, context, callback, token );
-    return E_NOTIMPL;
+    static LONG64 next_token;
+    TRACE( "iface %p, queue %p, context %p, callback %p, token %p.\n", iface, queue, context, callback, token );
+    if (!callback || !token) return E_POINTER;
+    token->token = InterlockedIncrement64( &next_token );
+    return S_OK;
 }
 
 static BOOLEAN WINAPI x_networking_XNetworkingUnregisterConnectivityHintChanged( IXNetworkingImpl2 *iface, XTaskQueueRegistrationToken token, BOOLEAN wait )
 {
-    FIXME( "iface %p, token %p, wait %d stub!\n", iface, &token, wait );
-    return FALSE;
+    TRACE( "iface %p, token %p, wait %d.\n", iface, &token, wait );
+    return TRUE;
 }
 
 static HRESULT WINAPI x_networking_XNetworkingQueryConfigurationSetting( IXNetworkingImpl2 *iface, XNetworkingConfigurationSetting configurationSetting, UINT64 *value )

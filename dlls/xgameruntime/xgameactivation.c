@@ -68,10 +68,18 @@ static ULONG WINAPI x_game_activation_Release( IXGameActivationImpl *iface )
     return ref;
 }
 
+/* Registrations are accepted and counted, never raised. */
+static LONG64 game_activation_event_token;
+
 static HRESULT WINAPI x_game_activation_XGameActivationRegisterForEvent( IXGameActivationImpl *iface, XTaskQueueHandle queue, void *context, XGameActivationCallback *callback, XTaskQueueRegistrationToken *token )
 {
-    FIXME( "iface %p, queue %p, context %p, callback %p, token %p stub!\n", iface, queue, context, callback, token );
-    return E_NOTIMPL;
+    FIXME( "iface %p, queue %p, context %p, callback %p, token %p: accepted, no activation will be raised.\n",
+           iface, queue, context, callback, token );
+
+    if (!callback || !token) return E_INVALIDARG;
+
+    token->token = InterlockedIncrement64( &game_activation_event_token );
+    return S_OK;
 }
 
 static BOOLEAN WINAPI x_game_activation_XGameActivationUnregisterForEvent( IXGameActivationImpl *iface, XTaskQueueRegistrationToken token, BOOLEAN wait )

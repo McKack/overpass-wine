@@ -27,6 +27,10 @@ struct x_error
 {
     IXErrorImpl IXErrorImpl_iface;
     LONG ref;
+    XErrorCallback *callback;
+    void *context;
+    XErrorOptions options_debugger_present;
+    XErrorOptions options_debugger_not_present;
 };
 
 static inline struct x_error *impl_from_IXErrorImpl( IXErrorImpl *iface )
@@ -76,12 +80,25 @@ static HRESULT WINAPI __PADDING__( IXErrorImpl *iface )
 
 static void WINAPI x_error_XErrorSetCallback( IXErrorImpl *iface, XErrorCallback *callback, void *context )
 {
-    FIXME( "iface %p, callback %p, context %p stub!\n", iface, callback, context );
+    struct x_error *impl = impl_from_IXErrorImpl( iface );
+
+    TRACE( "iface %p, callback %p, context %p.\n", iface, callback, context );
+
+    /* Stored as given; this runtime reports errors through the game's own
+     * channels rather than raising XError events of its own. */
+    impl->callback = callback;
+    impl->context = context;
 }
 
 static void WINAPI x_error_XErrorSetOptions( IXErrorImpl *iface, XErrorOptions optionsDebuggerPresent, XErrorOptions optionsDebuggerNotPresent )
 {
-    FIXME( "iface %p, optionsDebuggerPresent %#x, optionsDebuggerNotPresent %#x stub!\n", iface, optionsDebuggerPresent, optionsDebuggerNotPresent );
+    struct x_error *impl = impl_from_IXErrorImpl( iface );
+
+    TRACE( "iface %p, optionsDebuggerPresent %#x, optionsDebuggerNotPresent %#x.\n",
+           iface, optionsDebuggerPresent, optionsDebuggerNotPresent );
+
+    impl->options_debugger_present = optionsDebuggerPresent;
+    impl->options_debugger_not_present = optionsDebuggerNotPresent;
 }
 
 static const struct IXErrorImplVtbl x_error_vtbl =

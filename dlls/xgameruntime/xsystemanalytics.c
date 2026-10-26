@@ -20,6 +20,7 @@
  */
 
 #include "private.h"
+#include "winternl.h"
 
 WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
@@ -70,105 +71,28 @@ static ULONG WINAPI x_system_analytics_Release( IXSystemAnalyticsImpl *iface )
 
 static XSystemAnalyticsInfo* WINAPI x_system_analytics_XSystemGetAnalyticsInfo( IXSystemAnalyticsImpl *iface, XSystemAnalyticsInfo *__ret )
 {
-    /* For Windows, XSystemAnalyticsInfo->form is always "Desktop" */
-    const WCHAR *analytics_info_str = RuntimeClass_Windows_System_Profile_AnalyticsInfo;
-    HSTRING analytics_info_class, deviceFamilyVersion, deviceFamily;
-    const WCHAR *deviceFamilyVersionStr, *deviceFamilyStr;
+    /* The WinRT Windows.System.Profile.AnalyticsInfo activation is a wine
+     * semi-stub that fails without an MTA apartment, and returning NULL
+     * crashes titles that dereference the result in place (Deep Rock
+     * Galactic dies on a NULL read during early startup). GDK on a Windows
+     * desktop reports the "Windows.Desktop" family and "Desktop" form with
+     * the OS version the prefix advertises, so fill the struct directly. */
+    RTL_OSVERSIONINFOEXW version;
     XSystemAnalyticsInfo info;
-    char *str, *splitter;
-    ULONGLONG version;
-    HRESULT status;
-    UINT32 strSize;
-
-    IAnalyticsInfoStatics *analytics_info_statics = NULL;
-    IAnalyticsVersionInfo *analytics_version_info = NULL;
 
     TRACE( "iface %p.\n", iface );
 
-    status = WindowsCreateString( analytics_info_str, wcslen( analytics_info_str ), &analytics_info_class );
-    if (FAILED( status )) return NULL;
+    memset( &version, 0, sizeof(version) );
+    version.dwOSVersionInfoSize = sizeof(version);
+    RtlGetVersion( &version );
 
-    status = RoGetActivationFactory( analytics_info_class, &IID_IAnalyticsInfoStatics, (void **)&analytics_info_statics );
-    WindowsDeleteString( analytics_info_class );
-    if (FAILED( status )) return NULL;
-
-    status = IAnalyticsInfoStatics_get_VersionInfo( analytics_info_statics, &analytics_version_info );
-    IAnalyticsInfoStatics_Release( analytics_info_statics );
-    if (FAILED( status )) return NULL;
-
-    status = IAnalyticsVersionInfo_get_DeviceFamilyVersion( analytics_version_info, &deviceFamilyVersion );
-    if (FAILED( status ))
-    {
-        IAnalyticsVersionInfo_Release( analytics_version_info );
-        return NULL;
-    }
-
-    status = IAnalyticsVersionInfo_get_DeviceFamily( analytics_version_info, &deviceFamily );
-    IAnalyticsVersionInfo_Release( analytics_version_info );
-    if (FAILED( status ))
-    {
-        WindowsDeleteString( deviceFamilyVersion );
-        return NULL;
-    }
-
-    deviceFamilyStr = WindowsGetStringRawBuffer( deviceFamily, NULL );
-    strSize = WideCharToMultiByte( CP_UTF8, 0, deviceFamilyStr, -1, NULL, 0, NULL, NULL );
-
-    str = (char *)malloc( strSize );
-    if (!str)
-    {
-        WindowsDeleteString( deviceFamilyVersion );
-        WindowsDeleteString( deviceFamily );
-        return NULL;
-    }
-
-    if (!WideCharToMultiByte( CP_UTF8, 0, deviceFamilyStr, -1, str, strSize, NULL, NULL ))
-    {
-        WindowsDeleteString( deviceFamilyVersion );
-        WindowsDeleteString( deviceFamily );
-        free( str );
-        return NULL;
-    }
-
-    splitter = strchr( str, '.' );
-    if (splitter)
-    {
-        *splitter = '\0';
-
-        strcpy( info.family, str );
-        strcpy( info.form, splitter + 1 );
-    }
-
-    WindowsDeleteString( deviceFamily );
-    free( str );
-
-    deviceFamilyVersionStr = WindowsGetStringRawBuffer( deviceFamilyVersion, NULL );
-    strSize = WideCharToMultiByte( CP_UTF8, 0, deviceFamilyVersionStr, -1, NULL, 0, NULL, NULL );
-
-    str = (char *)malloc( strSize );
-    if (!str)
-    {
-        WindowsDeleteString( deviceFamilyVersion );
-        return NULL;
-    }
-
-    if (!WideCharToMultiByte( CP_UTF8, 0, deviceFamilyVersionStr, -1, str, strSize, NULL, NULL ))
-    {
-        WindowsDeleteString( deviceFamilyVersion );
-        free( str );
-        return NULL;
-    }
-
-    version = strtoull( str, NULL, 10 );
-    info.osVersion.major = (UINT16)(version >> 48);
-    info.osVersion.minor = (UINT16)((version >> 32) & 0xFFFF);
-    info.osVersion.build = (UINT16)((version >> 16) & 0xFFFF);
-    info.osVersion.revision = (UINT16)(version & 0xFFFF);
-
-    WindowsDeleteString( deviceFamilyVersion );
-    free( str );
-
+    info.osVersion.major = version.dwMajorVersion;
+    info.osVersion.minor = version.dwMinorVersion;
+    info.osVersion.build = version.dwBuildNumber;
+    info.osVersion.revision = 0;
     info.hostingOsVersion = info.osVersion;
+    strcpy( info.family, "Windows.Desktop" );
+    strcpy( info.form, "Desktop" );
 
     *__ret = info;
 
