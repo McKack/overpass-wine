@@ -4,5 +4,6 @@
 @ stdcall -private InitializeApiImplEx2(long long long ptr)
 @ stdcall -private QueryApiImpl(ptr ptr ptr)
 @ stdcall -private UninitializeApiImpl()
+@ stdcall -private NexusRegisterCloudShutdown(ptr ptr)
 @ stub -private XErrorReport(long str)
 @ stdcall -private XodusSaveFilesMonitor(long long str long)

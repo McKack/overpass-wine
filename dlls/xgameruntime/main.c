@@ -195,10 +195,38 @@ HRESULT WINAPI InitializeApiImplEx( ULONG gdkVer, ULONG gsVer, char mode )
     return InitializeApiImplEx2( gdkVer, gsVer, mode, NULL );
 }
 
+/* Private runtime extension for an in-process save provider. A synchronous
+ * runtime shutdown is the last safe drain point, before the loader terminates
+ * worker threads. Never wait for network/other threads in DllMain. */
+static SRWLOCK shutdown_lock = SRWLOCK_INIT;
+static HRESULT (WINAPI *shutdown_callback)( void * );
+static void *shutdown_context;
+
+HRESULT WINAPI NexusRegisterCloudShutdown( HRESULT (WINAPI *callback)( void * ), void *context )
+{
+    HRESULT hr = S_OK;
+    AcquireSRWLockExclusive( &shutdown_lock );
+    if (shutdown_callback && (shutdown_callback != callback || shutdown_context != context))
+        hr = HRESULT_FROM_WIN32( ERROR_ALREADY_EXISTS );
+    else
+    {
+        shutdown_callback = callback;
+        shutdown_context = context;
+    }
+    ReleaseSRWLockExclusive( &shutdown_lock );
+    return hr;
+}
+
 HRESULT WINAPI UninitializeApiImpl( void )
 {
+    HRESULT (WINAPI *callback)( void * );
+    void *context;
     TRACE( "\n" );
-    return S_OK;
+    AcquireSRWLockShared( &shutdown_lock );
+    callback = shutdown_callback;
+    context = shutdown_context;
+    ReleaseSRWLockShared( &shutdown_lock );
+    return callback ? callback( context ) : S_OK;
 }
 
 HRESULT WINAPI InitializeApiImpl( ULONG gdkVer, ULONG gsVer )
