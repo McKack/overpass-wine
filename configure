@@ -1221,6 +1221,7 @@ enable_ksuser
 enable_ktmw32
 enable_l3codeca_acm
 enable_l3codecx_ax
+enable_libnghttp2
 enable_light_msstyles
 enable_loadperf
 enable_localspl
@@ -22858,6 +22859,7 @@ wine_fn_config_makefile dlls/ksuser enable_ksuser
 wine_fn_config_makefile dlls/ktmw32 enable_ktmw32
 wine_fn_config_makefile dlls/l3codeca.acm enable_l3codeca_acm
 wine_fn_config_makefile dlls/l3codecx.ax enable_l3codecx_ax
+wine_fn_config_makefile dlls/libnghttp2 enable_libnghttp2
 wine_fn_config_makefile dlls/light.msstyles enable_light_msstyles
 wine_fn_config_makefile dlls/loadperf enable_loadperf
 wine_fn_config_makefile dlls/localspl enable_localspl
