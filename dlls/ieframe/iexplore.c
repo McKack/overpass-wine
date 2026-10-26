@@ -51,7 +51,7 @@ WINE_DEFAULT_DEBUG_CHANNEL(ieframe);
 
 /* Windows uses "Microsoft Internet Explorer" */
 /* CrossOver: We use "CrossOver Web Browser" */
-static const WCHAR wszWineInternetExplorer[] = L"CrossOver Web Browser";
+static const WCHAR wszWineInternetExplorer[] = L"OverPass Web Browser";
 
 static LONG obj_cnt;
 static DWORD dde_inst;
