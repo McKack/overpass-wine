@@ -289,6 +289,7 @@ void netconn_addref( struct netconn *conn )
 void netconn_release( struct netconn *conn )
 {
     if (InterlockedDecrement( &conn->refs )) return;
+    http2_destroy( conn );
     TRACE( "Closing connection %p.\n", conn );
     if (conn->secure)
     {
@@ -307,8 +308,13 @@ void netconn_release( struct netconn *conn )
 }
 
 DWORD netconn_secure_connect( struct netconn *conn, WCHAR *hostname, DWORD security_flags, CredHandle *cred_handle,
-                              BOOL check_revocation )
+                              BOOL check_revocation, BOOL enable_http2 )
 {
+    /* SEC_APPLICATION_PROTOCOLS: list length, ALPN extension, protocol list. */
+    BYTE alpn[] = { 18,0,0,0, 2,0,0,0, 12,0, 2,'h','2', 8,'h','t','t','p','/','1','.','1' };
+    SecBuffer protocol_buffer = { sizeof(alpn), SECBUFFER_APPLICATION_PROTOCOLS, alpn };
+    SecBufferDesc protocols = { SECBUFFER_VERSION, 1, &protocol_buffer };
+    SecPkgContext_ApplicationProtocol negotiated;
     SecBuffer out_buf = {0, SECBUFFER_TOKEN, NULL}, in_bufs[2] = {{0, SECBUFFER_TOKEN}, {0, SECBUFFER_EMPTY}};
     SecBufferDesc out_desc = {SECBUFFER_VERSION, 1, &out_buf}, in_desc = {SECBUFFER_VERSION, 2, in_bufs};
     BYTE *read_buf;
@@ -326,8 +332,8 @@ DWORD netconn_secure_connect( struct netconn *conn, WCHAR *hostname, DWORD secur
     if (!(read_buf = malloc( read_buf_size ))) return ERROR_OUTOFMEMORY;
 
     memset( &ctx, 0, sizeof(ctx) );
-    status = InitializeSecurityContextW(cred_handle, NULL, hostname, isc_req_flags, 0, 0, NULL, 0,
-            &ctx, &out_desc, &attrs, NULL);
+    status = InitializeSecurityContextW(cred_handle, NULL, hostname, isc_req_flags, 0, 0,
+            enable_http2 ? &protocols : NULL, 0, &ctx, &out_desc, &attrs, NULL);
 
     assert(status != SEC_E_OK);
 
@@ -389,8 +395,15 @@ DWORD netconn_secure_connect( struct netconn *conn, WCHAR *hostname, DWORD secur
         TRACE( "InitializeSecurityContext ret %#lx\n", status );
 
         if(status == SEC_E_OK) {
-            if(in_bufs[1].BufferType == SECBUFFER_EXTRA)
-                FIXME("SECBUFFER_EXTRA not supported\n");
+            if(in_bufs[1].BufferType == SECBUFFER_EXTRA) {
+                /* Data after the handshake, such as an HTTP/2 server's first SETTINGS frame. */
+                conn->extra_len = in_bufs[1].cbBuffer;
+                if (!(conn->extra_buf = malloc( conn->extra_len ))) {
+                    res = ERROR_OUTOFMEMORY;
+                    break;
+                }
+                memcpy( conn->extra_buf, read_buf + in_bufs[0].cbBuffer - conn->extra_len, conn->extra_len );
+            }
 
             status = QueryContextAttributesW(&ctx, SECPKG_ATTR_STREAM_SIZES, &conn->ssl_sizes);
             if(status != SEC_E_OK) {
@@ -410,6 +423,10 @@ DWORD netconn_secure_connect( struct netconn *conn, WCHAR *hostname, DWORD secur
                 WARN("Could not get cert\n");
                 break;
             }
+
+            if (enable_http2 && QueryContextAttributesW( &ctx, SECPKG_ATTR_APPLICATION_PROTOCOL, &negotiated ) == SEC_E_OK)
+                conn->http2 = negotiated.ProtoNegoStatus == SecApplicationProtocolNegotiationStatus_Success &&
+                              negotiated.ProtocolIdSize == 2 && !memcmp( negotiated.ProtocolId, "h2", 2 );
 
             conn->ssl_read_buf = malloc(conn->ssl_sizes.cbHeader + conn->ssl_sizes.cbMaximumMessage + conn->ssl_sizes.cbTrailer);
             if(!conn->ssl_read_buf) {

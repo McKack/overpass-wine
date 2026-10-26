@@ -84,6 +84,7 @@ struct session
     struct list cookie_cache;
     HANDLE unload_event;
     DWORD secure_protocols;
+    DWORD http_protocols;
     DWORD passport_flags;
     unsigned int websocket_receive_buffer_size;
     unsigned int websocket_send_buffer_size;
@@ -110,6 +111,9 @@ struct netconn
     int socket;
     struct sockaddr_storage sockaddr;
     BOOL secure; /* SSL active on connection? */
+    BOOL http2;
+    DWORD http_protocols;
+    struct http2_connection *http2_state;
     struct hostdata *host;
     ULONGLONG keep_until;
     CtxtHandle ssl_ctx;
@@ -236,6 +240,8 @@ struct request
     int read_reply_len;
     DWORD read_reply_status;
     enum request_response_state state;
+    DWORD http_protocols, http_protocol_used;
+    LONG cancelled;
 };
 
 enum socket_state
@@ -410,7 +416,7 @@ void netconn_unload( void );
 ULONG netconn_query_data_available( struct netconn * );
 DWORD netconn_recv( struct netconn *, void *, size_t, int, int * );
 DWORD netconn_resolve( const WCHAR *, INTERNET_PORT, DWORD, struct sockaddr_storage *, int );
-DWORD netconn_secure_connect( struct netconn *, WCHAR *, DWORD, CredHandle *, BOOL );
+DWORD netconn_secure_connect( struct netconn *, WCHAR *, DWORD, CredHandle *, BOOL, BOOL );
 DWORD netconn_send( struct netconn *, const void *, size_t, int *, WSAOVERLAPPED * );
 BOOL netconn_wait_overlapped_result( struct netconn *conn, WSAOVERLAPPED *ovr, DWORD *len );
 void netconn_cancel_io( struct netconn *conn );
@@ -428,6 +434,13 @@ void destroy_authinfo( struct authinfo * );
 
 void release_host( struct hostdata * );
 DWORD process_header( struct request *, const WCHAR *, const WCHAR *, DWORD, BOOL );
+
+void http2_destroy( struct netconn * );
+DWORD http2_send_request( struct request *, const char *, void *, DWORD, UINT64 );
+DWORD http2_read_reply( struct request * );
+DWORD http2_read_data( struct netconn *, void *, DWORD, int * );
+DWORD http2_write_data( struct netconn *, const void *, DWORD, int * );
+DWORD http2_available( struct netconn * );
 
 extern HRESULT WinHttpRequest_create( void ** );
 void release_typelib( void );

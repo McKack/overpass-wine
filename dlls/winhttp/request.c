@@ -1622,7 +1622,8 @@ static DWORD open_connection( struct request *request )
         LeaveCriticalSection( &connection_pool_cs );
         if (!netconn) break;
 
-        if (netconn_is_alive( netconn )) break;
+        if (netconn->http_protocols == ((is_secure && !(request->flags & REQUEST_FLAG_WEBSOCKET_UPGRADE)) ?
+            request->http_protocols : 0) && netconn_is_alive( netconn )) break;
         TRACE("connection %p no longer alive, closing\n", netconn);
         netconn_release( netconn );
         netconn = NULL;
@@ -1676,6 +1677,7 @@ static DWORD open_connection( struct request *request )
         }
         netconn_set_timeout( netconn, TRUE, request->send_timeout );
         netconn_set_timeout( netconn, FALSE, request_receive_response_timeout( request ));
+        netconn->http_protocols = (is_secure && !(request->flags & REQUEST_FLAG_WEBSOCKET_UPGRADE)) ? request->http_protocols : 0;
 
         request->netconn = netconn;
 
@@ -1697,7 +1699,9 @@ static DWORD open_connection( struct request *request )
 
             if ((ret = ensure_cred_handle( request )) ||
                 (ret = netconn_secure_connect( netconn, connect->hostname, request->security_flags,
-                                               &request->cred_handle, request->check_revocation )))
+                                               &request->cred_handle, request->check_revocation,
+                                               (request->http_protocols & WINHTTP_PROTOCOL_FLAG_HTTP2) &&
+                                               !(request->flags & REQUEST_FLAG_WEBSOCKET_UPGRADE) )))
             {
                 request->netconn = NULL;
                 free( addressW );
@@ -1725,6 +1729,7 @@ static DWORD open_connection( struct request *request )
     }
 
 done:
+    request->http_protocol_used = request->netconn && request->netconn->http2 ? WINHTTP_PROTOCOL_FLAG_HTTP2 : 0;
     request->read_pos = request->read_size = 0;
     request->read_chunked = FALSE;
     request->read_chunked_size = ~0u;
@@ -1801,8 +1806,11 @@ static DWORD read_more_data( struct request *request, int maxlen, BOOL notify )
 
     if (notify) send_callback( &request->hdr, WINHTTP_CALLBACK_STATUS_RECEIVING_RESPONSE, NULL, 0 );
 
-    ret = netconn_recv( request->netconn, request->read_buf + request->read_size,
-                        maxlen - request->read_size, 0, &len );
+    if (request->netconn && request->netconn->http2)
+        ret = http2_read_data( request->netconn, request->read_buf + request->read_size,
+                              maxlen - request->read_size, &len );
+    else ret = netconn_recv( request->netconn, request->read_buf + request->read_size,
+                            maxlen - request->read_size, 0, &len );
 
     if (notify) send_callback( &request->hdr, WINHTTP_CALLBACK_STATUS_RESPONSE_RECEIVED, &len, sizeof(len) );
     request->read_reply_len += len;
@@ -1937,7 +1945,7 @@ static void finished_reading( struct request *request )
 
     if (!request->netconn) return;
 
-    if (request->netconn->socket == -1) close = TRUE;
+    if (request->netconn->http2 || request->netconn->socket == -1) close = TRUE;
     else if (request->hdr.disable_flags & WINHTTP_DISABLE_KEEP_ALIVE) close = TRUE;
     else if (!query_headers( request, WINHTTP_QUERY_CONNECTION, NULL, connection, &size, NULL ) ||
              !query_headers( request, WINHTTP_QUERY_PROXY_CONNECTION, NULL, connection, &size, NULL ))
@@ -2315,6 +2323,39 @@ static DWORD send_request( struct request *request, const WCHAR *headers, DWORD 
     if (context) request->hdr.context = context;
 
     if ((ret = open_connection( request ))) goto end;
+    if (request->netconn->http2)
+    {
+        DWORD path_len;
+        char *path;
+        /* Streamed chunked uploads need an explicit EOF API, not a guessed end. */
+        if (chunked) { ret = ERROR_NOT_SUPPORTED; goto end; }
+        buflen = sizeof(buf);
+        if (query_headers( request, WINHTTP_QUERY_FLAG_REQUEST_HEADERS | WINHTTP_QUERY_CONTENT_LENGTH,
+                           NULL, buf, &buflen, NULL )) content_length = total_len;
+        else content_length = wcstoull( buf, NULL, 10 );
+        if (!(path = build_wire_path( request, &path_len ))) { ret = ERROR_OUTOFMEMORY; goto end; }
+        path[path_len] = 0;
+        request->state = REQUEST_RESPONSE_STATE_SENDING_REQUEST;
+        send_callback( &request->hdr, WINHTTP_CALLBACK_STATUS_SENDING_REQUEST, NULL, 0 );
+        request->optional = optional;
+        request->optional_len = optional_len;
+        ret = http2_send_request( request, path, optional, optional_len, content_length );
+        free( path );
+        if (ret) goto end;
+        len = optional_len;
+        send_callback( &request->hdr, WINHTTP_CALLBACK_STATUS_REQUEST_SENT, &len, sizeof(len) );
+        if (content_length <= optional_len)
+        {
+            request->read_reply_status = http2_read_reply( request );
+            if (request->read_reply_status == ERROR_WINHTTP_OPERATION_CANCELLED)
+            { ret = request->read_reply_status; goto end; }
+            request->state = request->state == REQUEST_RESPONSE_STATE_READ_RESPONSE_QUEUED ?
+                REQUEST_RESPONSE_STATE_READ_RESPONSE_QUEUED_REPLY_RECEIVED : REQUEST_RESPONSE_STATE_REPLY_RECEIVED;
+        }
+        else request->state = request->state == REQUEST_RESPONSE_STATE_READ_RESPONSE_QUEUED ?
+            REQUEST_RESPONSE_STATE_READ_RESPONSE_QUEUED_REQUEST_SENT : REQUEST_RESPONSE_STATE_REQUEST_SENT;
+        goto end;
+    }
     if (!(wire_req = build_wire_request( request, &len )))
     {
         ret = ERROR_OUTOFMEMORY;
@@ -2631,6 +2672,7 @@ static DWORD read_reply( struct request *request )
     WCHAR status_code[4]; /* sizeof("nnn") */
 
     if (!request->netconn) return ERROR_WINHTTP_INCORRECT_HANDLE_STATE;
+    if (request->netconn->http2) return http2_read_reply( request );
 
     do
     {
@@ -3099,7 +3141,8 @@ static DWORD query_data_ready( struct request *request )
     DWORD count;
 
     count = get_available_data( request );
-    if (!request->read_chunked && request->netconn) count += netconn_query_data_available( request->netconn );
+    if (!request->read_chunked && request->netconn)
+        count += request->netconn->http2 ? http2_available( request->netconn ) : netconn_query_data_available( request->netconn );
 
     return count;
 }
@@ -3340,7 +3383,9 @@ static DWORD write_data( struct request *request, const void *buffer, DWORD to_w
     DWORD ret;
     int num_bytes;
 
-    ret = netconn_send( request->netconn, buffer, to_write, &num_bytes, NULL );
+    if (request->netconn && request->netconn->http2)
+        ret = http2_write_data( request->netconn, buffer, to_write, &num_bytes );
+    else ret = netconn_send( request->netconn, buffer, to_write, &num_bytes, NULL );
 
     if (async)
     {
