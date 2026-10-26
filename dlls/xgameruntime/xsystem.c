@@ -114,8 +114,23 @@ static HRESULT WINAPI x_system_XSystemGetXboxLiveSandboxId( IXSystemImpl5 *iface
 
 static HRESULT WINAPI x_system_XSystemGetAppSpecificDeviceId( IXSystemImpl5 *iface, INT32 appSpecificDeviceIdSize, char *appSpecificDeviceId, SIZE_T *appSpecificDeviceIdUsed )
 {
-    FIXME( "iface %p, appSpecificDeviceIdSize %d, appSpecificDeviceId %p, appSpecificDeviceIdUsed %p stub!\n", iface, appSpecificDeviceIdSize, appSpecificDeviceId, appSpecificDeviceIdUsed );
-    return E_NOTIMPL;
+    static const char unavailable_id[] = "00000000000000000000000000000000000000000000";
+
+    TRACE( "iface %p, appSpecificDeviceIdSize %d, appSpecificDeviceId %p, appSpecificDeviceIdUsed %p\n",
+           iface, appSpecificDeviceIdSize, appSpecificDeviceId, appSpecificDeviceIdUsed );
+
+    if (appSpecificDeviceIdUsed) *appSpecificDeviceIdUsed = 0;
+    if (!appSpecificDeviceId) return E_POINTER;
+    if (appSpecificDeviceIdSize < 0 || (SIZE_T)appSpecificDeviceIdSize < sizeof(unavailable_id))
+        return HRESULT_FROM_WIN32( ERROR_INSUFFICIENT_BUFFER );
+
+    /* XSystem documents this sentinel when a title-specific device identifier
+     * cannot be obtained. Wine has no provider for that identifier. Do not
+     * invent one from a user/account ID, machine GUID or mutable game path.
+     * This value is not an authentication or hardware-attestation token. */
+    memcpy( appSpecificDeviceId, unavailable_id, sizeof(unavailable_id) );
+    if (appSpecificDeviceIdUsed) *appSpecificDeviceIdUsed = sizeof(unavailable_id);
+    return S_OK;
 }
 
 static HRESULT WINAPI x_system_XSystemHandleTrack( IXSystemImpl5 *iface, XSystemHandleCallback callback, void *context )
