@@ -286,12 +286,24 @@ static HRESULT xodus_request( UINT16 type, const char *body, UINT16 size, char *
     if (useBridge)
     {
         if ((s = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP )) == INVALID_SOCKET) goto error;
+        if (type == 5)
+        {
+            DWORD timeout = 95000;
+            if (setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) ||
+                setsockopt(s, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout))) goto error;
+        }
         if (connect( s, (struct sockaddr *)&bridge, sizeof(bridge) )) goto error;
         if (!xodus_send( s, bridgeKey, 64 )) goto error;
     }
     else
     {
         if ((s = socket( AF_UNIX, SOCK_STREAM, 0 )) == INVALID_SOCKET) goto error;
+        if (type == 5)
+        {
+            DWORD timeout = 95000;
+            if (setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) ||
+                setsockopt(s, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout))) goto error;
+        }
         if (connect( s, (struct sockaddr *)&addr, sizeof(addr) )) goto error;
     }
     if (!xodus_send( s, header, sizeof(header) ) || !xodus_send( s, body, size )) goto error;
@@ -1765,7 +1777,10 @@ static HRESULT WINAPI token_signature_phase( XAsyncOp op, const XAsyncProviderDa
                 /* The working community stand-in returns a present, empty
                  * signature (count 1, L"") when no signature policy applies;
                  * consumers treat NULL as a hard failure on this title. */
-                context->dataSize = sizeof(*context->dataUtf16) + (auth ? (wcslen( auth ) + 1) * sizeof(WCHAR) : 0) + (info.policy ? 104 * sizeof(WCHAR) : sizeof(WCHAR));
+                /* IUser writes 104 base64 characters, without a terminator.
+                 * Public results are C strings, including the trailing NUL in
+                 * their buffer counts, just like the authorization token. */
+                context->dataSize = sizeof(*context->dataUtf16) + (auth ? (wcslen( auth ) + 1) * sizeof(WCHAR) : 0) + (info.policy ? 105 * sizeof(WCHAR) : sizeof(WCHAR));
                 if (!(context->dataUtf16 = calloc( 1, context->dataSize )))
                 {
                     hr = E_OUTOFMEMORY;
@@ -1789,7 +1804,7 @@ static HRESULT WINAPI token_signature_phase( XAsyncOp op, const XAsyncProviderDa
                         }
                         if (!WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, auth, -1, buffer, size, NULL, NULL )) goto error;
                     }
-                    context->dataUtf16->signatureCount = 104;
+                    context->dataUtf16->signatureCount = 105;
                     context->dataUtf16->signature = (WCHAR *)(context->dataUtf16 + 1) + (auth ? wcslen( auth ) + 1 : 0);
                     if (FAILED(hr = IUser_GetSignature( &context->user->IUser_iface, info.policy->version, context->method, context->url, (auth ? buffer : ""), min( context->bodySize, info.policy->maxBodyBytes ), context->bodyBuffer, signature ))) goto complete;
                     if (!MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, signature, 104, (WCHAR *)context->dataUtf16->signature, 104 )) goto error;
@@ -1803,7 +1818,7 @@ static HRESULT WINAPI token_signature_phase( XAsyncOp op, const XAsyncProviderDa
             else
             {
                 if (auth && !(size = WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, auth, wcslen( auth ), NULL, 0, NULL, NULL ))) goto error;
-                context->dataSize = sizeof(*context->data) + (auth ? size + 1 : 0) + (info.policy ? 104 : 1);
+                context->dataSize = sizeof(*context->data) + (auth ? size + 1 : 0) + (info.policy ? 105 : 1);
                 if (!(context->data = calloc( 1, context->dataSize )))
                 {
                     hr = E_OUTOFMEMORY;
@@ -1817,7 +1832,7 @@ static HRESULT WINAPI token_signature_phase( XAsyncOp op, const XAsyncProviderDa
                 }
                 if (info.policy)
                 {
-                    context->data->signatureSize = 104;
+                    context->data->signatureSize = 105;
                     context->data->signature = (char *)(context->data + 1) + (auth ? size + 1 : 0);
                     if (FAILED(hr = IUser_GetSignature( &context->user->IUser_iface, info.policy->version, context->method, context->url, (auth ? context->data->token : ""), min( context->bodySize, info.policy->maxBodyBytes ), context->bodyBuffer, (char *)context->data->signature ))) goto complete;
                 }

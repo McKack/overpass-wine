@@ -141,6 +141,7 @@ static HRESULT initialize_runtime( ULONG gdkVer, ULONG gsVer, char mode, const s
     if (!(root = xmlDocGetRootElement( config ))) goto badconfig;
     if (!strcmp( (char *)root->name, "Game" ))
     {
+        if (FAILED(xstore_configure(root))) goto badconfig;
         for (child = root->children; child; child = child->next)
             if (child->type == XML_ELEMENT_NODE)
             {

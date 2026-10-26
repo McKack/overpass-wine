@@ -67,6 +67,8 @@
 extern char *msaAppId;
 extern UINT32 titleId;
 extern char *storeId;
+struct _xmlNode;
+HRESULT xstore_configure( struct _xmlNode *root );
 extern char *packageFamilyName;
 UINT64 xuser_get_xuid( XUserHandle user );
 HRESULT xuser_device_authorization( XUserHandle user, const char *relyingParty, char **auth );
