@@ -1170,6 +1170,15 @@ static void set_signed_in_user( struct XUser *user )
     LeaveCriticalSection( &signed_in_section );
 }
 
+BOOL xuser_is_current_user( XUserHandle user )
+{
+    BOOL current;
+    EnterCriticalSection( &signed_in_section );
+    current = user && user == signed_in_user;
+    LeaveCriticalSection( &signed_in_section );
+    return current;
+}
+
 static HRESULT find_signed_in_user( UINT64 xuid, UINT64 localId, XUserHandle *handle )
 {
     HRESULT hr = E_GAMEUSER_USER_NOT_FOUND;

@@ -74,6 +74,7 @@ HRESULT xpackage_query_identifier( const char *store, SIZE_T size, char *identif
 HRESULT xpackage_query_content_store( const char *identifier, SIZE_T size, char *store );
 extern char *packageFamilyName;
 UINT64 xuser_get_xuid( XUserHandle user );
+BOOL xuser_is_current_user( XUserHandle user );
 HRESULT xuser_device_authorization( XUserHandle user, const char *relyingParty, char **auth );
 HRESULT xuser_signed_request( XUserHandle user, const char *method, const char *url, const char *auth, const char *extraHeaders,
                               const void *body, DWORD bodySize, DWORD *status, BYTE **buffer, SIZE_T *bufferSize );
