@@ -26,6 +26,7 @@ WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
 #include "xpackage_content.h"
 #include "xpackage_chunks.h"
+#include "xpackage_monitors.h"
 
 /* The legacy package IID shares the same COM prefix with the newer package
  * interfaces. Keep every newer slot in place when supplying its older entries. */
@@ -162,85 +163,58 @@ static BOOLEAN WINAPI x_package_XPackageIsPackagedProcess( IXPackageImpl4 *iface
     return TRUE;
 }
 
-/* A monitor over a title that is already fully installed.
- *
- * Xodus extracts a package in full before it can be launched, so there is never
- * a partial install to watch: every monitor reports complete from the moment it
- * is made. Refusing to make one is not a soft failure -- a title treats it as
- * fatal (Deep Rock Galactic put up "Failed to create installation monitor.
- * 0x80004001" before opening a window). */
-struct installation_monitor
-{
-    UINT64 bytes;
-};
-
 static HRESULT WINAPI x_package_XPackageCreateInstallationMonitor( IXPackageImpl4 *iface, const char *packageIdentifier, UINT32 selectorCount, XPackageChunkSelector *selectors, UINT32 minimumUpdateIntervalMs, XTaskQueueHandle queue, XPackageInstallationMonitorHandle *installationMonitor )
 {
-    struct installation_monitor *impl;
-
     TRACE( "iface %p, packageIdentifier %s, selectorCount %u, selectors %p, "
            "minimumUpdateIntervalMs %u, queue %p, installationMonitor %p.\n",
            iface, debugstr_a( packageIdentifier ), selectorCount, selectors,
            minimumUpdateIntervalMs, queue, installationMonitor );
 
-    if (!installationMonitor) return E_INVALIDARG;
-    if (!(impl = calloc( 1, sizeof(*impl) ))) return E_OUTOFMEMORY;
-
-    /* Byte counts are left at zero. They are only there for a progress bar,
-     * and there is no progress to draw: what a title actually reads is
-     * completed and launchable, both of which are true from the start. */
-    *installationMonitor = (XPackageInstallationMonitorHandle)impl;
-    return S_OK;
+    return installation_create(packageIdentifier, selectorCount, selectors, minimumUpdateIntervalMs, queue, installationMonitor);
 }
 
 static void WINAPI x_package_XPackageCloseInstallationMonitorHandle( IXPackageImpl4 *iface, XPackageInstallationMonitorHandle installationMonitor )
 {
     TRACE( "iface %p, installationMonitor %p.\n", iface, installationMonitor );
-    free( installationMonitor );
+    installation_close(installationMonitor);
 }
 
 static void WINAPI x_package_XPackageGetInstallationProgress( IXPackageImpl4 *iface, XPackageInstallationMonitorHandle installationMonitor, XPackageInstallationProgress *progress )
 {
-    struct installation_monitor *impl = (struct installation_monitor *)installationMonitor;
+    struct installation_monitor *impl;
 
     TRACE( "iface %p, installationMonitor %p, progress %p.\n", iface, installationMonitor, progress );
 
     if (!progress) return;
 
-    /* Installed in full, and therefore launchable and complete. */
-    progress->totalBytes = impl ? impl->bytes : 0;
-    progress->installedBytes = progress->totalBytes;
-    progress->launchBytes = progress->totalBytes;
-    progress->launchable = TRUE;
-    progress->completed = TRUE;
+    memset(progress, 0, sizeof(*progress));
+    if (!(impl = installation_acquire(installationMonitor))) return;
+    AcquireSRWLockShared(&installation_lock);
+    *progress = impl->progress;
+    ReleaseSRWLockShared(&installation_lock);
+    installation_release(impl);
 }
 
 static BOOLEAN WINAPI x_package_XPackageUpdateInstallationMonitor( IXPackageImpl4 *iface, XPackageInstallationMonitorHandle installationMonitor )
 {
-    FIXME( "iface %p, installationMonitor %p stub!\n", iface, installationMonitor );
-    return TRUE;
+    struct installation_monitor *impl = installation_acquire(installationMonitor);
+    HRESULT hr;
+    if (!impl) return FALSE;
+    hr = installation_refresh(impl);
+    installation_notify(impl);
+    installation_schedule(impl);
+    installation_release(impl);
+    return SUCCEEDED(hr);
 }
-
-static LONG64 installation_progress_token;
 
 static HRESULT WINAPI x_package_XPackageRegisterInstallationProgressChanged( IXPackageImpl4 *iface, XPackageInstallationMonitorHandle installationMonitor, void *context, XPackageInstallationProgressCallback *callback, XTaskQueueRegistrationToken *token )
 {
-    FIXME( "iface %p, installationMonitor %p, context %p, callback %p, token %p: accepted, "
-           "progress never changes.\n", iface, installationMonitor, context, callback, token );
-
-    if (!token) return E_INVALIDARG;
-
-    /* Nothing will ever be raised -- the package is already complete -- but the
-     * caller still gets a token it can hold and unregister, rather than reading
-     * back whatever was on its stack. */
-    token->token = InterlockedIncrement64( &installation_progress_token );
-    return S_OK;
+    return installation_register(installationMonitor, context, callback, token);
 }
 
 static BOOLEAN WINAPI x_package_XPackageUnregisterInstallationProgressChanged( IXPackageImpl4 *iface, XPackageInstallationMonitorHandle installationMonitor, XTaskQueueRegistrationToken token, BOOLEAN wait )
 {
-    FIXME( "iface %p, installationMonitor %p, token %p, wait %d stub!\n", iface, installationMonitor, &token, wait );
-    return TRUE;
+    return installation_unregister(installationMonitor, token, wait);
 }
 
 static HRESULT WINAPI x_package_XPackageGetUserLocale( IXPackageImpl4 *iface, SIZE_T localeSize, char *locale )
