@@ -230,6 +230,18 @@ static BOOL session_set_option( struct object_header *hdr, DWORD option, void *b
         session->receive_response_timeout = *(DWORD *)buffer;
         return TRUE;
 
+    case WINHTTP_OPTION_IPV6_FAST_FALLBACK:
+        /* Dual-stack connection performance hint. netconn connects
+         * sequentially instead of racing address families; accepting the
+         * flag keeps GDK callers from treating the option as fatal. */
+        if (buflen != sizeof(DWORD))
+        {
+            SetLastError( ERROR_INSUFFICIENT_BUFFER );
+            return FALSE;
+        }
+        TRACE( "%#lx\n", *(DWORD *)buffer );
+        return TRUE;
+
     case WINHTTP_OPTION_CONFIGURE_PASSPORT_AUTH:
         session->passport_flags = *(DWORD *)buffer;
         return TRUE;
@@ -1073,6 +1085,16 @@ static BOOL request_set_option( struct object_header *hdr, DWORD option, void *b
 
     case WINHTTP_OPTION_RECEIVE_RESPONSE_TIMEOUT:
         request->receive_response_timeout = *(DWORD *)buffer;
+        return TRUE;
+
+    case WINHTTP_OPTION_IPV6_FAST_FALLBACK:
+        /* Same performance hint as the session handle; MSDN allows both. */
+        if (buflen != sizeof(DWORD))
+        {
+            SetLastError( ERROR_INSUFFICIENT_BUFFER );
+            return FALSE;
+        }
+        TRACE( "%#lx\n", *(DWORD *)buffer );
         return TRUE;
 
     case WINHTTP_OPTION_USERNAME:
