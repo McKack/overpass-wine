@@ -73,19 +73,33 @@ static BOOL installation_retire( struct installation_registration *registration 
     return TRUE;
 }
 
+static int __cdecl installation_file_compare( const void *a, const void *b )
+{
+    const struct chunk_file *left = a, *right = b;
+    return wcsicmp(left->path, right->path);
+}
+
 static HRESULT installation_snapshot( struct installation_monitor *monitor, XPackageInstallationProgress *progress )
 {
     struct chunk_snapshot *snapshot;
     UINT i, j;
     BOOL ready, matched;
+    BOOL selected[CHUNKS_MAX] = {0};
+    const WCHAR *last = NULL;
+    UINT64 total = 0;
     HRESULT hr;
     memset(progress, 0, sizeof(*progress));
-    if (FAILED(hr = chunks_load(monitor->identifier, &snapshot))) return hr;
+    /* The SDK uses UINT64_MAX, not zero, while an install total is unknown. */
+    progress->totalBytes = ~(UINT64)0;
+    if (FAILED(hr = chunks_load(monitor->identifier, TRUE, &snapshot))) return hr;
     ready = snapshot->registration == XPackageChunkAvailability_Ready;
     if (!monitor->count)
     {
         for (j = 0; j < snapshot->count; j++)
+        {
+            selected[j] = TRUE;
             ready &= snapshot->chunks[j].availability == XPackageChunkAvailability_Ready;
+        }
     }
     for (i = 0; i < monitor->count; i++)
     {
@@ -100,16 +114,40 @@ static HRESULT installation_snapshot( struct installation_monitor *monitor, XPac
                 chunks_contains(chunk->attributes[attribute], selector->language, attribute == 0))
             {
                 matched = TRUE;
+                selected[j] = TRUE;
                 ready &= chunk->availability == XPackageChunkAvailability_Ready;
             }
             else if (selector->type != XPackageChunkSelectorType_Chunk && !chunk->attributes[attribute])
+            {
+                selected[j] = TRUE;
                 ready &= chunk->availability == XPackageChunkAvailability_Ready;
+            }
         }
         ready &= matched;
     }
-    /* Extracted layouts do not carry trustworthy installed/download byte totals.
-     * Preserve zero (unknown), rather than inventing progress or network work. */
-    progress->completed = progress->launchable = ready;
+    if (ready)
+    {
+        /* A complete extracted selection has a real installed byte total.
+         * Count only its declared readable files (plus registration), once per
+         * case-insensitive destination path even with overlapping selectors or
+         * FileGroups. Never scan unrelated files or invent a nonzero divisor.
+         * Incomplete layouts have no known size for missing files: leave the
+         * documented unknown state instead of reporting partial bytes as 100%. */
+        if (snapshot->file_count > 1)
+            qsort(snapshot->files, snapshot->file_count, sizeof(*snapshot->files), installation_file_compare);
+        for (j = 0; j < snapshot->file_count; j++)
+        {
+            const struct chunk_file *file = &snapshot->files[j];
+            if (file->chunk != CHUNKS_MAX && !selected[file->chunk]) continue;
+            if (last && !wcsicmp(last, file->path)) continue;
+            if (file->bytes >= ~(UINT64)0 - total)
+            { chunks_free(snapshot); return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW); }
+            total += file->bytes;
+            last = file->path;
+        }
+        progress->totalBytes = progress->installedBytes = progress->launchBytes = total;
+        progress->completed = progress->launchable = TRUE;
+    }
     chunks_free(snapshot);
     return S_OK;
 }
@@ -123,7 +161,10 @@ static HRESULT installation_refresh( struct installation_monitor *monitor )
     AcquireSRWLockExclusive(&installation_lock);
     /* Invalid/disappearing metadata must never retain a stale complete result. */
     if (!monitor->closed && (monitor->progress.completed != progress.completed ||
-        monitor->progress.launchable != progress.launchable))
+        monitor->progress.launchable != progress.launchable ||
+        monitor->progress.totalBytes != progress.totalBytes ||
+        monitor->progress.installedBytes != progress.installedBytes ||
+        monitor->progress.launchBytes != progress.launchBytes))
     {
         monitor->progress = progress;
         ++monitor->revision;
