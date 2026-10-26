@@ -100,7 +100,9 @@ struct initialize_options
     const char *gameConfig;
 };
 
-HRESULT WINAPI InitializeApiImplEx2( ULONG gdkVer, ULONG gsVer, char mode, const struct initialize_options *options )
+static SRWLOCK initialize_lock = SRWLOCK_INIT;
+
+static HRESULT initialize_runtime( ULONG gdkVer, ULONG gsVer, char mode, const struct initialize_options *options )
 {
     char filename[MAX_PATH + 1], *last;
     xmlNodePtr child, root;
@@ -109,14 +111,15 @@ HRESULT WINAPI InitializeApiImplEx2( ULONG gdkVer, ULONG gsVer, char mode, const
     TRACE( "gdkVer %ld, gsVer %ld, mode %d, options %p.\n", gdkVer, gsVer, mode, options );
 
     if (initializeCalled) return S_OK;
-    initializeCalled = TRUE;
 
-    if (options)
+    if (options && (options->gameConfig || options->isInline))
     {
-        if (options->isInline && !(config = xmlReadMemory( options->gameConfig, strlen( options->gameConfig ), NULL, NULL, 0 )))
-            return E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT;
-        else if (!(config = xmlReadFile( options->gameConfig, NULL, 0 )))
-            return E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT;
+        if (!options->gameConfig) return E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT;
+        if (options->isInline)
+            config = xmlReadMemory( options->gameConfig, strlen( options->gameConfig ), NULL, NULL, 0 );
+        else
+            config = xmlReadFile( options->gameConfig, NULL, 0 );
+        if (!config) return E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT;
     }
     else
     {
@@ -170,11 +173,21 @@ HRESULT WINAPI InitializeApiImplEx2( ULONG gdkVer, ULONG gsVer, char mode, const
     else goto badconfig;
 
     xmlFreeDoc( config );
+    initializeCalled = TRUE;
     return S_OK;
 
 badconfig:
     xmlFreeDoc( config );
     return E_GAMERUNTIME_GAMECONFIG_BAD_FORMAT;
+}
+
+HRESULT WINAPI InitializeApiImplEx2( ULONG gdkVer, ULONG gsVer, char mode, const struct initialize_options *options )
+{
+    HRESULT hr;
+    AcquireSRWLockExclusive( &initialize_lock );
+    hr = initialize_runtime( gdkVer, gsVer, mode, options );
+    ReleaseSRWLockExclusive( &initialize_lock );
+    return hr;
 }
 
 HRESULT WINAPI InitializeApiImplEx( ULONG gdkVer, ULONG gsVer, char mode )
