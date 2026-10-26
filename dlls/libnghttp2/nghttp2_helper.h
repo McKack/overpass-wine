@@ -25,9 +25,6 @@
 #ifndef NGHTTP2_HELPER_H
 #define NGHTTP2_HELPER_H
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif /* defined(HAVE_CONFIG_H) */
 
 #include <string.h>
 #include <stddef.h>
