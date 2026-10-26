@@ -110,6 +110,21 @@ static struct macdrv_window_features get_window_features_for_style(DWORD style, 
     return wf;
 }
 
+/* OverPass: programs that draw their whole window frame themselves (GOG Galaxy's Qt windows keep
+ * WS_CAPTION but make the client area cover the window) set OVERPASS_NO_MAC_FRAME=1, through a
+ * compatibility rule. Their windows get no Cocoa title bar, as CW HACK 16933 does for Quicken. */
+static BOOL draws_own_frame(void)
+{
+    static int value = -1;
+    if (value == -1)
+    {
+        const char *env = getenv("OVERPASS_NO_MAC_FRAME");
+        value = env && *env && *env != '0';
+    }
+    return value;
+}
+
+
 /***********************************************************************
  *              get_cocoa_window_features
  */
@@ -118,6 +133,12 @@ static struct macdrv_window_features get_cocoa_window_features(struct macdrv_win
     struct macdrv_window_features wf = {0};
 
     if (ex_style & WS_EX_NOACTIVATE) wf.prevents_app_activation = TRUE;
+    if (draws_own_frame())
+    {
+        wf = get_window_features_for_style(style, ex_style, data->shaped);
+        wf.title_bar = wf.close_button = wf.minimize_button = wf.maximize_button = wf.utility = FALSE;
+        return wf;
+    }
     if (EqualRect(&data->rects.window, &data->rects.visible)) return wf;
 
     /* CrossOver Hack #16933 */
@@ -1653,6 +1674,7 @@ BOOL macdrv_GetWindowStyleMasks(HWND hwnd, UINT style, UINT ex_style, UINT *styl
 
     /* CW HACK 16933: No Cocoa window decorations for the Quicken main window. */
     if (is_main_quicken_window(hwnd)) return FALSE;
+    if (draws_own_frame()) return FALSE;
 
     *style_mask = ex_style = 0;
     if (wf.title_bar)
