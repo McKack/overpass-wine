@@ -3477,6 +3477,21 @@ static BOOL socket_set_option( struct object_header *hdr, DWORD option, void *bu
         TRACE( "WINHTTP_OPTION_WEB_SOCKET_KEEPALIVE_INTERVAL %lu.\n", interval);
         return TRUE;
     }
+    case WINHTTP_OPTION_WEB_SOCKET_CLOSE_TIMEOUT:
+    {
+        DWORD timeout;
+
+        if (buflen != sizeof(DWORD))
+        {
+            WARN( "Invalid parameters for WINHTTP_OPTION_WEB_SOCKET_CLOSE_TIMEOUT.\n" );
+            SetLastError( ERROR_INSUFFICIENT_BUFFER );
+            return FALSE;
+        }
+        timeout = *(DWORD *)buffer;
+        socket->close_timeout = timeout;
+        TRACE( "WINHTTP_OPTION_WEB_SOCKET_CLOSE_TIMEOUT %lu.\n", timeout );
+        return TRUE;
+    }
     }
 
     FIXME( "unimplemented option %lu\n", option );
@@ -3524,6 +3539,7 @@ HINTERNET WINAPI WinHttpWebSocketCompleteUpgrade( HINTERNET hrequest, DWORD_PTR 
     socket->hdr.context = context;
     socket->hdr.flags = request->connect->hdr.flags & WINHTTP_FLAG_ASYNC;
     socket->keepalive_interval = 30000;
+    socket->close_timeout = 10000;
     socket->send_buffer_size = request->websocket_send_buffer_size;
     if (request->read_size)
     {

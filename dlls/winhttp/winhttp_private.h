@@ -274,6 +274,7 @@ struct socket
     struct object_header hdr;
     struct netconn *netconn;
     int keepalive_interval;
+    int close_timeout;
     unsigned int send_buffer_size;
     enum socket_state state;
     struct queue send_q;
