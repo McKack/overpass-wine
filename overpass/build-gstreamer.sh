@@ -6,11 +6,13 @@
 #
 # Plugins: what CrossOver 26 ships (MP4, AVI, ASF and WAV demuxers, audio and video parsers, H.264, HEVC and
 # AAC through Apple's VideoToolbox and AudioToolbox, conversion and scaling, deinterlacing), plus Matroska/WebM
-# with VP8/VP9 (libvpx), Opus and Vorbis, which UE4/UE5 cutscenes use and CrossOver lacks.
+# with VP8/VP9 (libvpx), Opus and Vorbis, which UE4/UE5 cutscenes use and CrossOver lacks, and the Windows
+# Media decoders (WMA for XAudio2's xWMA, WMV and VC-1 video) through a minimal LGPL FFmpeg and gst-libav.
 set -euo pipefail
 
 GST_VERSION=1.28.8
 VPX_VERSION=1.17.0
+FFMPEG_VERSION=8.1.3
 WORK="${1:?usage: build-gstreamer.sh <work dir> <install prefix>}"
 PREFIX="${2:?usage: build-gstreamer.sh <work dir> <install prefix>}"
 MIN_MACOS="${MACOSX_DEPLOYMENT_TARGET:-11.0}"
@@ -35,7 +37,24 @@ if [ ! -f "$WORK/vpx/lib/pkgconfig/vpx.pc" ]; then
         make -j"$(sysctl -n hw.ncpu)" && make install)
 fi
 
-# The pkg-config path holds only libvpx, so the host's libraries stay out: everything else comes from a
+# FFmpeg with nothing but the Windows Media decoders: no demuxers, encoders, devices or filters, LGPL (no
+# --enable-gpl or --enable-nonfree). gst-libav links avcodec, avformat, avfilter and avutil.
+if [ ! -f "$WORK/ffmpeg/lib/pkgconfig/libavcodec.pc" ]; then
+    [ -d "$WORK/FFmpeg" ] ||
+        git clone --depth 1 --branch "n$FFMPEG_VERSION" https://git.ffmpeg.org/ffmpeg.git "$WORK/FFmpeg"
+    rm -rf "$WORK/ffmpeg-build" && mkdir -p "$WORK/ffmpeg-build"
+    (cd "$WORK/ffmpeg-build" &&
+        "$WORK/FFmpeg/configure" --prefix="$WORK/ffmpeg" --enable-cross-compile --arch=x86_64 --target-os=darwin \
+            --cc=clang --extra-cflags="-arch x86_64 -mmacosx-version-min=$MIN_MACOS" \
+            --extra-ldflags="-arch x86_64 -mmacosx-version-min=$MIN_MACOS" \
+            --enable-shared --disable-static --disable-programs --disable-doc --disable-avdevice \
+            --disable-swscale --disable-swresample --disable-network --disable-autodetect --disable-everything \
+            --enable-decoder=wmav1,wmav2,wmapro,wmalossless,wmavoice,wmv1,wmv2,wmv3,vc1,msmpeg4v1,msmpeg4v2,msmpeg4v3 \
+            --enable-parser=vc1 &&
+        make -j"$(sysctl -n hw.ncpu)" && make install)
+fi
+
+# The pkg-config path holds only libvpx and FFmpeg, so the host's libraries stay out: everything else comes from a
 # subproject.
 ARCH="'-arch', 'x86_64', '-mmacosx-version-min=$MIN_MACOS'"
 cat > "$WORK/x86_64-darwin.ini" <<EOF
@@ -60,7 +79,7 @@ objc_link_args = [$ARCH]
 objcpp_link_args = [$ARCH]
 
 [properties]
-pkg_config_libdir = ['$WORK/vpx/lib/pkgconfig']
+pkg_config_libdir = ['$WORK/vpx/lib/pkgconfig', '$WORK/ffmpeg/lib/pkgconfig']
 needs_exe_wrapper = false
 
 [host_machine]
@@ -80,7 +99,7 @@ meson setup "$WORK/build" "$WORK/gstreamer" --cross-file "$WORK/x86_64-darwin.in
     --prefix "$PREFIX" --libdir lib --buildtype release --strip --default-library shared \
     -Dauto_features=disabled \
     -Dbase=enabled -Dgood=enabled -Dbad=enabled -Dugly=enabled -Dorc=enabled -Dtools=enabled \
-    -Dlibav=disabled -Ddevtools=disabled -Dges=disabled -Drtsp_server=disabled -Dpython=disabled \
+    -Dlibav=enabled -Ddevtools=disabled -Dges=disabled -Drtsp_server=disabled -Dpython=disabled \
     -Dgst-examples=disabled -Dtls=disabled -Dlibnice=disabled -Dtests=disabled -Dexamples=disabled \
     -Ddoc=disabled -Dintrospection=disabled -Dnls=disabled -Dgpl=disabled \
     $(enable gst-plugins-base app audioconvert audioresample playback typefind videoconvertscale pbtypes \
@@ -92,15 +111,15 @@ meson setup "$WORK/build" "$WORK/gstreamer" --cross-file "$WORK/x86_64-darwin.in
     $(enable gst-plugins-ugly asfdemux)
 meson compile -C "$WORK/build"
 meson install -C "$WORK/build" --quiet
-cp -a "$WORK"/vpx/lib/libvpx*.dylib "$PREFIX/lib/"
+cp -a "$WORK"/vpx/lib/libvpx*.dylib "$WORK"/ffmpeg/lib/lib{avcodec,avformat,avfilter,avutil}*.dylib "$PREFIX/lib/"
 
-# Licence texts of everything linked into what ships (LGPL for GStreamer, GLib and libintl; BSD and MIT for the rest).
+# Licence texts of everything linked into what ships (LGPL for GStreamer, GLib, libintl and FFmpeg; BSD and MIT for the rest).
 S="$WORK/gstreamer/subprojects"
 for dir in "$S"/gstreamer "$S"/gst-plugins-{base,good,bad,ugly} "$S"/glib-* "$S"/libffi-* "$S"/proxy-libintl-* \
-           "$S"/orc "$S"/pcre2-* "$S"/libogg-* "$S"/libvorbis-* "$S"/opus-* "$WORK/libvpx"; do
+           "$S"/orc "$S"/pcre2-* "$S"/libogg-* "$S"/libvorbis-* "$S"/opus-* "$S"/gst-libav "$WORK/libvpx" "$WORK/FFmpeg"; do
     [ -d "$dir" ] || continue
     mkdir -p "$PREFIX/share/licenses/$(basename "$dir")"
-    for f in COPYING LICENSE LICENCE.md LICENSES PATENTS; do
+    for f in COPYING COPYING.LGPLv2.1 LICENSE LICENSE.md LICENCE.md LICENSES PATENTS; do
         [ -e "$dir/$f" ] && cp -R "$dir/$f" "$PREFIX/share/licenses/$(basename "$dir")/"
     done
 done

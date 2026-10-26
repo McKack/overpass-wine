@@ -22,16 +22,28 @@ This build can host:
 
 OverPass chooses a backend per bottle by setting `OVERPASS_DLL_PATH_PREPEND` (see PATCHES.md).
 
+## Video and audio codecs
+
+Releases include GStreamer for Media Foundation, DirectShow and Windows Media playback (cutscenes, in-game
+video, XAudio2's xWMA sounds), built from source by `overpass/build-gstreamer.sh`:
+- MP4, AVI, ASF, WAV, Matroska and WebM containers
+- H.264, HEVC and AAC through macOS's own VideoToolbox and AudioToolbox
+- VP8 and VP9 (libvpx), Opus, Vorbis
+- WMA (1, 2, Pro, Lossless, Voice), WMV 1–3, VC-1 and MS-MPEG4 through a minimal LGPL build of FFmpeg that
+  holds only these decoders
+
 ## Licence
 
 Wine, including CodeWeavers' changes and the OverPass patches, is licensed under the GNU LGPL 2.1 or later. See `COPYING.LIB` and `LICENSE`. Every binary release links back to the exact source commit it was built from.
+The bundled GStreamer, GLib and FFmpeg are LGPL too, the other codec libraries BSD or MIT; their licence texts
+are in each release's `licenses/` folder.
 
 ## Building
 
 On an Intel Mac (or the `macos-15-intel` GitHub runner) with Homebrew:
 
 ```sh
-brew install bison flex mingw-w64 pkgconf freetype gnutls sdl2 molten-vk vulkan-loader dylibbundler
+brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler meson ninja nasm
 overpass/build.sh
 ```
 
