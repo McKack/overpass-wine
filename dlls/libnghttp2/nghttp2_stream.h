@@ -25,9 +25,6 @@
 #ifndef NGHTTP2_STREAM_H
 #define NGHTTP2_STREAM_H
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif /* defined(HAVE_CONFIG_H) */
 
 #include <nghttp2/nghttp2.h>
 #include "nghttp2_outbound_item.h"
