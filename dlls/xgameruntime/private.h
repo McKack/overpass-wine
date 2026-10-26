@@ -73,6 +73,7 @@ HRESULT xuser_device_authorization( XUserHandle user, const char *relyingParty, 
 HRESULT xuser_signed_request( XUserHandle user, const char *method, const char *url, const char *auth, const char *extraHeaders,
                               const void *body, DWORD bodySize, DWORD *status, BYTE **buffer, SIZE_T *bufferSize );
 extern BOOLEAN fullTrust;
+HRESULT xodus_store_package_updates_xml( const char *request, SIZE_T request_size, char **response, UINT16 *size );
 HRESULT xodus_store_license_xml( const char *request, SIZE_T request_size, char **token );
 HRESULT xodus_store_license_body( const char **product_ids, SIZE_T count, const char *nonce, char **body );
 void xodus_store_license_note( const char *phase, HRESULT hr );

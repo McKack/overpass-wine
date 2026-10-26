@@ -344,6 +344,14 @@ static char *xml_child_content( xmlNodePtr root, const char *name )
     return NULL;
 }
 
+HRESULT xodus_store_package_updates_xml( const char *request, SIZE_T request_size, char **response, UINT16 *size )
+{
+    if (!request || !request_size || request_size > 0xffff || !response || !size) return E_INVALIDARG;
+    *response = NULL;
+    *size = 0;
+    return xodus_request( 9, request, request_size, response, size );
+}
+
 HRESULT xodus_store_license_body( const char **product_ids, SIZE_T count, const char *nonce, char **body )
 {
     xmlDocPtr doc;
