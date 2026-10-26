@@ -25,6 +25,7 @@
 WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
 #include "xpackage_content.h"
+#include "xpackage_chunks.h"
 
 /* The legacy package IID shares the same COM prefix with the newer package
  * interfaces. Keep every newer slot in place when supplying its older entries. */
@@ -294,12 +295,7 @@ static HRESULT WINAPI x_package_XPackageEnumerateChunkAvailability( IXPackageImp
     TRACE( "iface %p, packageIdentifier %s, type %d, context %p, callback %p.\n",
            iface, debugstr_a( packageIdentifier ), type, context, callback );
 
-    if (!callback) return E_INVALIDARG;
-
-    /* A package installed in one piece has no chunks to enumerate, and an
-     * enumeration that visits nothing is the true answer rather than a
-     * failure. What a title actually waits on is the availability above. */
-    return S_OK;
+    return enumerate_installed_chunks( packageIdentifier, type, context, callback );
 }
 
 /* Installation evidence only, never an ownership or download assertion. Content
