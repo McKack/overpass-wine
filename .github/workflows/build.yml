@@ -21,7 +21,7 @@ jobs:
       - name: Install build dependencies
         run: |
           brew update
-          brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler ccache
+          brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler ccache meson ninja nasm
 
       # Compiler cache: each run saves a new one and restores the most recent, so only changed files compile.
       # A new compiler version (brew upgrades mingw or Xcode) simply misses and rebuilds.

@@ -43,6 +43,21 @@ cmake --build "$BUILD/sdl2-build" -j"$JOBS"
 cmake --install "$BUILD/sdl2-build"
 export PKG_CONFIG_PATH="$SDL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
 
+# libinotify (inotify on kqueue, MIT), as CrossOver ships it: wineserver uses it to tell programs that files
+# in a folder changed (FindFirstChangeNotification, ReadDirectoryChangesW). Launchers wait on this.
+INOTIFY_VERSION=20240724
+INOTIFY_PREFIX="$BUILD/inotify"
+curl -fsSL "https://github.com/libinotify-kqueue/libinotify-kqueue/releases/download/$INOTIFY_VERSION/libinotify-$INOTIFY_VERSION.tar.gz" | tar -xz -C "$BUILD"
+(cd "$BUILD/libinotify-$INOTIFY_VERSION" &&
+    ./configure --prefix="$INOTIFY_PREFIX" --disable-static --enable-shared &&
+    make -j"$JOBS" && make install)
+export PKG_CONFIG_PATH="$INOTIFY_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+# GStreamer for game video (winegstreamer); see build-gstreamer.sh for what's in it.
+GST_PREFIX="$BUILD/gstreamer"
+"$SRC/overpass/build-gstreamer.sh" "$BUILD/gstreamer-work" "$GST_PREFIX"
+export PKG_CONFIG_PATH="$GST_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+
 cd "$BUILD/obj"
 
 # No --with-opengl: Wine 11 makes EGL a hard requirement then, but winemac.drv does OpenGL through CGL.
@@ -50,10 +65,10 @@ cd "$BUILD/obj"
     --prefix="$DEST" \
     --enable-archs=i386,x86_64 \
     --disable-tests \
-    --with-coreaudio --with-freetype --with-gnutls --with-mingw \
+    --with-coreaudio --with-freetype --with-gnutls --with-gstreamer --with-inotify --with-mingw \
     --with-pthread --with-sdl --with-unwind --with-vulkan \
     --without-alsa --without-capi --without-dbus --without-fontconfig --without-gettextpo \
-    --without-gphoto --without-gssapi --without-gstreamer --without-krb5 --without-netapi \
+    --without-gphoto --without-gssapi --without-krb5 --without-netapi \
     --without-oss --without-pulse --without-sane --without-udev --without-usb \
     --without-v4l2 --without-wayland --without-x \
     ${WINE_CC[@]+"${WINE_CC[@]}"}
@@ -69,6 +84,7 @@ for f in \
     "$BREW/opt/freetype/lib/libfreetype.6.dylib" \
     "$BREW/opt/gnutls/lib/libgnutls.30.dylib" \
     "$SDL_PREFIX/lib/libSDL2-2.0.0.dylib" \
+    "$INOTIFY_PREFIX/lib/libinotify.0.dylib" \
     "$BREW/opt/molten-vk/lib/libMoltenVK.dylib" \
     "$BREW/opt/vulkan-loader/lib/libvulkan.1.dylib"; do
     cp -L "$f" "$LIB/"
@@ -87,8 +103,23 @@ for f in "$DEST"/bin/wine "$DEST"/bin/wineserver; do
     install_name_tool -add_rpath @loader_path/../lib "$f" 2>/dev/null || true
 done
 
+# GStreamer goes in after dylibbundler, already relocatable.
+"$SRC/overpass/bundle-gstreamer.sh" "$GST_PREFIX" "$DEST"
+
+# Libraries built here are linked by their build path (wineserver: libinotify; winegstreamer.so: GStreamer).
+for f in "$DEST"/bin/wine "$DEST"/bin/wineserver "$LIB"/wine/x86_64-unix/*.so; do
+    otool -L "$f" | tail -n +2 | awk '{print $1}' | { grep "^$BUILD/" || true; } | while read -r dep; do
+        install_name_tool -change "$dep" "@rpath/$(basename "$dep")" "$f"
+    done
+done
+if otool -L "$DEST"/bin/* "$LIB"/wine/x86_64-unix/*.so "$LIB"/*.dylib 2>/dev/null | grep -F "$BUILD/"; then
+    echo "build.sh: binaries still reference $BUILD" >&2
+    exit 1
+fi
+
 # Licence and provenance travel with the binaries (LGPL-2.1 §6).
 cp "$SRC/COPYING.LIB" "$SRC/LICENSE" "$SRC/AUTHORS" "$DEST/"
+mkdir -p "$DEST/licenses/libinotify" && cp "$BUILD/libinotify-$INOTIFY_VERSION/LICENSE" "$DEST/licenses/libinotify/"
 cp "$SRC/overpass/README.md" "$DEST/OVERPASS-WINE.md"
 git -C "$SRC" rev-parse HEAD > "$DEST/SOURCE-COMMIT" 2>/dev/null || true
 

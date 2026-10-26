@@ -31,6 +31,18 @@ limit() {
     fi
 }
 
+# Packaging: GStreamer and libinotify are in, and nothing they need is missing from lib/.
+GST_SO="$W/lib/wine/x86_64-unix/winegstreamer.so"
+[ -f "$GST_SO" ] || { echo "::error::winegstreamer.so wasn't built"; exit 1; }
+otool -L "$W/bin/wineserver" | grep -q libinotify || { echo "::error::wineserver isn't linked with libinotify"; exit 1; }
+for f in "$GST_SO" "$W/bin/wineserver" "$W"/lib/*.dylib "$W"/lib/gstreamer-1.0/*.dylib; do
+    for dep in $(otool -L "$f" | tail -n +2 | awk '{print $1}' | grep '^@rpath/'); do
+        name="${dep#@rpath/}"
+        [ -f "$W/lib/$name" ] || { echo "::error::$(basename "$f") needs $name, not in lib/"; exit 1; }
+    done
+done
+echo "GStreamer plugins: $(ls "$W"/lib/gstreamer-1.0 | wc -l | tr -d ' ')"
+
 "$W/bin/wine" --version
 
 # winebus.sys traces (channel hid) show how far SDL got if booting hangs.
