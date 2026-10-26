@@ -26,6 +26,13 @@ WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
 #include "xpackage_content.h"
 
+/* The legacy package IID shares the same COM prefix with the newer package
+ * interfaces. Keep every newer slot in place when supplying its older entries. */
+static const GUID legacy_package_iid =
+    {0xbe3f3e9f,0xc4b3,0x424d,{0x9a,0x95,0xd1,0xaf,0x06,0x05,0x59,0xa5}};
+static HRESULT enumerate_current_package( XPackageKind, XPackageEnumerationScope, void *, XPackageEnumerationCallback * );
+static HRESULT WINAPI x_package_XPackageEnumerateFeatures( IXPackageImpl4 *, const char *, void *, XPackageFeatureEnumerationCallback * );
+
 struct x_package
 {
     IXPackageImpl4 IXPackageImpl4_iface;
@@ -43,7 +50,11 @@ static HRESULT WINAPI x_package_QueryInterface( IXPackageImpl4 *iface, REFIID ii
 
     TRACE( "iface %p, iid %s, out %p.\n", iface, debugstr_guid( iid ), out );
 
+    if (!out) return E_POINTER;
+    *out = NULL;
+    if (!iid) return E_INVALIDARG;
     if (IsEqualGUID( iid, &IID_IUnknown       ) ||
+        IsEqualGUID( iid, &legacy_package_iid ) ||
         IsEqualGUID( iid, &IID_IXPackageImpl  ) ||
         IsEqualGUID( iid, &IID_IXPackageImpl2 ) ||
         IsEqualGUID( iid, &IID_IXPackageImpl3 ) ||
@@ -394,15 +405,22 @@ static HRESULT WINAPI x_package_XPackageUninstallChunks( IXPackageImpl4 *iface, 
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI __PADDING__( IXPackageImpl4 *iface )
+static HRESULT WINAPI x_package_XPackageEnumeratePackagesLegacy( IXPackageImpl4 *iface,
+    XPackageKind kind, XPackageEnumerationScope scope, void *context, XPackageEnumerationCallback *callback )
 {
-    WARN( "iface %p padding function called! It's unknown what this function does.\n", iface );
-    return E_NOTIMPL;
+    TRACE( "iface %p, kind %d, scope %d, context %p, callback %p.\n", iface, kind, scope, context, callback );
+    return enumerate_current_package( kind, scope, context, callback );
 }
 
-static HRESULT WINAPI __PADDING_2__( IXPackageImpl4 *iface )
+static HRESULT WINAPI x_package_XPackageRegisterPackageInstalledLegacy( IXPackageImpl4 *iface,
+    XTaskQueueHandle queue, void *context, XPackageInstalledCallback *callback, XTaskQueueRegistrationToken *token )
 {
-    WARN( "iface %p padding function called! It's unknown what this function does.\n", iface );
+    FIXME( "iface %p, queue %p, context %p, callback %p, token %p: install events unsupported.\n",
+           iface, queue, context, callback, token );
+    if (!token) return E_INVALIDARG;
+    token->token = 0;
+    if (!callback) return E_INVALIDARG;
+    /* Discovery of on-disk packages is not a package-install event service. */
     return E_NOTIMPL;
 }
 
@@ -412,9 +430,14 @@ static BOOLEAN WINAPI x_package_XPackageUnregisterPackageInstalled( IXPackageImp
     return TRUE;
 }
 
-static HRESULT WINAPI __PADDING_3__( IXPackageImpl4 *iface )
+static HRESULT WINAPI x_package_XPackageMountLegacy( IXPackageImpl4 *iface,
+    const char *identifier, XPackageMountHandle *mount )
 {
-    WARN( "iface %p padding function called! It's unknown what this function does.\n", iface );
+    FIXME( "iface %p, identifier %s, mount %p: content mounting unsupported.\n", iface, debugstr_a(identifier), mount );
+    if (!mount) return E_INVALIDARG;
+    *mount = NULL;
+    if (!identifier || !identifier[0]) return E_INVALIDARG;
+    /* Do not turn an installation lookup into a licensed mount. */
     return E_NOTIMPL;
 }
 
@@ -435,10 +458,11 @@ static void WINAPI x_package_XPackageCloseMountHandle( IXPackageImpl4 *iface, XP
     FIXME( "iface %p, mount %p stub!\n", iface, mount );
 }
 
-static HRESULT WINAPI __PADDING_4__( IXPackageImpl4 *iface )
+static HRESULT WINAPI x_package_XPackageGetIdentifierLegacy( IXPackageImpl4 *iface,
+    const char *store, SIZE_T size, char *identifier )
 {
-    WARN( "iface %p padding function called! It's unknown what this function does.\n", iface );
-    return E_NOTIMPL;
+    TRACE( "iface %p, store %s, size %Iu, identifier %p.\n", iface, debugstr_a(store), size, identifier );
+    return xpackage_query_identifier( store, size, identifier );
 }
 
 /* The one package this process runs from: Xodus extracts a single MSIX
@@ -582,10 +606,10 @@ static HRESULT WINAPI x_package_XPackageGetWriteStats( IXPackageImpl4 *iface, XP
     return E_NOTIMPL;
 }
 
-static HRESULT WINAPI __PADDING_5__( IXPackageImpl4 *iface )
+static HRESULT WINAPI x_package_XPackageEnumerateFeaturesLegacy( IXPackageImpl4 *iface,
+    const char *identifier, void *context, XPackageFeatureEnumerationCallback *callback )
 {
-    WARN( "iface %p padding function called! It's unknown what this function does.\n", iface );
-    return E_NOTIMPL;
+    return x_package_XPackageEnumerateFeatures( iface, identifier, context, callback );
 }
 
 static HRESULT WINAPI x_package_XPackageUninstallUWPInstance( IXPackageImpl4 *iface, const char *packageName )
@@ -694,18 +718,18 @@ static const struct IXPackageImpl4Vtbl x_package_vtbl =
     x_package_XPackageInstallChunksResult,
     x_package_XPackageEstimateDownloadSize,
     x_package_XPackageUninstallChunks,
-    __PADDING__,
-    __PADDING_2__,
+    x_package_XPackageEnumeratePackagesLegacy,
+    x_package_XPackageRegisterPackageInstalledLegacy,
     x_package_XPackageUnregisterPackageInstalled,
-    __PADDING_3__,
+    x_package_XPackageMountLegacy,
     x_package_XPackageGetMountPathSize,
     x_package_XPackageGetMountPath,
     x_package_XPackageCloseMountHandle,
-    __PADDING_4__,
+    x_package_XPackageGetIdentifierLegacy,
     x_package_XPackageEnumeratePackages,
     x_package_XPackageRegisterPackageInstalled,
     x_package_XPackageGetWriteStats,
-    __PADDING_5__,
+    x_package_XPackageEnumerateFeaturesLegacy,
     x_package_XPackageUninstallUWPInstance,
     x_package_XPackageEnumerateFeatures,
     x_package_XPackageUninstallPackage,
