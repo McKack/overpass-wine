@@ -13,8 +13,16 @@ PLUGINS="$LIB/gstreamer-1.0"
 SCANNER_DIR="$DEST/libexec/gstreamer-1.0"
 mkdir -p "$PLUGINS" "$SCANNER_DIR"
 
-# Real files only; the unversioned names are symlinks the loader never asks for.
-for f in "$GST"/lib/*.dylib; do [ -L "$f" ] || cp "$f" "$LIB/"; done
+# Real files only, each under its install name (what other libraries ask for): FFmpeg's is libavcodec.62.dylib,
+# a symlink to libavcodec.62.28.103.dylib. The other symlinks are names the loader never asks for.
+install_name() { basename "$(otool -D "$1" | tail -n +2)"; }
+SHIPPED=()
+for f in "$GST"/lib/*.dylib; do
+    [ -L "$f" ] && continue
+    name="$(install_name "$f")"
+    cp "$f" "$LIB/$name"
+    SHIPPED+=("$name")
+done
 cp "$GST"/lib/gstreamer-1.0/*.dylib "$PLUGINS/"
 cp "$GST/libexec/gstreamer-1.0/gst-plugin-scanner" "$SCANNER_DIR/"
 mkdir -p "$DEST/licenses" && cp -R "$GST/share/licenses/." "$DEST/licenses/"
@@ -30,10 +38,9 @@ relink() {
     done
     install_name_tool -add_rpath "$rpath" "$file" 2>/dev/null || true
 }
-for f in "$GST"/lib/*.dylib; do
-    [ -L "$f" ] && continue
-    install_name_tool -id "@rpath/$(basename "$f")" "$LIB/$(basename "$f")"
-    relink "$LIB/$(basename "$f")" @loader_path
+for name in "${SHIPPED[@]}"; do
+    install_name_tool -id "@rpath/$name" "$LIB/$name"
+    relink "$LIB/$name" @loader_path
 done
 for f in "$PLUGINS"/*.dylib; do
     install_name_tool -id "@rpath/gstreamer-1.0/$(basename "$f")" "$f"
@@ -42,7 +49,7 @@ done
 relink "$SCANNER_DIR/gst-plugin-scanner" @loader_path/../../lib
 
 # Anything still pointing into the build machine means a library was missed.
-if otool -L "$LIB"/*.dylib "$PLUGINS"/*.dylib "$SCANNER_DIR/gst-plugin-scanner" | grep -F "$GST"; then
+if otool -X -L "$LIB"/*.dylib "$PLUGINS"/*.dylib "$SCANNER_DIR/gst-plugin-scanner" | grep -F "$GST"; then
     echo "bundle-gstreamer.sh: references to $GST remain" >&2
     exit 1
 fi

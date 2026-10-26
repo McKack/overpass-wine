@@ -1,5 +1,7 @@
 #!/bin/bash
-# Builds and packages OverPass Wine on an x86_64 macOS host with Homebrew.
+# Builds and packages OverPass Wine for x86_64 macOS: on an Intel Mac, or on Apple silicon with
+# `arch -x86_64 overpass/build.sh`. Build tools come from Homebrew (bison, flex, mingw-w64, cmake, meson, ninja,
+# nasm, pkgconf, dylibbundler, ccache); the libraries Wine uses are built here (build-deps.sh, build-gstreamer.sh).
 # Output: overpass-wine-<version>-x86_64.tar.xz containing bin/, lib/, share/ (same layout OverPass expects).
 set -euo pipefail
 
@@ -11,60 +13,43 @@ JOBS="$(sysctl -n hw.ncpu)"
 
 BREW="$(brew --prefix)"
 export PATH="$BREW/opt/bison/bin:$BREW/opt/flex/bin:$PATH"
-export PKG_CONFIG_PATH="$BREW/lib/pkgconfig:$BREW/share/pkgconfig"
-export CPPFLAGS="-I$BREW/include"
-export LDFLAGS="-L$BREW/lib"
 export MACOSX_DEPLOYMENT_TARGET=11.0
 
 rm -rf "$BUILD"
 mkdir -p "$BUILD/obj" "$DEST"
 
-# With ccache installed (CI keeps its cache between runs), compiles that didn't change are reused.
+# With ccache installed, compiles that didn't change are reused (CI keeps its cache between runs).
 # Wine builds unix code with clang and PE code with mingw, so both are wrapped.
-CMAKE_LAUNCHER=()
 WINE_CC=()
 if command -v ccache >/dev/null; then
     export CCACHE_BASEDIR="$SRC" CCACHE_COMPILERCHECK=content CCACHE_NOHASHDIR=1
-    CMAKE_LAUNCHER=(-DCMAKE_C_COMPILER_LAUNCHER=ccache)
     WINE_CC=(CC="ccache clang" x86_64_CC="ccache x86_64-w64-mingw32-gcc" i386_CC="ccache i686-w64-mingw32-gcc")
     ccache -z >/dev/null
 fi
 
-# SDL 2.30, the version CrossOver ships. Homebrew's sdl2 is now sdl2-compat, a shim over SDL3 that makes
-# winebus.sys (game controllers) abort with "NSWindow should only be instantiated on the main thread".
-SDL_VERSION=2.30.12
-SDL_PREFIX="$BUILD/sdl2"
-curl -fsSL "https://github.com/libsdl-org/SDL/releases/download/release-$SDL_VERSION/SDL2-$SDL_VERSION.tar.gz" | tar -xz -C "$BUILD"
-cmake -S "$BUILD/SDL2-$SDL_VERSION" -B "$BUILD/sdl2-build" \
-    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$SDL_PREFIX" \
-    -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET" \
-    -DSDL_STATIC=OFF -DSDL_TEST=OFF ${CMAKE_LAUNCHER[@]+"${CMAKE_LAUNCHER[@]}"}
-cmake --build "$BUILD/sdl2-build" -j"$JOBS"
-cmake --install "$BUILD/sdl2-build"
-export PKG_CONFIG_PATH="$SDL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
-
-# libinotify (inotify on kqueue, MIT), as CrossOver ships it: wineserver uses it to tell programs that files
-# in a folder changed (FindFirstChangeNotification, ReadDirectoryChangesW). Launchers wait on this.
-INOTIFY_VERSION=20240724
-INOTIFY_PREFIX="$BUILD/inotify"
-curl -fsSL "https://github.com/libinotify-kqueue/libinotify-kqueue/releases/download/$INOTIFY_VERSION/libinotify-$INOTIFY_VERSION.tar.gz" | tar -xz -C "$BUILD"
-(cd "$BUILD/libinotify-$INOTIFY_VERSION" &&
-    ./configure --prefix="$INOTIFY_PREFIX" --disable-static --enable-shared &&
-    make -j"$JOBS" && make install)
-export PKG_CONFIG_PATH="$INOTIFY_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
-
-# GStreamer for game video (winegstreamer); see build-gstreamer.sh for what's in it. It lives outside $BUILD and
-# is reused while build-gstreamer.sh is unchanged (CI caches the folder): it takes longer to build than Wine.
-GST_ROOT="$SRC/build-gstreamer"
-GST_PREFIX="$GST_ROOT/prefix"
-GST_STAMP="$(shasum -a 256 "$SRC/overpass/build-gstreamer.sh" | cut -d' ' -f1) $MACOSX_DEPLOYMENT_TARGET"
-if [ "$(cat "$GST_ROOT/stamp" 2>/dev/null)" != "$GST_STAMP" ]; then
-    rm -rf "$GST_ROOT"
-    "$SRC/overpass/build-gstreamer.sh" "$GST_ROOT/work" "$GST_PREFIX"
-    rm -rf "$GST_ROOT/work"
-    echo "$GST_STAMP" > "$GST_ROOT/stamp"
-fi
-export PKG_CONFIG_PATH="$GST_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+# prebuilt <name>: runs overpass/build-<name>.sh into build-<name>/prefix, outside $BUILD, unless the stamp there
+# shows the same script already built it. These take longer than Wine and rarely change; CI caches the folders.
+prebuilt() {
+    local script="$SRC/overpass/build-$1.sh" root="$SRC/build-$1" stamp
+    stamp="$(shasum -a 256 "$script" | cut -d' ' -f1) $MACOSX_DEPLOYMENT_TARGET"
+    if [ "$(cat "$root/stamp" 2>/dev/null)" != "$stamp" ]; then
+        rm -rf "$root"
+        "$script" "$root/work" "$root/prefix"
+        rm -rf "$root/work"
+        echo "$stamp" > "$root/stamp"
+    fi
+}
+# FreeType, GnuTLS, SDL 2, libinotify, Vulkan loader, MoltenVK; then GStreamer for game video (winegstreamer).
+prebuilt deps
+prebuilt gstreamer
+DEPS_ROOT="$SRC/build-deps" GST_ROOT="$SRC/build-gstreamer"
+DEPS_PREFIX="$DEPS_ROOT/prefix" GST_PREFIX="$GST_ROOT/prefix"
+# FreeType's pkg-config file requires zlib, which macOS ships (in the SDK) without one.
+mkdir -p "$BUILD/pkgconfig"
+printf 'Name: zlib\nDescription: zlib from the macOS SDK\nVersion: 1.2.12\nLibs: -lz\nCflags:\n' \
+    > "$BUILD/pkgconfig/zlib.pc"
+export PKG_CONFIG_LIBDIR="$DEPS_PREFIX/lib/pkgconfig:$GST_PREFIX/lib/pkgconfig:$BUILD/pkgconfig"
+export CPPFLAGS="-I$DEPS_PREFIX/include" LDFLAGS="-L$DEPS_PREFIX/lib"
 
 cd "$BUILD/obj"
 
@@ -89,12 +74,12 @@ make install-lib
 # so ship them in lib/ and point the binaries there.
 LIB="$DEST/lib"
 for f in \
-    "$BREW/opt/freetype/lib/libfreetype.6.dylib" \
-    "$BREW/opt/gnutls/lib/libgnutls.30.dylib" \
-    "$SDL_PREFIX/lib/libSDL2-2.0.0.dylib" \
-    "$INOTIFY_PREFIX/lib/libinotify.0.dylib" \
-    "$BREW/opt/molten-vk/lib/libMoltenVK.dylib" \
-    "$BREW/opt/vulkan-loader/lib/libvulkan.1.dylib"; do
+    "$DEPS_PREFIX/lib/libfreetype.6.dylib" \
+    "$DEPS_PREFIX/lib/libgnutls.30.dylib" \
+    "$DEPS_PREFIX/lib/libSDL2-2.0.0.dylib" \
+    "$DEPS_PREFIX/lib/libinotify.0.dylib" \
+    "$DEPS_PREFIX/lib/libMoltenVK.dylib" \
+    "$DEPS_PREFIX/lib/libvulkan.1.dylib"; do
     cp -L "$f" "$LIB/"
 done
 chmod u+w "$LIB"/*.dylib
@@ -116,18 +101,28 @@ done
 
 # Libraries built here are linked by their build path (wineserver: libinotify; winegstreamer.so: GStreamer).
 for f in "$DEST"/bin/wine "$DEST"/bin/wineserver "$LIB"/wine/x86_64-unix/*.so; do
-    otool -L "$f" | tail -n +2 | awk '{print $1}' | { grep -e "^$BUILD/" -e "^$GST_ROOT/" || true; } | while read -r dep; do
+    otool -L "$f" | tail -n +2 | awk '{print $1}' | { grep -e "^$BUILD/" -e "^$DEPS_ROOT/" -e "^$GST_ROOT/" || true; } | while read -r dep; do
         install_name_tool -change "$dep" "@rpath/$(basename "$dep")" "$f"
     done
 done
-if otool -L "$DEST"/bin/* "$LIB"/wine/x86_64-unix/*.so "$LIB"/*.dylib 2>/dev/null | grep -F -e "$BUILD/" -e "$GST_ROOT/"; then
-    echo "build.sh: binaries still reference $BUILD or $GST_ROOT" >&2
+# configure also puts build folders on their search paths (winegstreamer.so: GStreamer's lib/), which would win
+# over the bundled copies wherever that folder exists.
+for f in "$DEST"/bin/wine "$DEST"/bin/wineserver "$LIB"/wine/x86_64-unix/*.so; do
+    otool -l "$f" | awk '/LC_RPATH/ {getline; getline; print $2}' |
+        { grep -e "^$BUILD/" -e "^$DEPS_ROOT/" -e "^$GST_ROOT/" || true; } | while read -r path; do
+        install_name_tool -delete_rpath "$path" "$f"
+    done
+done
+if { otool -X -L "$DEST"/bin/* "$LIB"/wine/x86_64-unix/*.so "$LIB"/*.dylib
+     otool -l "$DEST"/bin/* "$LIB"/wine/x86_64-unix/*.so "$LIB"/*.dylib | awk '/LC_RPATH/ {getline; getline; print $2}'
+   } 2>/dev/null | grep -F -e "$BUILD/" -e "$DEPS_ROOT/" -e "$GST_ROOT/"; then
+    echo "build.sh: binaries still reference a build folder" >&2
     exit 1
 fi
 
 # Licence and provenance travel with the binaries (LGPL-2.1 §6).
 cp "$SRC/COPYING.LIB" "$SRC/LICENSE" "$SRC/AUTHORS" "$DEST/"
-mkdir -p "$DEST/licenses/libinotify" && cp "$BUILD/libinotify-$INOTIFY_VERSION/LICENSE" "$DEST/licenses/libinotify/"
+mkdir -p "$DEST/licenses" && cp -R "$DEPS_PREFIX/share/licenses/." "$DEST/licenses/"
 cp "$SRC/overpass/README.md" "$DEST/OVERPASS-WINE.md"
 git -C "$SRC" rev-parse HEAD > "$DEST/SOURCE-COMMIT" 2>/dev/null || true
 
