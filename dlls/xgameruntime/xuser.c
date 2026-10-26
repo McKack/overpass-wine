@@ -33,6 +33,8 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
+#include "xuser_privilege.h"
+
 static const WCHAR *ACCEPT_JSON[] = { L"application/json", NULL };
 
 static HRESULT parse_json( const char *json, SIZE_T jsonLen, IJsonObject **object )
@@ -548,6 +550,8 @@ cleanup:
 }
 
 static HRESULT xsts_authorize( XUserHandle user, const char *relyingParty, BOOL title, char **auth );
+static HRESULT xsts_authorize_privilege( XUserHandle user, const char *relyingParty, BOOL title,
+                                         char **auth, XUserPrivilege privilege, BOOLEAN *granted );
 static char *hstring_to_utf8( HSTRING string );
 static WCHAR *utf8_to_wide( const char *string );
 
@@ -1640,16 +1644,47 @@ static HRESULT WINAPI x_user_XUserCheckPrivilege( IXUserImpl6 *iface, XUserHandl
     return S_OK;
 }
 
+static HRESULT user_verify_privilege( IUser *iface, XUserPrivilege privilege )
+{
+    XUserHandle user = impl_from_IUser( iface );
+    BOOLEAN granted = FALSE;
+    char *auth = NULL;
+    HRESULT hr;
+    if (FAILED(hr = user_wait_init( user ))) return hr;
+    if (!user->xuid || !user->userToken || !user->deviceToken || !user->proofKey)
+        return E_GAMEUSER_NO_AUTH_USER;
+    hr = xsts_authorize_privilege( user, "http://xboxlive.com", TRUE, &auth, privilege, &granted );
+    free( auth );
+    if (SUCCEEDED(hr) && !granted) hr = E_GAMEUSER_FAILED_TO_RESOLVE;
+    /* Parent/ban/subscription remediation UI is not implemented. Never claim
+     * resolution, or change account settings, when the service denies access. */
+    auth_metadata( "resolve-privilege", user, hr, 0, TRUE, !!user->titleToken );
+    TRACE( "privilege %u, result %#lx.\n", privilege, hr );
+    return hr;
+}
+
 static HRESULT WINAPI x_user_XUserResolvePrivilegeWithUiAsync( IXUserImpl6 *iface, XUserHandle user, XUserPrivilegeOptions options, XUserPrivilege privilege, XAsyncBlock *async )
 {
-    FIXME( "iface %p, user %p, options %d, privilege %d, async %p stub!\n", iface, user, options, privilege, async );
-    return E_NOTIMPL;
+    IXThreadingImpl *threading;
+    HRESULT hr;
+    TRACE( "iface %p, user %p, options %d, privilege %d, async %p.\n", iface, user, options, privilege, async );
+    if (!user || !async || user->IUser_iface.lpVtbl != &user_vtbl) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&threading ))) return hr;
+    hr = privilege_begin( threading, &user->IUser_iface, options, privilege, async, user_verify_privilege );
+    IXThreadingImpl_Release( threading );
+    return hr;
 }
 
 static HRESULT WINAPI x_user_XUserResolvePrivilegeWithUiResult( IXUserImpl6 *iface, XAsyncBlock *async )
 {
-    FIXME( "iface %p, async %p stub!\n", iface, async );
-    return E_NOTIMPL;
+    IXThreadingImpl *threading;
+    HRESULT hr;
+    TRACE( "iface %p, async %p.\n", iface, async );
+    if (!async) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&threading ))) return hr;
+    hr = privilege_result( threading, async );
+    IXThreadingImpl_Release( threading );
+    return hr;
 }
 
 struct XUserGetTokenAndSignatureContext
@@ -2600,9 +2635,15 @@ HRESULT xuser_signed_request( XUserHandle user, const char *method, const char *
 
 static HRESULT xsts_authorize( XUserHandle user, const char *relyingParty, BOOL title, char **auth )
 {
+    return xsts_authorize_privilege( user, relyingParty, title, auth, 0, NULL );
+}
+
+static HRESULT xsts_authorize_privilege( XUserHandle user, const char *relyingParty, BOOL title,
+                                         char **auth, XUserPrivilege privilege, BOOLEAN *granted )
+{
     static const char url[] = "https://xsts.auth.xboxlive.com/xsts/authorize";
     IJsonObject *object = NULL, *claims = NULL, *identity = NULL;
-    HSTRING token = NULL, uhs = NULL;
+    HSTRING token = NULL, uhs = NULL, xid = NULL, prv = NULL;
     char *body = NULL, *tokenA = NULL, *uhsA = NULL;
     IJsonArray *xui = NULL;
     BYTE *buffer = NULL;
@@ -2610,6 +2651,8 @@ static HRESULT xsts_authorize( XUserHandle user, const char *relyingParty, BOOL 
     HRESULT hr, comInit = E_FAIL;
     DWORD status = 0;
     BOOL requested_title = title;
+
+    if (granted) *granted = FALSE;
 
     TRACE( "user %p, relyingParty %s, title %d.\n", user, debugstr_a( relyingParty ), title );
 
@@ -2633,7 +2676,7 @@ static HRESULT xsts_authorize( XUserHandle user, const char *relyingParty, BOOL 
                                           body, strlen( body ), &status, &buffer, &bufferSize ))) goto cleanup;
     if (status != 200)
     {
-        ERR( "xsts authorization failed, status %lu, body %s.\n", status, debugstr_an( (char *)buffer, bufferSize ) );
+        ERR( "xsts authorization failed, status %lu.\n", status );
         hr = E_FAIL;
         goto cleanup;
     }
@@ -2645,6 +2688,22 @@ static HRESULT xsts_authorize( XUserHandle user, const char *relyingParty, BOOL 
     if (FAILED(hr = get_json_array( claims, L"xui", &xui ))) goto cleanup;
     if (FAILED(hr = IJsonArray_GetObjectAt( xui, 0, &identity ))) goto cleanup;
     if (FAILED(hr = get_json_string( identity, L"uhs", &uhs ))) goto cleanup;
+    if (granted)
+    {
+        const WCHAR *xid_text, *prv_text;
+        UINT32 xid_len, prv_len;
+        /* Only accept the requested authenticated identity. Missing claims or
+         * malformed data must never turn into guessed permission. */
+        hr = get_json_string( identity, L"xid", &xid );
+        auth_metadata( "privilege-identity-claim", user, hr, status, requested_title, title );
+        if (FAILED(hr)) goto cleanup;
+        hr = get_json_string( identity, L"prv", &prv );
+        auth_metadata( "privilege-permissions-claim", user, hr, status, requested_title, title );
+        if (FAILED(hr)) goto cleanup;
+        xid_text = WindowsGetStringRawBuffer( xid, &xid_len );
+        prv_text = WindowsGetStringRawBuffer( prv, &prv_len );
+        if (FAILED(hr = privilege_claim( xid_text, xid_len, user->xuid, prv_text, prv_len, privilege, granted ))) goto cleanup;
+    }
     if (!(tokenA = hstring_to_utf8( token )) || !(uhsA = hstring_to_utf8( uhs )))
     {
         hr = E_OUTOFMEMORY;
@@ -2665,6 +2724,8 @@ cleanup:
     if (xui) IJsonArray_Release( xui );
     if (token) WindowsDeleteString( token );
     if (uhs) WindowsDeleteString( uhs );
+    if (xid) WindowsDeleteString( xid );
+    if (prv) WindowsDeleteString( prv );
     free( tokenA );
     free( uhsA );
     free( buffer );
