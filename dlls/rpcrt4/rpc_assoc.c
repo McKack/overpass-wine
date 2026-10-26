@@ -395,6 +395,7 @@ RPC_STATUS RpcAssoc_GetClientConnection(RpcAssoc *assoc,
 {
     RpcConnection *NewConnection;
     RPC_STATUS status;
+    BOOL first_bind = FALSE;
 
     *Connection = RpcAssoc_GetIdleConnection(assoc, InterfaceId, TransferSyntax, AuthInfo, QOS);
     if (*Connection) {
@@ -403,23 +404,38 @@ RPC_STATUS RpcAssoc_GetClientConnection(RpcAssoc *assoc,
         return RPC_S_OK;
     }
 
+    /* The server puts every connection that binds with the same association group into one association, and
+     * context handles live there. Until the first bind returns a group, threads connecting at the same time
+     * would each bind with group 0 and get separate server associations: a context handle created through
+     * one connection is then unknown on another (a context mismatch fault, ERROR_INVALID_HANDLE from
+     * OpenService after OpenSCManager). So bind one connection at a time until the group is known. */
+    if (!assoc->assoc_group_id)
+    {
+        EnterCriticalSection(&assoc->cs);
+        if (!assoc->assoc_group_id) first_bind = TRUE;
+        else LeaveCriticalSection(&assoc->cs);
+    }
+
     /* create a new connection */
     status = RPCRT4_CreateConnection(&NewConnection, FALSE /* is this a server connection? */,
         assoc->Protseq, assoc->NetworkAddr,
         assoc->Endpoint, assoc->NetworkOptions,
         AuthInfo, QOS, CookieAuth);
     if (status != RPC_S_OK)
-        return status;
-
-    NewConnection->assoc = assoc;
-    status = RPCRT4_OpenClientConnection(NewConnection);
-    if (status != RPC_S_OK)
     {
-        RPCRT4_ReleaseConnection(NewConnection);
+        if (first_bind) LeaveCriticalSection(&assoc->cs);
         return status;
     }
 
-    status = RpcAssoc_BindConnection(assoc, NewConnection, InterfaceId, TransferSyntax);
+    NewConnection->assoc = assoc;
+    status = RPCRT4_OpenClientConnection(NewConnection);
+    if (status == RPC_S_OK)
+        status = RpcAssoc_BindConnection(assoc, NewConnection, InterfaceId, TransferSyntax);
+    if (first_bind)
+    {
+        if (status == RPC_S_OK) assoc->assoc_group_id = NewConnection->assoc_group_id;
+        LeaveCriticalSection(&assoc->cs);
+    }
     if (status != RPC_S_OK)
     {
         RPCRT4_ReleaseConnection(NewConnection);
