@@ -83,6 +83,7 @@ static ULONG WINAPI x_game_save_Release( IXGameSaveImpl3 *iface )
 #define E_GS_UPDATE_TOO_BIG             ((HRESULT)0x80830005)
 
 #define SAVE_QUOTA (256 * 1024 * 1024)
+static BOOL save_json_object_complete( const char *, SIZE_T );
 
 struct blob_entry
 {
@@ -274,7 +275,11 @@ static const char *json_skip( const char *p )
             continue;
         }
         if (*p == '{' || *p == '[') depth++;
-        else if (*p == '}' || *p == ']') depth--;
+        else if (*p == '}' || *p == ']')
+        {
+            if (!depth) return NULL;
+            if (!--depth) return p + 1;
+        }
         else if (!depth && (*p == ',')) return p;
         p++;
     } while (depth > 0 || (*p && *p != ',' && *p != '}' && *p != ']'));
@@ -704,7 +709,7 @@ static void cloud_disable( struct XGameSaveProvider *provider )
     ERR( "cloud saves disabled for this session, continuing with local saves only.\n" );
 }
 
-static HRESULT cloud_download( struct XGameSaveProvider *provider, const char *name, const char *display, const char *remoteTime )
+static HRESULT cloud_download_into( struct XGameSaveProvider *provider, const char *name, const char *display, const char *remoteTime )
 {
     struct container_state state = { 0 };
     char path[1024], dir[2048], blob[2048], *enc, *key;
@@ -720,18 +725,15 @@ static HRESULT cloud_download( struct XGameSaveProvider *provider, const char *n
     snprintf( path, sizeof(path), "/%s,savedgame", enc );
     free( enc );
     if (FAILED(hr = cloud_request( provider, "GET", path, NULL, NULL, 0, &status, &buffer, &size ))) return hr;
-    if (status != 200 || !(atoms = json_find( (char *)buffer, "atoms" )) || *atoms != '{')
+    if (status != 200 || !save_json_object_complete((char *)buffer, size) ||
+        !(atoms = json_find( (char *)buffer, "atoms" )) || *atoms != '{')
     {
         free( buffer );
         return E_FAIL;
     }
 
     if (!container_dir( provider, name, dir, sizeof(dir) )) hr = E_OUTOFMEMORY;
-    else
-    {
-        delete_directory( dir );
-        create_directories( dir );
-    }
+    else hr = files_mkdir( dir );
     if (!(state.name = strdup( name ))) hr = E_OUTOFMEMORY;
     state.display = strdup( display ? display : name );
     state.time = parse_iso_time( remoteTime );
@@ -742,7 +744,11 @@ static HRESULT cloud_download( struct XGameSaveProvider *provider, const char *n
         char *atom = NULL;
         struct blob_entry *entry;
         if (*value == '"') json_string( value, &atom );
-        if (!atom || !(entry = add_blob( &state, key )))
+        if (!atom || !*atom || !*key || strlen(atom) >= sizeof(state.blobs[0].atom) || find_blob(&state, key) || state.count >= 16384)
+        {
+            free(atom); free(key); hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA); break;
+        }
+        if (!(entry = add_blob( &state, key )))
         {
             free( atom );
             free( key );
@@ -750,24 +756,37 @@ static HRESULT cloud_download( struct XGameSaveProvider *provider, const char *n
             break;
         }
         snprintf( path, sizeof(path), "/%s", atom );
+        data = NULL; dataSize = 0;
         if (SUCCEEDED(hr = cloud_request( provider, "GET", path, NULL, NULL, 0, &status, &data, &dataSize )) && status == 200)
         {
-            blob_path( provider, name, key, blob, sizeof(blob) );
-            hr = write_file( blob, data, dataSize );
-            entry->size = dataSize;
-            lstrcpynA( entry->atom, atom, sizeof(entry->atom) );
+            if (dataSize > UINT_MAX)
+                hr = E_GS_UPDATE_TOO_BIG;
+            else if (!blob_path( provider, name, key, blob, sizeof(blob) )) hr = E_OUTOFMEMORY;
+            else
+            {
+                hr = write_file( blob, data, dataSize );
+                entry->size = dataSize;
+                lstrcpynA( entry->atom, atom, sizeof(entry->atom) );
+            }
         }
         else if (SUCCEEDED(hr)) hr = E_FAIL;
         free( data );
         free( atom );
         free( key );
     }
+    /* The iterator also stops on malformed/truncated JSON. Only a real closing
+     * brace permits committing the new index, including an empty atoms object. */
+    value = json_ws(atoms);
+    if (*value == '{') value = json_ws(value + 1);
+    if (SUCCEEDED(hr) && *value != '}') hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
     free( buffer );
     if (SUCCEEDED(hr)) hr = save_state( provider, &state );
     TRACE( "downloaded %s, %u blobs, hr %#lx.\n", debugstr_a( name ), state.count, hr );
     free_state( &state );
     return hr;
 }
+
+#include "xgamesave-transactions.h"
 
 #define LARGE_BLOB_SIZE (4 * 1024 * 1024)
 
@@ -1177,26 +1196,36 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
     {
         free( buffer );
         buffer = (BYTE *)strdup( "{\"blobs\":[]}" );
+        size = buffer ? strlen((char *)buffer) : 0;
         status = 200;
     }
-    if (status != 200 || !buffer || !(blobs = json_find( (char *)buffer, "blobs" )) || *blobs != '[')
+    if (status != 200 || !save_json_object_complete((char *)buffer, size) ||
+        !(blobs = json_find( (char *)buffer, "blobs" )) || *blobs != '[')
     {
         free( buffer );
         return E_FAIL;
     }
-    for (item = json_ws( blobs + 1 ); *item == '{'; item = json_ws( item ))
+    for (item = json_ws( blobs + 1 ); *item != ']'; )
     {
-        const char *end = json_skip( item );
-        char *fileName = json_find_string( item, "fileName" ), *comma;
+        const char *end;
+        char *fileName, *comma;
         struct remote_container *tmp;
-        if (!end) break;
-        if (fileName && (comma = strstr( fileName, ",savedgame" )) && !comma[10])
+        if (*item != '{' || !(end = json_skip(item)) || end <= item || end[-1] != '}')
+        { hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA); break; }
+        if (!(fileName = json_find_string(item, "fileName")))
+        { hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA); break; }
+        if ((comma = strstr( fileName, ",savedgame" )) && !comma[10])
         {
             *comma = 0;
+            if (!*fileName || count == 16384)
+            { free(fileName); hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA); break; }
+            for (UINT32 j = 0; j < count; j++) if (!strcmp(remote[j].name, fileName)) hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+            if (FAILED(hr)) { free(fileName); break; }
             if (count + 1 >= capacity)
             {
                 capacity = capacity ? capacity * 2 : 16;
-                if (!(tmp = realloc( remote, capacity * sizeof(*remote) ))) break;
+                if (!(tmp = realloc( remote, capacity * sizeof(*remote) )))
+                { free(fileName); hr = E_OUTOFMEMORY; break; }
                 remote = tmp;
             }
             remote[count].name = fileName;
@@ -1207,9 +1236,15 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
         }
         free( fileName );
         item = json_ws( end );
-        if (*item == ',') item++;
+        if (*item == ',')
+        {
+            item = json_ws(item + 1);
+            if (*item == ']') { hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA); break; }
+        }
+        else if (*item != ']') { hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA); break; }
     }
     free( buffer );
+    if (FAILED(hr)) goto done;
 
     mode = sync_mode();
     for (UINT32 i = 0; i < count; i++)
@@ -1217,9 +1252,9 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
         struct container_state state;
         BOOL exists = SUCCEEDED(load_state( provider, remote[i].name, &state ));
         BOOL remoteChanged = !exists || strcmp( state.remote, remote[i].time ? remote[i].time : "" );
-        if (provider->files && exists && state.dirty && remoteChanged && mode == SYNC_AUTO)
+        if (exists && state.dirty && remoteChanged && mode == SYNC_AUTO)
         {
-            /* Never silently overwrite either side of a file-save conflict. */
+            /* Never silently overwrite either side of a save conflict. */
             free_state( &state );
             hr = E_GS_CONTAINER_NOT_IN_SYNC;
             goto done;
@@ -1240,7 +1275,7 @@ static HRESULT cloud_sync( struct XGameSaveProvider *provider )
             provider->uploaded++;
         }
         free_state( &state );
-        if (provider->files && FAILED(hr)) goto done;
+        if (FAILED(hr)) goto done;
     }
 done:
     if (remote)
@@ -1254,12 +1289,12 @@ done:
         }
         free( remote );
     }
-    else
+    else if (SUCCEEDED(hr))
     {
         struct remote_container empty = { 0 };
         enumerate_local( provider, sync_local_callback, &empty );
     }
-    return provider->files ? hr : S_OK;
+    return hr;
 }
 
 static HRESULT initialize_provider( XUserHandle user, const char *configurationId, XGameSaveProviderHandle *out )
