@@ -7,13 +7,13 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>English</string>
     <key>CFBundleExecutable</key>
-    <string>wineloader</string><!-- CrossOver Hack 10913 -->
+    <string>wine</string>
     <key>CFBundleIdentifier</key>
-    <string>com.codeweavers.CrossOver.wineloader</string><!-- CrossOver Hack 10913 -->
+    <string>io.github.mckack.overpass.wineloader</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>CrossOver-Hosted Application</string><!-- CrossOver Hack 10913 -->
+    <string>OverPass</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -26,5 +26,10 @@
     <string>WineApplication</string>
     <key>LSUIElement</key>
     <string>1</string>
+    <!-- Lets macOS turn on Game Mode for a program that goes full screen. -->
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.games</string>
+    <key>LSSupportsGameMode</key>
+    <true/>
 </dict>
 </plist>
