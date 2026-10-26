@@ -55,13 +55,24 @@ HRESULT xstore_configure( struct _xmlNode *root )
     return S_OK;
 }
 
+struct game_license_sku
+{
+    char id[5];
+    BOOLEAN trial;
+    INT64 end;
+};
 struct entitled_store_context
 {
-    UINT64 xuid;
+    UINT64 xuid, serial, license_version, license_refresh;
+    UINT32 license_count;
+    struct game_license_sku license_skus[ENTITLED_MAX_SKUS];
     struct entitled_store_context *next;
 };
 static SRWLOCK entitled_stores_lock = SRWLOCK_INIT;
 static struct entitled_store_context *entitled_stores;
+static UINT64 entitled_next_store_serial;
+static LONG64 entitled_next_refresh;
+static void game_license_close_store( UINT64 serial );
 
 static HRESULT entitled_store_create( XUserHandle user, XStoreContextHandle *out )
 {
@@ -74,6 +85,8 @@ static HRESULT entitled_store_create( XUserHandle user, XStoreContextHandle *out
     context->xuid = user ? xuser_get_xuid(user) : 0;
     if (user && !context->xuid) { free(context); return E_INVALIDARG; }
     AcquireSRWLockExclusive(&entitled_stores_lock);
+    if (!++entitled_next_store_serial) ++entitled_next_store_serial;
+    context->serial = entitled_next_store_serial;
     context->next = entitled_stores; entitled_stores = context;
     ReleaseSRWLockExclusive(&entitled_stores_lock);
     *out = context;
@@ -88,18 +101,29 @@ static void entitled_store_close( XStoreContextHandle handle )
     context = *link;
     if (context) *link = context->next;
     ReleaseSRWLockExclusive(&entitled_stores_lock);
+    if (context) game_license_close_store(context->serial);
     free(context);
 }
 
-static HRESULT entitled_store_user( XStoreContextHandle handle, UINT64 *xuid )
+static HRESULT entitled_store_identity( XStoreContextHandle handle, UINT64 *xuid, UINT64 *serial )
 {
     struct entitled_store_context *context;
     HRESULT hr = E_INVALIDARG;
     AcquireSRWLockShared(&entitled_stores_lock);
     for (context = entitled_stores; context && context != handle; context = context->next);
-    if (context) { *xuid = context->xuid; hr = S_OK; }
+    if (context)
+    {
+        *xuid = context->xuid;
+        if (serial) *serial = context->serial;
+        hr = S_OK;
+    }
     ReleaseSRWLockShared(&entitled_stores_lock);
     return hr;
+}
+
+static HRESULT entitled_store_user( XStoreContextHandle handle, UINT64 *xuid )
+{
+    return entitled_store_identity(handle, xuid, NULL);
 }
 
 struct entitled_snapshot
@@ -291,6 +315,7 @@ done:
 struct entitled_async
 {
     LONG refs, canceled, started;
+    UINT64 store_serial, refresh;
     char *request;
     UINT32 page_size;
     struct entitled_page *page;
@@ -301,6 +326,7 @@ static const char entitled_identity;
 static const char entitled_next_identity;
 
 #include "xstore_receipts.h"
+#include "xstore_game_license.h"
 
 static void entitled_async_release( struct entitled_async *context )
 {
@@ -318,6 +344,8 @@ static DWORD WINAPI entitled_worker( void *arg )
         hr = entitled_fetch(context->request, &context->canceled, &snapshot);
     if (SUCCEEDED(hr))
     {
+        if (!InterlockedCompareExchange(&context->canceled, 0, 0))
+            game_license_observe(context->store_serial, context->refresh, snapshot);
         if (!(context->page = calloc(1, sizeof(*context->page)))) hr = E_OUTOFMEMORY;
         else
         {
@@ -394,13 +422,13 @@ static HRESULT entitled_begin( XStoreContextHandle store, UINT32 kinds, UINT32 p
     xmlChar *bytes = NULL;
     char kind[16], language[128] = "en-US", market[16] = "US";
     WCHAR locale[85], country[16];
-    UINT64 xuid;
+    UINT64 xuid, serial;
     UINT32 i;
     int size;
     HRESULT hr;
     if (!async || !kinds || (kinds & ~31) || !page_size) return E_INVALIDARG;
     page_size = min(page_size, ENTITLED_MAX_PRODUCTS);
-    if (FAILED(hr = entitled_store_user(store, &xuid))) return hr;
+    if (FAILED(hr = entitled_store_identity(store, &xuid, &serial))) return hr;
     if (!entitled_id(storeId)) return E_GAME_MISSING_GAME_CONFIG;
     if (GetUserDefaultLocaleName(locale, ARRAY_SIZE(locale)))
         WideCharToMultiByte(CP_UTF8, 0, locale, -1, language, sizeof(language), NULL, NULL);
@@ -424,6 +452,8 @@ static HRESULT entitled_begin( XStoreContextHandle store, UINT32 kinds, UINT32 p
     xmlFree(bytes);
     if (!context) return E_OUTOFMEMORY;
     if (!context->request) { free(context); return E_OUTOFMEMORY; }
+    context->store_serial = serial;
+    context->refresh = InterlockedIncrement64(&entitled_next_refresh);
     return entitled_start(context, async, FALSE);
 }
 
