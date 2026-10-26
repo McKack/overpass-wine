@@ -90,26 +90,189 @@ static void WINAPI x_store_XStoreCloseContextHandle( IXStoreImpl6 *iface, XStore
 
 static HRESULT WINAPI x_store_XStoreQueryAssociatedProductsAsync( IXStoreImpl6 *iface, const XStoreContextHandle storeContextHandle, XStoreProductKind productKinds, UINT32 maxItemsToRetrievePerPage, XAsyncBlock *async )
 {
-    FIXME( "iface %p, storeContextHandle %p, productKinds %#x, maxItemsToRetrievePerPage %u, async %p stub!\n", iface, storeContextHandle, productKinds, maxItemsToRetrievePerPage, async );
-    return E_NOTIMPL;
+    /* Only owned add-ons are known: answer with the entitled subset of the
+     * associated products instead of leaving titles waiting on the query. */
+    TRACE( "iface %p, storeContextHandle %p, productKinds %#x, maxItemsToRetrievePerPage %u, async %p, using entitled products.\n", iface, storeContextHandle, productKinds, maxItemsToRetrievePerPage, async );
+    return entitled_begin(storeContextHandle, productKinds, maxItemsToRetrievePerPage, async);
 }
 
 static HRESULT WINAPI x_store_XStoreQueryAssociatedProductsResult( IXStoreImpl6 *iface, XAsyncBlock *async, XStoreProductQueryHandle *productQueryHandle )
 {
-    FIXME( "iface %p, async %p, productQueryHandle %p stub!\n", iface, async, productQueryHandle );
-    return E_NOTIMPL;
+    return entitled_result(async, productQueryHandle, FALSE);
+}
+
+static const char store_products_identity[] = "XStoreQueryProducts";
+
+/* Catalog metadata for products the game asks about by store id comes from
+ * C:\ProgramData\MACxus\store-catalog.txt (written by the launcher), one
+ * "storeId<TAB>kind<TAB>title" line each. Requested ids found there are
+ * returned as catalog entries that are NOT in the user's collection, like the
+ * Windows store does for unowned upsell offers; unknown ids are left out. */
+struct store_products_query
+{
+    XStoreProductKind kinds;
+    SIZE_T count;
+    char ids[64][13];
+};
+
+static BOOL store_catalog_lookup( const char *id, XStoreProductKind *kind, char *title, SIZE_T title_size )
+{
+    char line[512], *tab1, *tab2, *eol;
+    BOOL found = FALSE;
+    FILE *file;
+
+    if (!(file = fopen( "C:\\ProgramData\\MACxus\\store-catalog.txt", "r" ))) return FALSE;
+    while (!found && fgets( line, sizeof(line), file ))
+    {
+        if ((eol = strpbrk( line, "\r\n" ))) *eol = 0;
+        if (!(tab1 = strchr( line, '\t' )) || !(tab2 = strchr( tab1 + 1, '\t' ))) continue;
+        *tab1 = *tab2 = 0;
+        if (strcmp( line, id )) continue;
+        *kind = strtoul( tab1 + 1, NULL, 0 );
+        snprintf( title, title_size, "%s", tab2 + 1 );
+        found = TRUE;
+    }
+    fclose( file );
+    return found;
+}
+
+static struct entitled_snapshot *store_products_snapshot( const struct store_products_query *query )
+{
+    struct entitled_snapshot *snapshot;
+    XStoreProductKind kind;
+    char title[256];
+    SIZE_T i;
+
+    if (!(snapshot = calloc( 1, sizeof(*snapshot) ))) return NULL;
+    snapshot->refs = 1;
+    snapshot->valid_until = ~(UINT64)0;
+    if (query && query->count && !(snapshot->products = calloc( query->count, sizeof(*snapshot->products) )))
+    {
+        free( snapshot );
+        return NULL;
+    }
+    for (i = 0; query && i < query->count; i++)
+    {
+        XStoreProduct *product = &snapshot->products[snapshot->count];
+        if (!store_catalog_lookup( query->ids[i], &kind, title, sizeof(title) ) || !(kind & query->kinds))
+        {
+            TRACE( "  %s not in catalog, skipped.\n", debugstr_a( query->ids[i] ) );
+            continue;
+        }
+        product->storeId = strdup( query->ids[i] );
+        product->title = strdup( title );
+        product->description = strdup( "" );
+        product->language = strdup( "" );
+        product->inAppOfferToken = strdup( "" );
+        product->productKind = kind;
+        product->hasDigitalDownload = TRUE;
+        product->isInUserCollection = FALSE;
+        if ((product->skus = calloc( 1, sizeof(*product->skus) )))
+        {
+            product->skusCount = 1;
+            product->skus[0].skuId = strdup( "0010" );
+            product->skus[0].title = strdup( title );
+            product->skus[0].description = strdup( "" );
+            product->skus[0].language = strdup( "" );
+        }
+        TRACE( "  %s kind %#x %s, not owned.\n", debugstr_a( product->storeId ), kind, debugstr_a( title ) );
+        snapshot->count++;
+    }
+    return snapshot;
+}
+
+static HRESULT WINAPI XStoreQueryProductsProvider( XAsyncOp op, const XAsyncProviderData *data )
+{
+    struct entitled_snapshot *snapshot;
+    struct entitled_page *page;
+    IXThreadingImpl *xthreading;
+    HRESULT hr;
+
+    TRACE( "op %d, data %p.\n", op, data );
+
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) return hr;
+
+    switch (op)
+    {
+        case XAsyncOp_Begin:
+            hr = IXThreadingImpl_XAsyncSchedule( xthreading, data->async, 0 );
+            break;
+
+        case XAsyncOp_DoWork:
+            IXThreadingImpl_XAsyncComplete( xthreading, data->async, S_OK, sizeof(void *) );
+            hr = S_OK;
+            break;
+
+        case XAsyncOp_GetResult:
+            if (!data->buffer || data->bufferSize < sizeof(void *)) { hr = E_INVALIDARG; break; }
+            snapshot = store_products_snapshot( data->context );
+            page = calloc( 1, sizeof(*page) );
+            if (!snapshot || !page) { if (snapshot) entitled_snapshot_release( snapshot ); free( page ); hr = E_OUTOFMEMORY; break; }
+            page->refs = 1;
+            page->snapshot = snapshot;
+            page->size = snapshot->count;
+            AcquireSRWLockExclusive( &entitled_pages_lock );
+            page->next = entitled_pages;
+            entitled_pages = page;
+            ReleaseSRWLockExclusive( &entitled_pages_lock );
+            memcpy( data->buffer, &page, sizeof(void *) );
+            hr = S_OK;
+            break;
+
+        case XAsyncOp_Cleanup:
+            free( data->context );
+            hr = S_OK;
+            break;
+
+        case XAsyncOp_Cancel:
+            hr = S_OK;
+            break;
+
+        default:
+            hr = E_NOTIMPL;
+    }
+
+    IXThreadingImpl_Release( xthreading );
+    return hr;
 }
 
 static HRESULT WINAPI x_store_XStoreQueryProductsAsync( IXStoreImpl6 *iface, const XStoreContextHandle storeContextHandle, XStoreProductKind productKinds, const char **storeIds, SIZE_T storeIdsCount, const char **actionFilters, SIZE_T actionFiltersCount, XAsyncBlock *async )
 {
-    FIXME( "iface %p, storeContextHandle %p, productKinds %#x, storeIds %p, storeIdsCount %Iu, actionFilters %p, actionFiltersCount %Iu, async %p stub!\n", iface, storeContextHandle, productKinds, storeIds, storeIdsCount, actionFilters, actionFiltersCount, async );
-    return E_NOTIMPL;
+    struct store_products_query *query;
+    IXThreadingImpl *xthreading;
+    HRESULT hr;
+    SIZE_T i;
+
+    TRACE( "iface %p, storeContextHandle %p, productKinds %#x, storeIds %p, storeIdsCount %Iu, actionFilters %p, actionFiltersCount %Iu, async %p.\n", iface, storeContextHandle, productKinds, storeIds, storeIdsCount, actionFilters, actionFiltersCount, async );
+
+    if (!storeContextHandle || !async || (storeIdsCount && !storeIds)) return E_INVALIDARG;
+    if (!(query = calloc( 1, sizeof(*query) ))) return E_OUTOFMEMORY;
+    query->kinds = productKinds;
+    for (i = 0; i < storeIdsCount && query->count < ARRAY_SIZE(query->ids); i++)
+    {
+        TRACE( "  storeIds[%Iu] %s\n", i, debugstr_a( storeIds[i] ) );
+        if (entitled_id( storeIds[i] )) memcpy( query->ids[query->count++], storeIds[i], 13 );
+    }
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) { free( query ); return hr; }
+    hr = IXThreadingImpl_XAsyncBegin( xthreading, async, query, store_products_identity, "XStoreQueryProductsAsync", XStoreQueryProductsProvider );
+    if (FAILED(hr)) free( query );
+    IXThreadingImpl_Release( xthreading );
+    return hr;
 }
 
 static HRESULT WINAPI x_store_XStoreQueryProductsResult( IXStoreImpl6 *iface, XAsyncBlock *async, XStoreProductQueryHandle *productQueryHandle )
 {
-    FIXME( "iface %p, async %p, productQueryHandle %p stub!\n", iface, async, productQueryHandle );
-    return E_NOTIMPL;
+    IXThreadingImpl *xthreading;
+    HRESULT hr;
+
+    TRACE( "iface %p, async %p, productQueryHandle %p.\n", iface, async, productQueryHandle );
+
+    if (!async || !productQueryHandle) return E_INVALIDARG;
+    *productQueryHandle = NULL;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) return hr;
+    hr = IXThreadingImpl_XAsyncGetResult( xthreading, async, store_products_identity, sizeof(void *), productQueryHandle, NULL );
+    IXThreadingImpl_Release( xthreading );
+    return hr;
 }
 
 static HRESULT WINAPI x_store_XStoreQueryEntitledProductsAsync( IXStoreImpl6 *iface, const XStoreContextHandle storeContextHandle, XStoreProductKind productKinds, UINT32 maxItemsToRetrievePerPage, XAsyncBlock *async )
@@ -280,22 +443,93 @@ static HRESULT WINAPI x_store_XStoreQueryGameLicenseResult( IXStoreImpl6 *iface,
     return hr;
 }
 
+static const char store_addon_licenses_identity[] = "XStoreQueryAddOnLicenses";
+
+/* No add-on licenses are known locally: complete successfully with an empty
+ * result so titles waiting on this query (e.g. at "Start game") can proceed. */
+static HRESULT WINAPI XStoreQueryAddOnLicensesProvider( XAsyncOp op, const XAsyncProviderData *data )
+{
+    IXThreadingImpl *xthreading;
+    HRESULT hr;
+
+    TRACE( "op %d, data %p.\n", op, data );
+
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) return hr;
+
+    switch (op)
+    {
+        case XAsyncOp_Begin:
+            hr = IXThreadingImpl_XAsyncSchedule( xthreading, data->async, 0 );
+            break;
+
+        case XAsyncOp_DoWork:
+            IXThreadingImpl_XAsyncComplete( xthreading, data->async, S_OK, 0 );
+            hr = S_OK;
+            break;
+
+        case XAsyncOp_GetResult:
+        case XAsyncOp_Cleanup:
+        case XAsyncOp_Cancel:
+            hr = S_OK;
+            break;
+
+        default:
+            hr = E_NOTIMPL;
+    }
+
+    IXThreadingImpl_Release( xthreading );
+    return hr;
+}
+
 static HRESULT WINAPI x_store_XStoreQueryAddOnLicensesAsync( IXStoreImpl6 *iface, const XStoreContextHandle storeContextHandle, XAsyncBlock *async )
 {
-    FIXME( "iface %p, storeContextHandle %p, async %p stub!\n", iface, storeContextHandle, async );
-    return E_NOTIMPL;
+    IXThreadingImpl *xthreading;
+    HRESULT hr;
+
+    TRACE( "iface %p, storeContextHandle %p, async %p, returning no add-on licenses.\n", iface, storeContextHandle, async );
+
+    if (!storeContextHandle || !async) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) return hr;
+    hr = IXThreadingImpl_XAsyncBegin( xthreading, async, NULL, store_addon_licenses_identity, "XStoreQueryAddOnLicensesAsync", XStoreQueryAddOnLicensesProvider );
+    IXThreadingImpl_Release( xthreading );
+    return hr;
 }
 
 static HRESULT WINAPI x_store_XStoreQueryAddOnLicensesResultCount( IXStoreImpl6 *iface, XAsyncBlock *async, UINT32 *count )
 {
-    FIXME( "iface %p, async %p, count %p stub!\n", iface, async, count );
-    return E_NOTIMPL;
+    IXThreadingImpl *xthreading;
+    SIZE_T size = 0;
+    HRESULT hr;
+
+    TRACE( "iface %p, async %p, count %p.\n", iface, async, count );
+
+    if (!async || !count) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) return hr;
+    hr = IXThreadingImpl_XAsyncGetResultSize( xthreading, async, &size );
+    IXThreadingImpl_Release( xthreading );
+    *count = SUCCEEDED(hr) ? size / sizeof(XStoreAddonLicense) : 0;
+    return hr;
 }
 
 static HRESULT WINAPI x_store_XStoreQueryAddOnLicensesResult( IXStoreImpl6 *iface, XAsyncBlock *async, UINT32 count, XStoreAddonLicense *addOnLicenses )
 {
-    FIXME( "iface %p, async %p, count %u, addOnLicenses %p stub!\n", iface, async, count, addOnLicenses );
-    return E_NOTIMPL;
+    IXThreadingImpl *xthreading;
+    SIZE_T size = 0;
+    HRESULT hr;
+
+    TRACE( "iface %p, async %p, count %u, addOnLicenses %p.\n", iface, async, count, addOnLicenses );
+
+    if (!async || (count && !addOnLicenses)) return E_INVALIDARG;
+    if (FAILED(hr = QueryApiImpl( &CLSID_XThreadingImpl, &IID_IXThreadingImpl, (void **)&xthreading ))) return hr;
+    if (SUCCEEDED(hr = IXThreadingImpl_XAsyncGetResultSize( xthreading, async, &size )))
+    {
+        /* The result never holds licenses; count must match ResultCount. */
+        if (count != size / sizeof(XStoreAddonLicense)) hr = E_INVALIDARG;
+        else hr = IXThreadingImpl_XAsyncGetResult( xthreading, async, store_addon_licenses_identity,
+                                                   count * sizeof(XStoreAddonLicense), addOnLicenses, NULL );
+    }
+    IXThreadingImpl_Release( xthreading );
+    return hr;
 }
 
 static HRESULT WINAPI x_store_XStoreQueryConsumableBalanceRemainingAsync( IXStoreImpl6 *iface, const XStoreContextHandle storeContextHandle, const char *storeProductId, XAsyncBlock *async )

@@ -476,7 +476,12 @@ static HRESULT entitled_enumerate( XStoreProductQueryHandle handle, void *arg, X
     if (!callback || !(page = entitled_page_acquire(handle))) return E_INVALIDARG;
     if (!entitled_page_valid(page)) { entitled_page_release(page); return E_ACCESSDENIED; }
     end = min(page->snapshot->count, page->offset + page->size);
-    for (i = page->offset; i < end; i++) if (!callback(&page->snapshot->products[i], arg)) break;
+    TRACE( "handle %p, count %u, offset %u, size %u.\n", handle, page->snapshot->count, page->offset, page->size );
+    for (i = page->offset; i < end; i++)
+    {
+        TRACE( "  product %s kind %#x inCollection %d\n", debugstr_a( page->snapshot->products[i].storeId ), page->snapshot->products[i].productKind, page->snapshot->products[i].isInUserCollection );
+        if (!callback(&page->snapshot->products[i], arg)) break;
+    }
     entitled_page_release(page); return S_OK;
 }
 
@@ -486,6 +491,7 @@ static BOOLEAN entitled_has_more( XStoreProductQueryHandle handle )
     BOOLEAN more;
     if (!page) return FALSE;
     more = entitled_page_valid(page) && page->offset + page->size < page->snapshot->count;
+    TRACE( "handle %p -> %d.\n", handle, more );
     entitled_page_release(page); return more;
 }
 
