@@ -24,6 +24,8 @@
 
 WINE_DEFAULT_DEBUG_CHANNEL(gdkc);
 
+#include "xpackage_content.h"
+
 struct x_package
 {
     IXPackageImpl4 IXPackageImpl4_iface;
@@ -514,8 +516,9 @@ static HRESULT enumerate_current_package( XPackageKind kind, XPackageEnumeration
     XPackageDetails details;
     HRESULT hr;
 
-    if (!callback) return E_INVALIDARG;
-    if (kind != XPackageKind_Game) return S_OK;
+    if (!callback || (UINT)kind > XPackageKind_PublisherContent || (UINT)scope > XPackageEnumerationScope_ThisPublisher) return E_INVALIDARG;
+    if (kind == XPackageKind_Content) return enumerate_content_packages(scope, context, callback);
+    if (kind == XPackageKind_PublisherContent) return E_NOTIMPL;
     if (FAILED(hr = package_identifier( identifier, sizeof(identifier) ))) return hr;
 
     load_package_fields();
@@ -540,6 +543,20 @@ static HRESULT WINAPI x_package_XPackageEnumeratePackages( IXPackageImpl4 *iface
 {
     TRACE( "iface %p, kind %d, scope %d, context %p, callback %p.\n", iface, kind, scope, context, callback );
     return enumerate_current_package( kind, scope, context, callback );
+}
+
+HRESULT xpackage_query_identifier( const char *requested_store, SIZE_T size, char *identifier )
+{
+    HRESULT hr;
+    if (identifier && size) identifier[0] = 0;
+    if (!content_id(requested_store) || !identifier) return E_INVALIDARG;
+    if (size < 33) return E_NOT_SUFFICIENT_BUFFER;
+    if (storeId && !strcmp(requested_store, storeId))
+    {
+        hr = package_identifier(identifier, size);
+        return hr == E_FAIL ? E_INVALIDARG : hr;
+    }
+    return content_query_identifier(requested_store, size, identifier);
 }
 
 static HRESULT WINAPI x_package_XPackageRegisterPackageInstalled( IXPackageImpl4 *iface, XTaskQueueHandle queue, void *context, XPackageInstalledCallback *callback, XTaskQueueRegistrationToken *token )

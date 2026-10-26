@@ -720,8 +720,8 @@ static HRESULT WINAPI x_store_XStoreDownloadAndInstallPackagesResult( IXStoreImp
 
 static HRESULT WINAPI x_store_XStoreQueryPackageIdentifier( IXStoreImpl6 *iface, const char *storeId, SIZE_T size, char *packageIdentifier )
 {
-    FIXME( "iface %p, storeId %s, size %Iu, packageIdentifier %p stub!\n", iface, debugstr_a( storeId ), size, packageIdentifier );
-    return E_NOTIMPL;
+    TRACE( "iface %p, storeId %s, size %Iu, packageIdentifier %p.\n", iface, debugstr_a( storeId ), size, packageIdentifier );
+    return xpackage_query_identifier(storeId, size, packageIdentifier);
 }
 
 static HRESULT WINAPI x_store_XStoreRegisterGameLicenseChanged( IXStoreImpl6 *iface, XStoreContextHandle storeContextHandle, XTaskQueueHandle queue, void *context, XStoreGameLicenseChangedCallback *callback, XTaskQueueRegistrationToken *token )

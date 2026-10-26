@@ -142,6 +142,7 @@ static HRESULT initialize_runtime( ULONG gdkVer, ULONG gsVer, char mode, const s
     if (!strcmp( (char *)root->name, "Game" ))
     {
         if (FAILED(xstore_configure(root))) goto badconfig;
+        xpackage_configure(root);
         for (child = root->children; child; child = child->next)
             if (child->type == XML_ELEMENT_NODE)
             {
