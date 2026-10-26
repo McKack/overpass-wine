@@ -315,7 +315,12 @@ static NSString* WineLocalizedString(unsigned int stringID)
                 });
 
                 exeName = [NSRunningApplication currentApplication].executableURL.lastPathComponent;
-                if ([blacklistedProcesses containsObject:exeName])
+                /* OverPass: the loader link CW Hack 22144 execs through is named without ".exe",
+                 * so compare the names without their extension. */
+                exeName = [exeName stringByDeletingPathExtension];
+                if ([blacklistedProcesses indexOfObjectPassingTest:^BOOL(NSString *name, NSUInteger idx, BOOL *stop) {
+                        return [[name stringByDeletingPathExtension] caseInsensitiveCompare:exeName] == NSOrderedSame;
+                    }] != NSNotFound)
                 {
                     /* Try to honor the activation request regardless. */
                     if (activateIfTransformed)
