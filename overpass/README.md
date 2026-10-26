@@ -40,11 +40,17 @@ are in each release's `licenses/` folder.
 
 ## Building
 
-On an Intel Mac (or the `macos-15-intel` GitHub runner) with Homebrew:
+On a Mac (Apple Silicon through Rosetta, or Intel) with Homebrew's build tools:
 
 ```sh
-brew install bison cmake flex mingw-w64 pkgconf freetype gnutls molten-vk vulkan-loader dylibbundler meson ninja nasm
-overpass/build.sh
+brew install bison cmake flex mingw-w64 pkgconf dylibbundler ccache meson ninja nasm
+arch -x86_64 /bin/bash -c 'OVERPASS_WINE_VERSION=<version> overpass/build.sh'
 ```
 
-CI builds every push. Tags named `overpass-wine-<version>` publish a release.
+The libraries Wine links against (FreeType, GnuTLS, SDL 2, libinotify, the Vulkan loader, MoltenVK, and
+GStreamer with a minimal LGPL FFmpeg) are built from source for x86_64 by `overpass/build-deps.sh` and
+`overpass/build-gstreamer.sh`, and kept between builds. A first build takes a few hours; later ones only
+rebuild what changed.
+
+Releases are built this way and uploaded with `gh release create`. The GitHub workflow only runs when started
+by hand: a full build there runs into GitHub's 3-hour limit.
