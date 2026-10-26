@@ -31,6 +31,12 @@ jobs:
           key: ccache-${{ runner.os }}-${{ github.sha }}
           restore-keys: ccache-${{ runner.os }}-
 
+      # GStreamer, FFmpeg and libvpx, rebuilt only when the script that builds them changes (build.sh checks too).
+      - uses: actions/cache@v4
+        with:
+          path: build-gstreamer
+          key: gstreamer-${{ runner.os }}-${{ hashFiles('overpass/build-gstreamer.sh') }}
+
       - name: Configure ccache
         run: |
           ccache --set-config=cache_dir="$HOME/Library/Caches/ccache"

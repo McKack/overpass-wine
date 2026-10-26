@@ -53,9 +53,17 @@ curl -fsSL "https://github.com/libinotify-kqueue/libinotify-kqueue/releases/down
     make -j"$JOBS" && make install)
 export PKG_CONFIG_PATH="$INOTIFY_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
 
-# GStreamer for game video (winegstreamer); see build-gstreamer.sh for what's in it.
-GST_PREFIX="$BUILD/gstreamer"
-"$SRC/overpass/build-gstreamer.sh" "$BUILD/gstreamer-work" "$GST_PREFIX"
+# GStreamer for game video (winegstreamer); see build-gstreamer.sh for what's in it. It lives outside $BUILD and
+# is reused while build-gstreamer.sh is unchanged (CI caches the folder): it takes longer to build than Wine.
+GST_ROOT="$SRC/build-gstreamer"
+GST_PREFIX="$GST_ROOT/prefix"
+GST_STAMP="$(shasum -a 256 "$SRC/overpass/build-gstreamer.sh" | cut -d' ' -f1) $MACOSX_DEPLOYMENT_TARGET"
+if [ "$(cat "$GST_ROOT/stamp" 2>/dev/null)" != "$GST_STAMP" ]; then
+    rm -rf "$GST_ROOT"
+    "$SRC/overpass/build-gstreamer.sh" "$GST_ROOT/work" "$GST_PREFIX"
+    rm -rf "$GST_ROOT/work"
+    echo "$GST_STAMP" > "$GST_ROOT/stamp"
+fi
 export PKG_CONFIG_PATH="$GST_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
 
 cd "$BUILD/obj"
@@ -108,12 +116,12 @@ done
 
 # Libraries built here are linked by their build path (wineserver: libinotify; winegstreamer.so: GStreamer).
 for f in "$DEST"/bin/wine "$DEST"/bin/wineserver "$LIB"/wine/x86_64-unix/*.so; do
-    otool -L "$f" | tail -n +2 | awk '{print $1}' | { grep "^$BUILD/" || true; } | while read -r dep; do
+    otool -L "$f" | tail -n +2 | awk '{print $1}' | { grep -e "^$BUILD/" -e "^$GST_ROOT/" || true; } | while read -r dep; do
         install_name_tool -change "$dep" "@rpath/$(basename "$dep")" "$f"
     done
 done
-if otool -L "$DEST"/bin/* "$LIB"/wine/x86_64-unix/*.so "$LIB"/*.dylib 2>/dev/null | grep -F "$BUILD/"; then
-    echo "build.sh: binaries still reference $BUILD" >&2
+if otool -L "$DEST"/bin/* "$LIB"/wine/x86_64-unix/*.so "$LIB"/*.dylib 2>/dev/null | grep -F -e "$BUILD/" -e "$GST_ROOT/"; then
+    echo "build.sh: binaries still reference $BUILD or $GST_ROOT" >&2
     exit 1
 fi
 
