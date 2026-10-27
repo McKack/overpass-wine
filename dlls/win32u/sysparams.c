@@ -643,6 +643,71 @@ static int mode_compare(const void *p1, const void *p2)
     return 0;
 }
 
+/* OverPass: the largest emulated mode this process is offered, from OVERPASS_MAX_RESOLUTION: "desktop" (the
+ * default) caps it at the desktop size, "display" offers everything the display supports, "<width>x<height>"
+ * caps it there and offers that size itself even when the display doesn't list it. */
+static BOOL get_max_resolution( const struct source *source, SIZE *max_size, BOOL *custom )
+{
+    const char *env = getenv( "OVERPASS_MAX_RESOLUTION" );
+    unsigned int width, height;
+    char end;
+
+    *custom = FALSE;
+    if (env && !strcasecmp( env, "display" )) return FALSE;
+    if (env && sscanf( env, "%ux%u%c", &width, &height, &end ) == 2 && width && height)
+    {
+        max_size->cx = max( width, height );
+        max_size->cy = min( width, height );
+        *custom = TRUE;
+        return TRUE;
+    }
+    if (env && *env && strcasecmp( env, "desktop" )) WARN( "unknown OVERPASS_MAX_RESOLUTION %s\n", debugstr_a(env) );
+    if (!source->physical.dmPelsWidth || !source->physical.dmPelsHeight) return FALSE;
+    max_size->cx = max( source->physical.dmPelsWidth, source->physical.dmPelsHeight );
+    max_size->cy = min( source->physical.dmPelsWidth, source->physical.dmPelsHeight );
+    return TRUE;
+}
+
+/* Drops the modes above this process's maximum resolution, except the current size, and adds a custom
+ * maximum that isn't listed. The modes buffer has room for one more mode. */
+static UINT cap_source_modes( struct source *source )
+{
+    UINT i, count = 0, mode_count = source->mode_count;
+    DEVMODEW *modes = source->modes;
+    BOOL custom, listed = FALSE;
+    SIZE max_size;
+
+    if (!get_max_resolution( source, &max_size, &custom )) return mode_count;
+
+    for (i = 0; i < mode_count; i++)
+    {
+        DWORD width = max( modes[i].dmPelsWidth, modes[i].dmPelsHeight );
+        DWORD height = min( modes[i].dmPelsWidth, modes[i].dmPelsHeight );
+        BOOL is_current = modes[i].dmPelsWidth == source->current.dmPelsWidth &&
+                          modes[i].dmPelsHeight == source->current.dmPelsHeight;
+
+        if (!is_current && (width > max_size.cx || height > max_size.cy)) continue;
+        if (width == max_size.cx && height == max_size.cy) listed = TRUE;
+        modes[count++] = modes[i];
+    }
+
+    if (custom && !listed && source->current.dmPelsWidth && source->current.dmPelsHeight)
+    {
+        BOOL vertical = source->current.dmPelsHeight > source->current.dmPelsWidth;
+        modes[count] = source->current;
+        modes[count].dmSize = sizeof(*modes);
+        modes[count].dmDriverExtra = 0;
+        modes[count].dmFields &= ~DM_POSITION;
+        modes[count].dmPelsWidth = vertical ? max_size.cy : max_size.cx;
+        modes[count].dmPelsHeight = vertical ? max_size.cx : max_size.cy;
+        count++;
+    }
+
+    memset( modes + count, 0, sizeof(*modes) );
+    TRACE( "source %u: %u of %u modes up to %dx%d\n", source->id, count, mode_count, (int)max_size.cx, (int)max_size.cy );
+    return count;
+}
+
 static unsigned int query_reg_subkey_value( HKEY hkey, const char *name, KEY_VALUE_PARTIAL_INFORMATION *value, unsigned int size )
 {
     HKEY subkey;
@@ -691,16 +756,15 @@ static BOOL read_source_from_registry( unsigned int index, struct source *source
     if (query_reg_ascii_value( hkey, "ModeCount", value, sizeof(buffer) ) && value->Type == REG_DWORD)
         source->mode_count = *(const DWORD *)value->Data;
 
-    /* Modes */
-    size = offsetof( KEY_VALUE_PARTIAL_INFORMATION, Data[(source->mode_count + 1) * sizeof(*source->modes)] );
+    /* Modes, with room for an extra mode (OverPass: a custom maximum resolution) and an empty one */
+    size = offsetof( KEY_VALUE_PARTIAL_INFORMATION, Data[(source->mode_count + 2) * sizeof(*source->modes)] );
     if (!(value = malloc( size )) || !query_reg_ascii_value( hkey, "Modes", value, size )) free( value );
     else
     {
         source->modes = (DEVMODEW *)value;
         source->mode_count = value->DataLength / sizeof(*source->modes);
         memmove( source->modes, value->Data, value->DataLength );
-        memset( source->modes + source->mode_count, 0, sizeof(*source->modes) ); /* extra empty mode for easier iteration */
-        qsort( source->modes, source->mode_count, sizeof(*source->modes), mode_compare );
+        memset( source->modes + source->mode_count, 0, 2 * sizeof(*source->modes) ); /* extra empty modes for easier iteration */
     }
     value = (void *)buffer;
 
@@ -710,6 +774,12 @@ static BOOL read_source_from_registry( unsigned int index, struct source *source
     source->physical = source->current;
     if (read_source_mode( hkey, WINE_ENUM_PHYSICAL_SETTINGS, &source->physical ))
         source->physical.dmSize = sizeof(source->physical);
+
+    if (source->modes)
+    {
+        if (emulate_modeset) source->mode_count = cap_source_modes( source );
+        qsort( source->modes, source->mode_count, sizeof(*source->modes), mode_compare );
+    }
 
     /* DeviceID */
     size = query_reg_ascii_value( hkey, "GPUID", value, sizeof(buffer) );
@@ -2065,13 +2135,24 @@ static SIZE *get_screen_sizes( const DEVMODEW *maximum, const DEVMODEW *modes, U
     UINT max_width = devmode_get( maximum, DM_PELSWIDTH ), max_height = devmode_get( maximum, DM_PELSHEIGHT );
     SIZE *sizes, max_size = {.cx = max( max_width, max_height ), .cy = min( max_width, max_height )};
     const DEVMODEW *mode;
+    BOOL use_defaults;
     UINT i, count;
 
     count = 1 + ARRAY_SIZE(default_sizes) + modes_count;
     if (!(sizes = malloc( count * sizeof(*sizes) ))) return NULL;
 
     count = add_screen_size( sizes, 0, max_size );
-    for (i = 0; i < ARRAY_SIZE(default_sizes); i++)
+    /* OverPass: with emulated mode changes, offer the sizes the display itself reports (its own aspect
+     * ratios), and the built-in list only when it reports too few to choose from. */
+    for (mode = modes, i = 0; emulate_modeset && mode && i < modes_count; mode = NEXT_DEVMODEW(mode), i++)
+    {
+        UINT width = devmode_get( mode, DM_PELSWIDTH ), height = devmode_get( mode, DM_PELSHEIGHT );
+        SIZE size = {.cx = max( width, height ), .cy = min( width, height )};
+        if (!size.cx || size.cx > max_size.cx || !size.cy || size.cy > max_size.cy) continue;
+        count += add_screen_size( sizes, count, size );
+    }
+    use_defaults = !emulate_modeset || count < 4;
+    for (i = 0; use_defaults && i < ARRAY_SIZE(default_sizes); i++)
     {
         if (default_sizes[i].cx > max_size.cx || default_sizes[i].cy > max_size.cy) continue;
         count += add_screen_size( sizes, count, default_sizes[i] );
@@ -2179,9 +2260,9 @@ static void add_modes( const DEVMODEW *current, UINT host_modes_count, const DEV
     maximum = physical;
     if (emulate_modeset)
     {
-        for (i = 0; i < host_modes_count; i++)
+        const DEVMODEW *mode;
+        for (mode = host_modes, i = 0; i < host_modes_count; mode = NEXT_DEVMODEW(mode), i++)
         {
-            const DEVMODEW *mode = host_modes + i;
             if ((mode->dmPelsHeight > mode->dmPelsWidth) != (physical.dmPelsHeight > physical.dmPelsWidth)) continue;
             if (mode->dmPelsWidth < maximum.dmPelsWidth || mode->dmPelsHeight < maximum.dmPelsHeight) continue;
             maximum.dmPelsWidth = mode->dmPelsWidth;
