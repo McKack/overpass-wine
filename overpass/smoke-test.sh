@@ -38,6 +38,8 @@ otool -L "$W/bin/wineserver" | grep -q libinotify || { echo "::error::wineserver
 for f in "$GST_SO" "$W/bin/wineserver" "$W"/lib/*.dylib "$W"/lib/gstreamer-1.0/*.dylib; do
     for dep in $(otool -L "$f" | tail -n +2 | awk '{print $1}' | grep '^@rpath/'); do
         name="${dep#@rpath/}"
+        # otool -L lists a library's own install name first; Wine's unix libraries link each other side by side.
+        [ "$name" = "$(basename "$f")" ] || [ -f "$(dirname "$f")/$name" ] && continue
         [ -f "$W/lib/$name" ] || { echo "::error::$(basename "$f") needs $name, not in lib/"; exit 1; }
     done
 done
