@@ -1283,7 +1283,14 @@ int __cdecl main(int argc, char *argv[])
     JOBOBJECT_EXTENDED_LIMIT_INFORMATION job_limit;
     JOBOBJECT_ASSOCIATE_COMPLETION_PORT port_info;
     HANDLE started_event, process_monitor_thread;
+    NTSTATUS status;
     DWORD err;
+
+    /* OverPass: services run elevated, as they do on Windows (as SYSTEM or a service account); they inherit
+     * this token. Launchers ask their services for what needs elevation, e.g. GOG Galaxy's service registers
+     * its overlay's Vulkan layer under HKLM and refuses without it, and Galaxy retries for seconds at start. */
+    status = NtSetInformationProcess(GetCurrentProcess(), ProcessWineGrantAdminToken, NULL, 0);
+    if (status) WINE_WARN("couldn't set admin token, error %08lx\n", status);
 
     job_object = CreateJobObjectW(NULL, NULL);
     job_limit.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_BREAKAWAY_OK | JOB_OBJECT_LIMIT_SILENT_BREAKAWAY_OK;
