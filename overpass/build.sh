@@ -129,3 +129,8 @@ git -C "$SRC" rev-parse HEAD > "$DEST/SOURCE-COMMIT" 2>/dev/null || true
 cd "$BUILD/stage"
 tar -cJf "$SRC/overpass-wine-$VERSION-x86_64.tar.xz" "overpass-wine-$VERSION"
 echo "Packaged $SRC/overpass-wine-$VERSION-x86_64.tar.xz"
+# The tarball holds everything the stage did.
+rm -rf "$BUILD/stage"
+# On a maintainer's Mac, OverPass's clean-up script clears older tarballs, temp files and caches.
+CLEAN="${OVERPASS_CLEAN_SCRIPT:-$HOME/Dev/OverPass/src/scripts/clean.sh}"
+if [ -x "$CLEAN" ]; then "$CLEAN" --after-build || true; fi
