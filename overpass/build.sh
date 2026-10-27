@@ -123,7 +123,10 @@ fi
 # Licence and provenance travel with the binaries (LGPL-2.1 §6).
 cp "$SRC/COPYING.LIB" "$SRC/LICENSE" "$SRC/AUTHORS" "$DEST/"
 mkdir -p "$DEST/licenses" && cp -R "$DEPS_PREFIX/share/licenses/." "$DEST/licenses/"
+cp "$SRC/dlls/libnghttp2/COPYING" "$DEST/licenses/nghttp2.txt"
 cp "$SRC/overpass/README.md" "$DEST/OVERPASS-WINE.md"
+# What this build supports, for OverPass and component manifests (see overpass-components' SOCKET.md).
+mkdir -p "$DEST/share/overpass" && cp "$SRC/overpass/features.json" "$DEST/share/overpass/"
 git -C "$SRC" rev-parse HEAD > "$DEST/SOURCE-COMMIT" 2>/dev/null || true
 
 cd "$BUILD/stage"

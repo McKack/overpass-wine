@@ -1,0 +1,21 @@
+{
+  "format": 1,
+  "about": "What this OverPass Wine build supports. Installed as share/overpass/features.json; component manifests list the features they need. A feature's version goes up when its behaviour or switches change incompatibly.",
+  "features": {
+    "dll-path-prepend": { "version": 1, "env": "OVERPASS_DLL_PATH_PREPEND", "summary": "Directories searched before Wine's own DLLs, so a bottle can use other DLLs without changing the Wine install" },
+    "compat-rules": { "version": 1, "env": "OVERPASS_COMPAT_RULES", "summary": "Per-program INI rules: arguments, environment, DLL overrides, graphics backend, replacement program" },
+    "d3d9-backend-rule": { "version": 1, "env": "OVERPASS_D3D9_MTLD3D", "summary": "Compatibility rule key d3d9 = mtld3d | wined3d" },
+    "rosetta-code-regions": { "version": 1, "env": "OVERPASS_NO_ROSETTA_CODE_REGIONS", "summary": "Native PE code regions registered with Rosetta without Apple's libraries" },
+    "no-mac-frame": { "version": 1, "env": "OVERPASS_NO_MAC_FRAME", "summary": "Windows without a Mac title bar, for programs that draw their own frame" },
+    "max-resolution": { "version": 1, "env": "OVERPASS_MAX_RESOLUTION", "summary": "Display modes up to desktop, display or a given size" },
+    "services-elevated": { "version": 1, "summary": "Services run with an administrator token" },
+    "game-mode-bundle": { "version": 1, "env": "OVERPASS_NO_APP_BUNDLE", "summary": "Each program runs from a small app bundle that macOS treats as a game (Game Mode)" },
+    "x87sidecar": { "version": 1, "env": "OVERPASS_X87", "summary": "32-bit programs can run under x87sidecar's x87 translation" },
+    "gstreamer": { "version": 1, "summary": "Media Foundation and DirectShow video and audio through bundled GStreamer" },
+    "inotify": { "version": 1, "summary": "Folder change notifications through libinotify" },
+    "af-unix": { "version": 1, "summary": "AF_UNIX sockets in Winsock" },
+    "dll-file-map": { "version": 1, "env": "WINE_DLL_FILE_MAP", "summary": "The main executable can be loaded from an inherited file descriptor" },
+    "winhttp-http2": { "version": 1, "summary": "WinHTTP speaks HTTP/2 (negotiated with ALPN), decompresses responses and reports the server certificate chain" },
+    "gdk-winrt": { "version": 1, "summary": "WinRT and Win32 pieces GDK games call: text input services, app state registration, data transfer, device enumeration, GetIntegratedDisplaySize, WinHTTP GDK options" }
+  }
+}

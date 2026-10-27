@@ -32,6 +32,13 @@ video, XAudio2's xWMA sounds), built from source by `overpass/build-gstreamer.sh
 - WMA (1, 2, Pro, Lossless, Voice), WMV 1–3, VC-1 and MS-MPEG4 through a minimal LGPL build of FFmpeg that
   holds only these decoders
 
+## Features
+
+`share/overpass/features.json` lists what a build supports (the OverPass patches below, GStreamer, libinotify,
+AF_UNIX sockets, HTTP/2 in WinHTTP, loading the main executable from a file descriptor, the WinRT and Win32
+pieces GDK games call). Add-ons for OverPass name the features they need in their manifests, so a Wine build
+from someone else can carry the same commits and the same file.
+
 ## Licence
 
 Wine, including CodeWeavers' changes and the OverPass patches, is licensed under the GNU LGPL 2.1 or later. See `COPYING.LIB` and `LICENSE`. Every binary release links back to the exact source commit it was built from.
