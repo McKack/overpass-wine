@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <signal.h>
 #include <spawn.h>
 #include <string.h>
@@ -617,6 +618,100 @@ fail:
 }
 
 
+/* OverPass: the link goes in a minimal app bundle, <name>.app/Contents/MacOS/<name>, so macOS sees each program
+ * as an app of its own: its name in the Dock and menu bar, the games category (Game Mode when it goes full
+ * screen) and a bundle identifier of its own. OVERPASS_NO_APP_BUNDLE=1 keeps the plain link. */
+static BOOL write_bundle_info(const char *contents, const char *exe_name)
+{
+    static const char header[] =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+        "<plist version=\"1.0\">\n<dict>\n";
+    char *path, *tmp, *id, *name, *p;
+    size_t len;
+    struct stat st;
+    BOOL ret = FALSE;
+    FILE *f;
+
+    if (asprintf(&path, "%sInfo.plist", contents) < 0) return FALSE;
+    if (!stat(path, &st))
+    {
+        free(path);
+        return TRUE;
+    }
+
+    /* the identifier allows letters, digits, '-' and '.' */
+    id = strdup(exe_name);
+    for (p = id; *p; p++) if (!isalnum((unsigned char)*p) && *p != '-' && *p != '.') *p = '-';
+    /* the name shown in the menu bar and Dock, without ".exe" */
+    len = strlen(exe_name);
+    if (len > 4 && !strcasecmp(exe_name + len - 4, ".exe")) len -= 4;
+    name = strndup(exe_name, len);
+
+    if (asprintf(&tmp, "%s.%d", path, getpid()) >= 0 && (f = fopen(tmp, "w")))
+    {
+        fprintf(f, "%s"
+                "    <key>CFBundleExecutable</key>\n    <string>%s</string>\n"
+                "    <key>CFBundleIdentifier</key>\n    <string>io.github.mckack.overpass.program.%s</string>\n"
+                "    <key>CFBundleName</key>\n    <string>%s</string>\n"
+                "    <key>CFBundleDisplayName</key>\n    <string>%s</string>\n"
+                "    <key>CFBundleInfoDictionaryVersion</key>\n    <string>6.0</string>\n"
+                "    <key>CFBundlePackageType</key>\n    <string>APPL</string>\n"
+                "    <key>CFBundleAllowMixedLocalizations</key>\n    <true/>\n"
+                "    <key>NSPrincipalClass</key>\n    <string>WineApplication</string>\n"
+                "    <key>LSUIElement</key>\n    <string>1</string>\n"
+                "    <key>LSApplicationCategoryType</key>\n    <string>public.app-category.games</string>\n"
+                "    <key>LSSupportsGameMode</key>\n    <true/>\n"
+                "</dict>\n</plist>\n", header, exe_name, id, name, name);
+        ret = !fclose(f) && !rename(tmp, path);
+        if (!ret) unlink(tmp);
+    }
+    free(tmp);
+    free(name);
+    free(id);
+    free(path);
+    return ret;
+}
+
+/* Appends <name>.app/Contents/MacOS/ to the temp dir in linkpath, creating the bundle; leaves it as it was on failure. */
+static BOOL append_bundle_dirs(char *linkpath, const char *exe_name)
+{
+    char *contents, *ntdll, *target;
+    size_t len = strlen(linkpath);
+    BOOL ret = FALSE;
+
+    if (strpbrk(exe_name, "&<>")) return FALSE;  /* keeps the Info.plist free of XML escapes */
+    if (strlcat(linkpath, exe_name, MAX_PATH) >= MAX_PATH || strlcat(linkpath, ".app/", MAX_PATH) >= MAX_PATH)
+        goto done;
+    mkdir(linkpath, 0700);
+    if (strlcat(linkpath, "Contents/", MAX_PATH) >= MAX_PATH) goto done;
+    mkdir(linkpath, 0700);
+    contents = strdup(linkpath);
+    if (strlcat(linkpath, "MacOS/", MAX_PATH) >= MAX_PATH)
+    {
+        free(contents);
+        goto done;
+    }
+    mkdir(linkpath, 0700);
+    ret = write_bundle_info(contents, exe_name);
+    free(contents);
+
+    /* the loader finds ntdll.so next to itself; point at the one create_tempdir linked */
+    if (ret && asprintf(&ntdll, "%sntdll.so", linkpath) >= 0)
+    {
+        if (asprintf(&target, "%.*sntdll.so", (int)len, linkpath) >= 0)
+        {
+            symlink(target, ntdll);
+            free(target);
+        }
+        free(ntdll);
+    }
+
+done:
+    if (!ret) linkpath[len] = 0;
+    return ret;
+}
+
 static char *create_preloader_link(const char *wineloader_path, const char *exe_name)
 {
     struct stat st;
@@ -625,6 +720,10 @@ static char *create_preloader_link(const char *wineloader_path, const char *exe_
     if (!linkpath)
         return NULL;
 
+    {
+        const char *no_bundle = getenv("OVERPASS_NO_APP_BUNDLE");
+        if (!no_bundle || !*no_bundle || *no_bundle == '0') append_bundle_dirs(linkpath, exe_name);
+    }
     if (strlcat(linkpath, exe_name, MAX_PATH) >= MAX_PATH)
         goto fail;
 
