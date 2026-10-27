@@ -86,11 +86,12 @@ WINE_DEFAULT_DEBUG_CHANNEL(process);
 
 static ULONG execute_flags = MEM_EXECUTE_OPTION_DISABLE;
 
-/* Under Rosetta every page that is writable and executable costs a Mach round
- * trip on first touch, and turning no-execute off makes every readable mapping
- * executable, so a process that does it crawls. Keep no-execute permanently on
- * there, as the Windows AlwaysOn policy does. WINE_FORCE_NX=0 lets a process
- * turn it off again on any host; any other value keeps it on on every host. */
+/* Turning no-execute off makes every readable mapping executable, which under
+ * Rosetta can make each first touch of a fresh page a Mach round trip.
+ * WINE_FORCE_NX=1 keeps no-execute permanently on, as the Windows AlwaysOn
+ * policy does, for a game that is slowed down by it.  By default a main
+ * executable without IMAGE_DLLCHARACTERISTICS_NX_COMPAT still turns it off, as
+ * on Windows: old programs that run code from data pages need that. */
 static ULONG get_execute_flags(void)
 {
     static int always_on = -1;
@@ -99,17 +100,7 @@ static ULONG get_execute_flags(void)
     {
         const char *env = getenv( "WINE_FORCE_NX" );
 
-        if (env) always_on = strcmp( env, "0" ) != 0;
-        else
-        {
-            int translated = 0;
-#ifdef __APPLE__
-            size_t size = sizeof(translated);
-            if (sysctlbyname( "sysctl.proc_translated", &translated, &size, NULL, 0 ) == -1)
-                translated = 0;
-#endif
-            always_on = translated;
-        }
+        always_on = env && *env && strcmp( env, "0" ) != 0;
         if (always_on) TRACE( "no-execute is permanently on\n" );
     }
     return always_on ? execute_flags | MEM_EXECUTE_OPTION_PERMANENT : execute_flags;
