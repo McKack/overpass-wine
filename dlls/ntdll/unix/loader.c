@@ -788,16 +788,19 @@ static WORD get_pe_file_machine( const char *path )
 }
 
 /* OverPass: start an i386 program under x87sidecar (athei/x87sidecar, MIT), whose JIT replaces Rosetta's slow
- * x87 translation. Opt-in: only when ROSETTA_X87_PATH names the sidecar in this process's environment, which
- * OverPass sets per game (a compatibility rule's env line reaches the child before this exec). The sidecar runs
+ * x87 translation. Opt-in: ROSETTA_X87_PATH names the sidecar, or OVERPASS_X87=1 asks for the one in
+ * OVERPASS_X87SIDECAR (OverPass sets that path for every launch, and a game's compatibility rule sets
+ * OVERPASS_X87=1, which reaches the child's environment before this exec). The sidecar runs
  * in --cooperative mode: x87_cooperative_handshake() in the new process hands it our task port, so it needs no
  * entitlements. Adapted from Alexander Theißen's patch for wine-build, without its compatdb.so. */
 static void exec_x87_sidecar( char **argv, WORD machine )
 {
     static char coop_flag[] = "--cooperative";
-    const char *sidecar = getenv( "ROSETTA_X87_PATH" ), *target = NULL;
+    const char *sidecar = getenv( "ROSETTA_X87_PATH" ), *opt_in = getenv( "OVERPASS_X87" ), *target = NULL;
     char **coop_argv;
     int i, n;
+
+    if ((!sidecar || !*sidecar) && opt_in && !strcmp( opt_in, "1" )) sidecar = getenv( "OVERPASS_X87SIDECAR" );
 
     if (machine != IMAGE_FILE_MACHINE_I386 || !sidecar || !*sidecar || access( sidecar, X_OK )) return;
     /* loader_exec first tries a separate 32-bit loader, which a WoW64 build doesn't have; the sidecar would
