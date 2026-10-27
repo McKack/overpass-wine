@@ -2153,8 +2153,8 @@ static DEVMODEW *get_virtual_modes( const DEVMODEW *initial, const DEVMODEW *max
 static void add_modes( const DEVMODEW *current, UINT host_modes_count, const DEVMODEW *host_modes, void *param )
 {
     struct device_manager_ctx *ctx = param;
-    DEVMODEW dummy, physical, detached = *current, virtual, *virtual_modes = NULL;
-    UINT virtual_count, modes_count = host_modes_count;
+    DEVMODEW dummy, physical, maximum, detached = *current, virtual, *virtual_modes = NULL;
+    UINT virtual_count, modes_count = host_modes_count, i;
     const DEVMODEW *modes = host_modes;
     struct source *source;
 
@@ -2173,6 +2173,22 @@ static void add_modes( const DEVMODEW *current, UINT host_modes_count, const DEV
     physical = modes_count == 1 ? *modes : *current;
     if (ctx->is_primary) ctx->primary = *current;
 
+    /* OverPass: with emulated mode changes, also offer the sizes above the current mode that the display
+     * itself supports (a Mac desktop that "looks like" 1600x900 on a 4K screen), scaled down like the
+     * smaller ones, so games can render at the screen's real resolution. */
+    maximum = physical;
+    if (emulate_modeset)
+    {
+        for (i = 0; i < host_modes_count; i++)
+        {
+            const DEVMODEW *mode = host_modes + i;
+            if ((mode->dmPelsHeight > mode->dmPelsWidth) != (physical.dmPelsHeight > physical.dmPelsWidth)) continue;
+            if (mode->dmPelsWidth < maximum.dmPelsWidth || mode->dmPelsHeight < maximum.dmPelsHeight) continue;
+            maximum.dmPelsWidth = mode->dmPelsWidth;
+            maximum.dmPelsHeight = mode->dmPelsHeight;
+        }
+    }
+
     detached.dmPelsWidth = 0;
     detached.dmPelsHeight = 0;
     if (!(source->state_flags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP)) current = &detached;
@@ -2187,7 +2203,7 @@ static void add_modes( const DEVMODEW *current, UINT host_modes_count, const DEV
         if (!read_source_mode( source->key, ENUM_CURRENT_SETTINGS, &virtual ) || is_detached_mode( &virtual ))
             virtual = physical;
 
-        if ((virtual_modes = get_virtual_modes( current, &physical, host_modes, host_modes_count, &virtual_count )))
+        if ((virtual_modes = get_virtual_modes( current, &maximum, host_modes, host_modes_count, &virtual_count )))
         {
             modes_count = virtual_count;
             modes = virtual_modes;
