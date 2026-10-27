@@ -35,6 +35,8 @@
  *   dll = xaudio2_7=n,b                             added to WINEDLLOVERRIDES
  *   graphics = dxmt                                 dxmt, d3dmetal, wined3d or auto; OverPass sets
  *                                                   OVERPASS_BACKEND_<NAME> to each backend's DLL folder
+ *   d3d9 = mtld3d                                   mtld3d or wined3d for Direct3D 9, after any graphics
+ *                                                   line; OverPass sets OVERPASS_D3D9_MTLD3D to mtld3d's folder
  *   replace-path = \Game\start.exe => \Game\game.exe
  *                                                   start another program instead: the first part of the
  *                                                   program's path is replaced by the second, or the whole
@@ -441,6 +443,36 @@ static void rule_apply( const struct rule *rule, WCHAR **app_name, WCHAR **cmdli
             }
             env_set_both( env, L"OVERPASS_DLL_PATH_PREPEND", 25, dir ? dir : L"" );
             env_set_both( env, L"CX_ACTIVE_GRAPHICS_BACKEND", 26, wcsicmp( value, L"auto" ) ? value : L"" );
+        }
+        else if ((value = value_of( line, L"d3d9" )))
+        {
+            /* mtld3d's folder goes first in the DLL path, or comes out of it for WineD3D. */
+            const WCHAR *dir = env_get( env, L"OVERPASS_D3D9_MTLD3D" );
+            const WCHAR *path = env_get( env, L"OVERPASS_DLL_PATH_PREPEND" );
+            size_t dir_len, path_len = path ? lstrlenW( path ) : 0;
+            BOOL first;
+            WCHAR *new_path;
+
+            if (!dir || !*dir)
+            {
+                WARN( "rule %s wants %s for Direct3D 9, which isn't installed\n", debugstr_w(rule->name), debugstr_w(value) );
+                continue;
+            }
+            dir_len = lstrlenW( dir );
+            first = path_len >= dir_len && !wcsncmp( path, dir, dir_len ) && (!path[dir_len] || path[dir_len] == ':');
+            if (!wcsicmp( value, L"wined3d" ))
+            {
+                if (first) env_set_both( env, L"OVERPASS_DLL_PATH_PREPEND", 25, path[dir_len] ? path + dir_len + 1 : L"" );
+            }
+            else if (!wcsicmp( value, L"mtld3d" ) && !first)
+            {
+                if (!(new_path = HeapAlloc( GetProcessHeap(), 0, (dir_len + path_len + 2) * sizeof(WCHAR) ))) continue;
+                memcpy( new_path, dir, dir_len * sizeof(WCHAR) );
+                new_path[dir_len] = path_len ? ':' : 0;
+                if (path_len) memcpy( new_path + dir_len + 1, path, (path_len + 1) * sizeof(WCHAR) );
+                env_set_both( env, L"OVERPASS_DLL_PATH_PREPEND", 25, new_path );
+                HeapFree( GetProcessHeap(), 0, new_path );
+            }
         }
     }
 }
