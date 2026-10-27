@@ -15,7 +15,7 @@
     "inotify": { "version": 1, "summary": "Folder change notifications through libinotify" },
     "af-unix": { "version": 1, "summary": "AF_UNIX sockets in Winsock" },
     "dll-file-map": { "version": 1, "env": "WINE_DLL_FILE_MAP", "summary": "The main executable can be loaded from an inherited file descriptor" },
-    "winhttp-http2": { "version": 1, "summary": "WinHTTP speaks HTTP/2 (negotiated with ALPN), decompresses responses and reports the server certificate chain" },
+    "winhttp-http2": { "version": 1, "env": "OVERPASS_WINHTTP_HTTP2", "summary": "WinHTTP speaks HTTP/2 (negotiated with ALPN), decompresses responses and reports the server certificate chain" },
     "gdk-winrt": { "version": 1, "summary": "WinRT and Win32 pieces GDK games call: text input services, app state registration, data transfer, device enumeration, GetIntegratedDisplaySize, WinHTTP GDK options" }
   }
 }

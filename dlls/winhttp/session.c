@@ -340,6 +340,7 @@ HINTERNET WINAPI WinHttpOpen( LPCWSTR agent, DWORD access, LPCWSTR proxy, LPCWST
 {
     struct session *session;
     HINTERNET handle = NULL;
+    WCHAR value[2];
 
     TRACE( "%s, %lu, %s, %s, %#lx\n", debugstr_w(agent), access, debugstr_w(proxy), debugstr_w(bypass), flags );
 
@@ -357,7 +358,10 @@ HINTERNET WINAPI WinHttpOpen( LPCWSTR agent, DWORD access, LPCWSTR proxy, LPCWST
     session->receive_response_timeout = DEFAULT_RECEIVE_RESPONSE_TIMEOUT;
     session->websocket_receive_buffer_size = 32768;
     session->websocket_send_buffer_size = 32768;
-    session->http_protocols = WINHTTP_PROTOCOL_FLAG_HTTP2;
+    /* Windows offers HTTP/2 to desktop programs only when they ask for it (WINHTTP_OPTION_ENABLE_HTTP_PROTOCOL).
+     * OVERPASS_WINHTTP_HTTP2=1, set per program by a compatibility rule, offers it by default. */
+    if (GetEnvironmentVariableW( L"OVERPASS_WINHTTP_HTTP2", value, ARRAY_SIZE(value) ) == 1 && value[0] == '1')
+        session->http_protocols = WINHTTP_PROTOCOL_FLAG_HTTP2;
     list_init( &session->cookie_cache );
     InitializeCriticalSectionEx( &session->cs, 0, RTL_CRITICAL_SECTION_FLAG_FORCE_DEBUG_INFO );
     session->cs.DebugInfo->Spare[0] = (DWORD_PTR)(__FILE__ ": session.cs");
