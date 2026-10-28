@@ -7,6 +7,7 @@
  * w/h 0 = follow the client size; "12" uses D3D12 instead of D3D11. Each phase prints the window and swapchain
  * state and writes its number to C:\phase.txt (C:\phase.txt.start once the first frame is up), so a script can
  * bring the window forward and run `screencapture` at the right moments.
+ * MODES_HOLD=<ms> (default 2500) is how long each phase stays up after its number is written.
  *   x86_64-w64-mingw32-gcc -O1 -static modes.c -o modes.exe -ld3d12 -ld3d11 -ldxgi -luuid */
 #define COBJMACROS
 #define INITGUID
@@ -15,6 +16,7 @@
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 static HWND hwnd;
 static ID3D11Device *dev;
@@ -180,7 +182,8 @@ static void phase(const char *what)
     frames(1500);
     report(what);
     if ((f = fopen("C:\\phase.txt", "w"))) { fprintf(f, "%d %s\n", ++phase_no, what); fclose(f); }
-    frames(2500);
+    /* MODES_HOLD=<ms> keeps each phase up longer, for switching to another app and back during it. */
+    frames(getenv("MODES_HOLD") ? atoi(getenv("MODES_HOLD")) : 2500);
 }
 
 static void borderless(void)

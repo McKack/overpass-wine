@@ -2591,6 +2591,16 @@ static BOOL wined3d_adapter_vk_init(struct wined3d_adapter_vk *adapter_vk,
     {
         bool d3d10 = !(wined3d_creation_flags & WINED3D_PIXEL_CENTER_INTEGER);
         bool moltenvk = adapter_vk->driver_properties.driverID == VK_DRIVER_ID_MOLTENVK;
+        VkPhysicalDeviceFeatures features;
+
+        /* OverPass: stock MoltenVK has no geometry shaders, which caps the Vulkan renderer at feature level 9_3;
+         * OpenGL gives 10_1. CodeWeavers' MoltenVK reports them. */
+        VK_CALL(vkGetPhysicalDeviceFeatures(adapter_vk->physical_device, &features));
+        if (moltenvk && !features.geometryShader)
+        {
+            TRACE("MoltenVK without geometry shaders, defaulting to the OpenGL backend.\n");
+            goto fail_vulkan;
+        }
 
         if (!moltenvk || !d3d10)
         {
