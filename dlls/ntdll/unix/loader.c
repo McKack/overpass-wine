@@ -623,6 +623,23 @@ fail:
 }
 
 
+/* OverPass: the name macOS shows in the Dock and the menu bar. The program's name without its extension and with
+ * a capital first letter; Steam's web helper, which draws Steam's window, shows as "Steam". The link itself keeps
+ * the program's file name, which winemac.drv's hacks match on. */
+static char *display_name(const char *exe_name)
+{
+    static const struct { const char *exe, *name; } names[] = { { "steamwebhelper", "Steam" } };
+    const char *dot = strrchr(exe_name, '.');
+    size_t len = dot && dot != exe_name ? dot - exe_name : strlen(exe_name), i;
+    char *ret;
+
+    for (i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+        if (strlen(names[i].exe) == len && !strncasecmp(exe_name, names[i].exe, len)) return strdup(names[i].name);
+    if (!(ret = strndup(exe_name, len))) return NULL;
+    if (ret[0] >= 'a' && ret[0] <= 'z') ret[0] -= 'a' - 'A';
+    return ret;
+}
+
 /* OverPass: the link goes in a minimal app bundle, <name>.app/Contents/MacOS/<name>, so macOS sees each program
  * as an app of its own: its name in the Dock and menu bar, the games category (Game Mode when it goes full
  * screen) and a bundle identifier of its own. OVERPASS_NO_APP_BUNDLE=1 keeps the plain link. */
@@ -633,7 +650,6 @@ static BOOL write_bundle_info(const char *contents, const char *exe_name)
         "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
         "<plist version=\"1.0\">\n<dict>\n";
     char *path, *tmp, *id, *name, *p;
-    size_t len;
     struct stat st;
     BOOL ret = FALSE;
     FILE *f;
@@ -648,10 +664,7 @@ static BOOL write_bundle_info(const char *contents, const char *exe_name)
     /* the identifier allows letters, digits, '-' and '.' */
     id = strdup(exe_name);
     for (p = id; *p; p++) if (!isalnum((unsigned char)*p) && *p != '-' && *p != '.') *p = '-';
-    /* the name shown in the menu bar and Dock, without ".exe" */
-    len = strlen(exe_name);
-    if (len > 4 && !strcasecmp(exe_name + len - 4, ".exe")) len -= 4;
-    name = strndup(exe_name, len);
+    if (!(name = display_name(exe_name))) name = strdup(exe_name);
 
     if (asprintf(&tmp, "%s.%d", path, getpid()) >= 0 && (f = fopen(tmp, "w")))
     {
@@ -760,7 +773,11 @@ static void replace_wineloader_path_with_link(char **wineloader_path, const char
         }
 
         /* Pass the app name to the preloader through an env var. */
-        setenv("WINEPRELOADERAPPNAME", app_name, 1);
+        {
+            char *name = display_name(app_name);
+            setenv("WINEPRELOADERAPPNAME", name ? name : app_name, 1);
+            free(name);
+        }
         free(app_name);
     }
 }
