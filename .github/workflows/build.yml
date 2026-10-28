@@ -19,7 +19,7 @@ jobs:
       - name: Install build dependencies
         run: |
           brew update
-          brew install bison cmake flex mingw-w64 pkgconf dylibbundler ccache meson ninja nasm
+          brew install bison cmake flex mingw-w64 pkgconf dylibbundler ccache meson ninja nasm glslang
 
       # Compiler cache: each run saves a new one and restores the most recent, so only changed files compile.
       # A new compiler version (brew upgrades mingw or Xcode) simply misses and rebuilds.
@@ -39,6 +39,10 @@ jobs:
         with:
           path: build-gstreamer
           key: gstreamer-${{ runner.os }}-${{ hashFiles('overpass/build-gstreamer.sh') }}
+      - uses: actions/cache@v4
+        with:
+          path: build-dxvk
+          key: dxvk-${{ runner.os }}-${{ hashFiles('overpass/build-dxvk.sh') }}
 
       - name: Configure ccache
         run: |

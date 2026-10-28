@@ -42,7 +42,9 @@ prebuilt() {
 # FreeType, GnuTLS, SDL 2, libinotify, Vulkan loader, MoltenVK; then GStreamer for game video (winegstreamer).
 prebuilt deps
 prebuilt gstreamer
-DEPS_ROOT="$SRC/build-deps" GST_ROOT="$SRC/build-gstreamer"
+# DXVK for the DXVK graphics choice (Windows DLLs, built with mingw).
+prebuilt dxvk
+DEPS_ROOT="$SRC/build-deps" GST_ROOT="$SRC/build-gstreamer" DXVK_ROOT="$SRC/build-dxvk"
 DEPS_PREFIX="$DEPS_ROOT/prefix" GST_PREFIX="$GST_ROOT/prefix"
 # FreeType's pkg-config file requires zlib, which macOS ships (in the SDK) without one.
 mkdir -p "$BUILD/pkgconfig"
@@ -54,6 +56,8 @@ export CPPFLAGS="-I$DEPS_PREFIX/include" LDFLAGS="-L$DEPS_PREFIX/lib"
 cd "$BUILD/obj"
 
 # No --with-opengl: Wine 11 makes EGL a hard requirement then, but winemac.drv does OpenGL through CGL.
+# Vulkan goes straight to MoltenVK, as in CrossOver: through the Vulkan loader it needs a driver manifest the
+# loader can find, and without one every Vulkan program (and DXVK) found no device.
 "$SRC/configure" \
     --prefix="$DEST" \
     --enable-archs=i386,x86_64 \
@@ -64,6 +68,7 @@ cd "$BUILD/obj"
     --without-gphoto --without-gssapi --without-krb5 --without-netapi \
     --without-oss --without-pulse --without-sane --without-udev --without-usb \
     --without-v4l2 --without-wayland --without-x \
+    ac_cv_lib_soname_vulkan=libMoltenVK.dylib \
     ${WINE_CC[@]+"${WINE_CC[@]}"}
 
 make -j"$JOBS"
@@ -78,8 +83,7 @@ for f in \
     "$DEPS_PREFIX/lib/libgnutls.30.dylib" \
     "$DEPS_PREFIX/lib/libSDL2-2.0.0.dylib" \
     "$DEPS_PREFIX/lib/libinotify.0.dylib" \
-    "$DEPS_PREFIX/lib/libMoltenVK.dylib" \
-    "$DEPS_PREFIX/lib/libvulkan.1.dylib"; do
+    "$DEPS_PREFIX/lib/libMoltenVK.dylib"; do
     cp -L "$f" "$LIB/"
 done
 chmod u+w "$LIB"/*.dylib
@@ -98,6 +102,8 @@ done
 
 # GStreamer goes in after dylibbundler, already relocatable.
 "$SRC/overpass/bundle-gstreamer.sh" "$GST_PREFIX" "$DEST"
+# DXVK's DLLs where OverPass puts them in front of Wine's own (OVERPASS_DLL_PATH_PREPEND), as CrossOver's lib/dxvk.
+mkdir -p "$LIB/dxvk" && cp -R "$DXVK_ROOT/prefix/x86_64-windows" "$DXVK_ROOT/prefix/i386-windows" "$LIB/dxvk/"
 
 # Libraries built here are linked by their build path (wineserver: libinotify; winegstreamer.so: GStreamer).
 for f in "$DEST"/bin/wine "$DEST"/bin/wineserver "$LIB"/wine/x86_64-unix/*.so; do
@@ -124,6 +130,7 @@ fi
 cp "$SRC/COPYING.LIB" "$SRC/LICENSE" "$SRC/AUTHORS" "$DEST/"
 mkdir -p "$DEST/licenses" && cp -R "$DEPS_PREFIX/share/licenses/." "$DEST/licenses/"
 cp "$SRC/dlls/libnghttp2/COPYING" "$DEST/licenses/nghttp2.txt"
+cp "$DXVK_ROOT/prefix/licenses/dxvk.txt" "$DEST/licenses/"
 cp "$SRC/overpass/README.md" "$DEST/OVERPASS-WINE.md"
 # What this build supports, for OverPass and component manifests (see overpass-components' SOCKET.md).
 mkdir -p "$DEST/share/overpass" && cp "$SRC/overpass/features.json" "$DEST/share/overpass/"

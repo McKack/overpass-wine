@@ -32,6 +32,13 @@ video, XAudio2's xWMA sounds), built from source by `overpass/build-gstreamer.sh
 - WMA (1, 2, Pro, Lossless, Voice), WMV 1–3, VC-1 and MS-MPEG4 through a minimal LGPL build of FFmpeg that
   holds only these decoders
 
+## DXVK
+
+Releases include DXVK 1.10.3, CodeWeavers' fork from the CrossOver source release (zlib licence), in `lib/dxvk`
+for OverPass's "DXVK (Vulkan via MoltenVK)" choice: Direct3D 9, 10 and 11 on Vulkan, built by
+`overpass/build-dxvk.sh` with two small patches (newer mingw headers; MoltenVK has no geometry shaders, so
+devices are made without them and feature level 11_0 works). Vulkan goes straight to the bundled MoltenVK.
+
 ## Features
 
 `share/overpass/features.json` lists what a build supports (the OverPass patches below, GStreamer, libinotify,
@@ -50,13 +57,13 @@ are in each release's `licenses/` folder.
 On a Mac (Apple Silicon through Rosetta, or Intel) with Homebrew's build tools:
 
 ```sh
-brew install bison cmake flex mingw-w64 pkgconf dylibbundler ccache meson ninja nasm
+brew install bison cmake flex mingw-w64 pkgconf dylibbundler ccache meson ninja nasm glslang
 arch -x86_64 /bin/bash -c 'OVERPASS_WINE_VERSION=<version> overpass/build.sh'
 ```
 
-The libraries Wine links against (FreeType, GnuTLS, SDL 2, libinotify, the Vulkan loader, MoltenVK, and
-GStreamer with a minimal LGPL FFmpeg) are built from source for x86_64 by `overpass/build-deps.sh` and
-`overpass/build-gstreamer.sh`, and kept between builds. A first build takes a few hours; later ones only
+The libraries Wine links against (FreeType, GnuTLS, SDL 2, libinotify, MoltenVK, and GStreamer with a minimal
+LGPL FFmpeg) are built from source for x86_64 by `overpass/build-deps.sh` and `overpass/build-gstreamer.sh`,
+and DXVK by `overpass/build-dxvk.sh`, all kept between builds. A first build takes a few hours; later ones only
 rebuild what changed.
 
 Releases are built this way and uploaded with `gh release create`. The GitHub workflow only runs when started
