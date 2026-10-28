@@ -1,4 +1,4 @@
-# OverPass Wine
+# overpass-wine
 
 The Wine build used by [OverPass](https://github.com/McKack/OverPass), a macOS app for running Windows games.
 
