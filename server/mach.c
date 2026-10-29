@@ -478,11 +478,10 @@ int write_process_memory( struct process *process, client_ptr_t ptr, data_size_t
         }
 
         /*
-         * FIXME: Rosetta can turn RWX pages into R-X pages during execution.
-         * For now we will just have to ignore failures due to the wrong
-         * protection here.
+         * Windows writes into read-only and code pages too (hook engines patch ntdll this way), and
+         * Rosetta can turn RWX pages into R-X pages during execution: only pages with no access fail.
          */
-        if (!is_rosetta() && !(info.protection & VM_PROT_WRITE))
+        if (info.protection == VM_PROT_NONE)
         {
             ret = KERN_PROTECTION_FAILURE;
             goto out;
@@ -509,8 +508,8 @@ int write_process_memory( struct process *process, client_ptr_t ptr, data_size_t
                 break;
             }
 
-            /* FIXME: See the above Rosetta remark. */
-            if (!is_rosetta() && !(info.protection & VM_PROT_WRITE))
+            /* See the remark above. */
+            if (info.protection == VM_PROT_NONE)
             {
                 ret = KERN_PROTECTION_FAILURE;
                 break;
@@ -521,6 +520,10 @@ int write_process_memory( struct process *process, client_ptr_t ptr, data_size_t
 
             ret = mach_vm_protect( process_port, current_address, write_size, 0,
                     VM_PROT_READ | VM_PROT_WRITE );
+            /* A mapping that can't be made writable gets a private copy, as a copy-on-write fault would. */
+            if (ret == KERN_PROTECTION_FAILURE)
+                ret = mach_vm_protect( process_port, current_address, write_size, 0,
+                        VM_PROT_READ | VM_PROT_WRITE | VM_PROT_COPY );
             if (ret != KERN_SUCCESS) break;
 
             ret = mach_vm_write( process_port, current_address,
