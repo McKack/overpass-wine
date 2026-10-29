@@ -29,6 +29,7 @@
  *   program = GalaxyClient.exe                      a program the rule covers: file name or path ending,
  *   program = GOG Galaxy\GalaxyClient Helper.exe     any case; repeat for more
  *   steam-app = 1234                                or a Steam game, by the SteamGameId Steam sets
+ *   beside = libcef.dll                             or any program with this file in its folder
  *   add-arguments = --in-process-gpu --use-gl=swiftshader
  *   unless-argument = --type=crashpad-handler       don't add arguments to command lines containing this
  *   env = NAME=value                                for the program's Windows and Unix environment
@@ -44,8 +45,8 @@
  *                                                   when the replacement doesn't exist
  *   source = https://...                            where the fix comes from (not used here)
  *
- * Lines starting with '#' or ';' are comments. A rule applies when any of its program or steam-app
- * lines matches; matching rules are applied in the order they are read.
+ * Lines starting with '#' or ';' are comments. A rule applies when any of its program, steam-app or
+ * beside lines matches; matching rules are applied in the order they are read.
  */
 
 #include <stdarg.h>
@@ -372,6 +373,18 @@ static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const 
         {
             const WCHAR *id = env_get( env, L"SteamGameId" );
             if (id && !wcscmp( id, value )) return TRUE;
+        }
+        else if ((value = value_of( rule->lines[i], L"beside" )))
+        {
+            /* A file of that name in the program's folder, e.g. libcef.dll for a Chromium Embedded program. */
+            WCHAR path[MAX_PATH];
+            const WCHAR *slash = wcsrchr( app_name, '\\' );
+            DWORD attrs;
+
+            if (!slash || !*value || wcschr( value, '\\' ) || wcschr( value, '/' )) continue;
+            if (swprintf( path, ARRAY_SIZE(path), L"%.*s\\%s", (int)(slash - app_name), app_name, value ) < 0) continue;
+            attrs = GetFileAttributesW( path );
+            if (attrs != INVALID_FILE_ATTRIBUTES && !(attrs & FILE_ATTRIBUTE_DIRECTORY)) return TRUE;
         }
     }
     return FALSE;
