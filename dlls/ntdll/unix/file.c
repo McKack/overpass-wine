@@ -3342,13 +3342,21 @@ static inline int get_dos_prefix_len( const UNICODE_STRING *name )
     prefix = name->Buffer;
     length = name->Length;
 
-    if (length >= ARRAY_SIZE( globalrootW ) &&
+    /* \??\GLOBALROOT and \GLOBALROOT link to the root of the namespace: \??\GLOBALROOT\??\C:\ is \??\C:\ */
+    if (length >= sizeof(globalrootW) &&
         !wcsnicmp( prefix, globalrootW, ARRAY_SIZE( globalrootW )))
     {
         WARN("Stripping off GlobalRoot prefix.\n");
         prefix += ARRAY_SIZE( globalrootW );
         prefix_len += ARRAY_SIZE( globalrootW );
-        length -= ARRAY_SIZE( globalrootW );
+        length -= sizeof( globalrootW );
+    }
+    else if (length >= sizeof(globalrootW) - 3 * sizeof(WCHAR) &&
+             !wcsnicmp( prefix, globalrootW + 3, ARRAY_SIZE( globalrootW ) - 3 ))
+    {
+        prefix += ARRAY_SIZE( globalrootW ) - 3;
+        prefix_len += ARRAY_SIZE( globalrootW ) - 3;
+        length -= sizeof( globalrootW ) - 3 * sizeof(WCHAR);
     }
 
     if (length >= sizeof(nt_prefixW) &&
@@ -5224,6 +5232,32 @@ NTSTATUS WINAPI NtSetInformationFile( HANDLE handle, IO_STATUS_BLOCK *io,
         else status = STATUS_INVALID_PARAMETER_3;
         break;
 
+    case FileAllocationInformation:
+        if (len >= sizeof(FILE_ALLOCATION_INFORMATION))
+        {
+            const FILE_ALLOCATION_INFORMATION *info = ptr;
+            struct stat st;
+
+            if ((status = server_get_unix_fd( handle, FILE_WRITE_DATA, &fd, &needs_close, NULL, NULL )))
+                break;
+            if (fstat( fd, &st ) == -1) status = errno_to_status( errno );
+            else if (info->AllocationSize.QuadPart < st.st_size)
+            {
+                /* Allocating less than the end of file truncates the file, as on Windows. */
+                SERVER_START_REQ( set_fd_eof_info )
+                {
+                    req->handle   = wine_server_obj_handle( handle );
+                    req->eof      = info->AllocationSize.QuadPart;
+                    status = wine_server_call( req );
+                }
+                SERVER_END_REQ;
+            }
+            /* Reserving space past it needs nothing: the host file system allocates as the file grows. */
+            if (needs_close) close( fd );
+        }
+        else status = STATUS_INVALID_PARAMETER_3;
+        break;
+
     case FilePipeInformation:
         if (len >= sizeof(FILE_PIPE_INFORMATION))
         {
@@ -6950,7 +6984,6 @@ NTSTATUS WINAPI NtLockFile( HANDLE file, HANDLE event, PIO_APC_ROUTINE apc, void
                             IO_STATUS_BLOCK *io_status, LARGE_INTEGER *offset,
                             LARGE_INTEGER *count, ULONG *key, BOOLEAN dont_wait, BOOLEAN exclusive )
 {
-    static int warn;
     unsigned int ret;
     HANDLE handle;
     BOOLEAN async;
@@ -6960,7 +6993,6 @@ NTSTATUS WINAPI NtLockFile( HANDLE file, HANDLE event, PIO_APC_ROUTINE apc, void
         FIXME("Unimplemented yet parameter\n");
         return STATUS_NOT_IMPLEMENTED;
     }
-    if (apc_user && !warn++) FIXME("I/O completion on lock not implemented yet\n");
 
     for (;;)
     {
@@ -6978,7 +7010,13 @@ NTSTATUS WINAPI NtLockFile( HANDLE file, HANDLE event, PIO_APC_ROUTINE apc, void
         SERVER_END_REQ;
         if (ret != STATUS_PENDING)
         {
-            if (!ret && event) NtSetEvent( event, NULL );
+            if (!ret)
+            {
+                if (event) NtSetEvent( event, NULL );
+                /* A lock granted at once still completes through the file's completion port, as on
+                 * Windows; the server leaves it out for FILE_SKIP_COMPLETION_PORT_ON_SUCCESS. */
+                if (apc_user) add_completion( file, (ULONG_PTR)apc_user, STATUS_SUCCESS, 0, FALSE );
+            }
             return ret;
         }
         if (async)
