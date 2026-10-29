@@ -1251,6 +1251,53 @@ void macdrv_hotkey_press(const macdrv_event *event)
 
 
 /***********************************************************************
+ *              macdrv_release_stale_modifiers
+ *
+ * Release the modifier keys Windows thinks are down but are up on the Mac.
+ * Wine maps Command to Alt: if Command went down in a Wine window and came
+ * up in another application (Command-Tab, Command-Space, a process quit with
+ * Command-Q), Alt stayed down in the desktop's key state and every later
+ * letter became an Alt shortcut.
+ */
+void macdrv_release_stale_modifiers(void)
+{
+    static const struct
+    {
+        unsigned long long mask;
+        unsigned short keycode;
+    } modifiers[] =
+    {
+        { NX_DEVICELSHIFTKEYMASK,   kVK_Shift },
+        { NX_DEVICERSHIFTKEYMASK,   kVK_RightShift },
+        { NX_DEVICELCTLKEYMASK,     kVK_Control },
+        { NX_DEVICERCTLKEYMASK,     kVK_RightControl },
+        { NX_DEVICELALTKEYMASK,     kVK_Option },
+        { NX_DEVICERALTKEYMASK,     kVK_RightOption },
+        { NX_DEVICELCMDKEYMASK,     kVK_Command },
+        { NX_DEVICERCMDKEYMASK,     kVK_RightCommand },
+    };
+    struct macdrv_thread_data *thread_data = macdrv_thread_data();
+    unsigned long long down = macdrv_current_modifiers();
+    BYTE keystate[256];
+    int i;
+
+    if (!thread_data || !NtUserGetAsyncKeyboardState(keystate)) return;
+
+    for (i = 0; i < ARRAY_SIZE(modifiers); i++)
+    {
+        WORD vkey = thread_data->keyc2vkey[modifiers[i].keycode];
+        WORD scan = thread_data->keyc2scan[modifiers[i].keycode];
+
+        if (!vkey || !(keystate[vkey] & 0x80) || (down & modifiers[i].mask)) continue;
+        TRACE_(key)("releasing vkey 0x%X, up on the Mac\n", vkey);
+        macdrv_send_keyboard_input(NULL, vkey, scan & 0xff,
+                                   KEYEVENTF_KEYUP | ((scan & 0x100) ? KEYEVENTF_EXTENDEDKEY : 0),
+                                   NtGetTickCount());
+    }
+}
+
+
+/***********************************************************************
  *              ImeProcessKey (MACDRV.@)
  */
 UINT macdrv_ImeProcessKey(HIMC himc, UINT wparam, UINT lparam, const BYTE *key_state)

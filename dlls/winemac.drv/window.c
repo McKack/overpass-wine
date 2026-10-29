@@ -1877,6 +1877,9 @@ void macdrv_window_got_focus(HWND hwnd, const macdrv_event *event)
           hwnd, event->window, event->window_got_focus.serial, NtUserIsWindowEnabled(hwnd),
           NtUserIsWindowVisible(hwnd), style, get_focus(), get_active_window(), NtUserGetForegroundWindow());
 
+    /* Modifiers that came up while another application or a process that is gone had the keyboard. */
+    macdrv_release_stale_modifiers();
+
     if (can_window_become_foreground(hwnd) && !(style & WS_MINIMIZE))
     {
         TRACE("setting foreground window to %p\n", hwnd);

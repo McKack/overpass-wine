@@ -495,6 +495,14 @@ void OnMainThread(dispatch_block_t block)
     dispatch_semaphore_t semaphore = NULL;
     __block BOOL finished;
 
+    /* Already on the main thread (e.g. -viewWillDraw inside a Core Animation flush reaching an OpenGL
+     * context update): waiting for the main thread to run the block would never end. */
+    if ([NSThread isMainThread])
+    {
+        block();
+        return;
+    }
+
     if (!queue)
     {
         semaphore = dispatch_semaphore_create(0);

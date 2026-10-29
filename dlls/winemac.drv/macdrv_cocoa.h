@@ -567,6 +567,7 @@ extern bool macdrv_is_any_wine_window_visible(void);
 
 
 /* keyboard */
+extern unsigned long long macdrv_current_modifiers(void);
 extern void macdrv_get_input_source_info(CFDataRef* uchr,CGEventSourceKeyboardType* keyboard_type, bool* is_iso,
                                          TISInputSourceRef* input_source);
 extern CFArrayRef macdrv_create_input_source_list(void);

@@ -155,6 +155,17 @@ static inline NSUInteger adjusted_modifiers_for_settings(NSUInteger modifiers)
     return new_modifiers;
 }
 
+/***********************************************************************
+ *              macdrv_current_modifiers
+ *
+ * The modifier keys down right now, with the device bits adjusted for the
+ * Option/Command settings the way key events are.
+ */
+unsigned long long macdrv_current_modifiers(void)
+{
+    return adjusted_modifiers_for_settings(CGEventSourceFlagsState(kCGEventSourceStateHIDSystemState));
+}
+
 static inline BOOL stage_manager_enabled(void)
 {
     /* There is no documented way to determine if Stage Manager is enabled,
@@ -3042,7 +3053,20 @@ static CVReturn WineDisplayLinkCallback(CVDisplayLinkRef displayLink, const CVTi
     - (void)windowDidBecomeKey:(NSNotification *)notification
     {
         WineApplicationController* controller = [WineApplicationController sharedController];
-        NSEvent* event = [controller lastFlagsChanged];
+        /* Sync from the modifiers down now: the last flags-changed event this application saw is stale
+         * when a modifier went up while another application had the keyboard (Command-Tab, Command-Space). */
+        NSEvent* event = [NSEvent keyEventWithType:NSEventTypeFlagsChanged
+                                          location:NSZeroPoint
+                                     modifierFlags:(NSEventModifierFlags)CGEventSourceFlagsState(kCGEventSourceStateHIDSystemState)
+                                         timestamp:[[NSProcessInfo processInfo] systemUptime]
+                                      windowNumber:[self windowNumber]
+                                           context:nil
+                                        characters:@""
+                       charactersIgnoringModifiers:@""
+                                         isARepeat:NO
+                                           keyCode:0];
+        if (!event)
+            event = [controller lastFlagsChanged];
         if (event)
             [self flagsChanged:event];
 
