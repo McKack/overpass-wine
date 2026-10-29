@@ -5947,6 +5947,43 @@ static void fill_working_set_info( struct fill_working_set_info_data *d, struct 
             p->VirtualAttributes.Win32Protection = get_win32_prot( vprot, view->protect );
     }
 }
+#elif defined(__APPLE__)
+/* No /proc/self/pagemap on macOS: mincore() tells whether a page is resident, and for a file
+ * mapping whether it has been written to (a private copy, no longer shared). */
+struct fill_working_set_info_data
+{
+    int unused;
+};
+
+static void init_fill_working_set_info_data( struct fill_working_set_info_data *d, char *end )
+{
+}
+
+static void free_fill_working_set_info_data( struct fill_working_set_info_data *d )
+{
+}
+
+static void fill_working_set_info( struct fill_working_set_info_data *d, struct file_view *view, BYTE vprot,
+                                   struct working_set_info_ref *ref, SIZE_T count,
+                                   MEMORY_WORKING_SET_EX_INFORMATION *info )
+{
+    MEMORY_WORKING_SET_EX_INFORMATION *p;
+    char vec;
+    SIZE_T i;
+
+    for (i = 0; i < count; ++i)
+    {
+        p = &info[ref[i].orig_index];
+        if (mincore( ROUND_ADDR( ref[i].addr, host_page_mask ), host_page_size, &vec ) == -1) vec = 0;
+
+        p->VirtualAttributes.Valid = !(vprot & VPROT_GUARD) && (vprot & 0x0f) && (vec & MINCORE_INCORE);
+        p->VirtualAttributes.Shared = !is_view_valloc( view ) && !(vec & MINCORE_COPIED);
+        if (p->VirtualAttributes.Shared && p->VirtualAttributes.Valid)
+            p->VirtualAttributes.ShareCount = 1; /* FIXME */
+        if (p->VirtualAttributes.Valid)
+            p->VirtualAttributes.Win32Protection = get_win32_prot( vprot, view->protect );
+    }
+}
 #else
 static int pagemap_fd = -2;
 
