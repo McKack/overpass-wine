@@ -36,6 +36,8 @@
  *   dll = xaudio2_7=n,b                             added to WINEDLLOVERRIDES
  *   graphics = dxmt                                 dxmt, d3dmetal, wined3d or auto; OverPass sets
  *                                                   OVERPASS_BACKEND_<NAME> to each backend's DLL folder
+ *   prefer-graphics = dxvk                          like graphics, but only while the container is on Automatic
+ *                                                   (OverPass sets OVERPASS_GRAPHICS_CHOSEN otherwise)
  *   d3d9 = mtld3d                                   mtld3d or wined3d for Direct3D 9, after any graphics
  *                                                   line; OverPass sets OVERPASS_D3D9_MTLD3D to mtld3d's folder
  *   replace-path = \Game\start.exe => \Game\game.exe
@@ -439,7 +441,9 @@ static void rule_apply( const struct rule *rule, WCHAR **app_name, WCHAR **cmdli
             env_set_both( env, L"WINEDLLOVERRIDES", 16, overrides );
             HeapFree( GetProcessHeap(), 0, overrides );
         }
-        else if ((value = value_of( line, L"graphics" )))
+        else if ((value = value_of( line, L"graphics" )) ||
+                 /* prefer-graphics: the same, unless the container has a backend of its own */
+                 ((value = value_of( line, L"prefer-graphics" )) && !env_get( env, L"OVERPASS_GRAPHICS_CHOSEN" )))
         {
             WCHAR name[64] = L"OVERPASS_BACKEND_";
             const WCHAR *dir, *v;
