@@ -286,7 +286,7 @@ HRESULT DSOUND_ReopenDevice(DirectSoundDevice *device, BOOL forcewave)
     hres = IAudioClient_Initialize(client,
             AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_NOPERSIST |
             AUDCLNT_STREAMFLAGS_EVENTCALLBACK | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM,
-            800000, 0, wfx, NULL);
+            2000000, 0, wfx, NULL);
     if(FAILED(hres)){
         IAudioClient_Release(client);
         ERR("Initialize failed: %08lx\n", hres);
@@ -327,7 +327,9 @@ HRESULT DSOUND_ReopenDevice(DirectSoundDevice *device, BOOL forcewave)
     period_ms = (period + 9999) / 10000;
     frag_frames = MulDiv(wfx->nSamplesPerSec, period, 10000000);
 
-    aclen_frames = min(acbuf_frames, 3 * frag_frames);
+    /* A game's work and the host's scheduling both delay the mixer, so keep at
+     * least 60 ms queued. The latency makes this follow the device's chunk size. */
+    aclen_frames = min(acbuf_frames, max(3 * frag_frames, wfx->nSamplesPerSec * 3 / 50));
 
     TRACE("period %lu ms frag_frames %lu buf_frames %u\n", period_ms, frag_frames, aclen_frames);
 

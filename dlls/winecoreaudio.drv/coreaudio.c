@@ -1317,6 +1317,35 @@ static HRESULT ca_get_max_stream_latency(struct coreaudio_stream *stream, UInt32
     return S_OK;
 }
 
+/* What the device holds back besides its reported latency: audio goes out in
+ * chunks of the IO buffer, after the safety offset. Bluetooth output pulls far
+ * bigger chunks than a period, and a client that keeps less than that queued
+ * underruns. */
+static UInt32 ca_get_render_overhead(struct coreaudio_stream *stream)
+{
+    UInt32 value, size = sizeof(value), overhead = 0;
+    AudioObjectPropertyAddress addr =
+    {
+        .mScope = kAudioObjectPropertyScopeGlobal,
+        .mElement = kAudioObjectPropertyElementMain,
+        .mSelector = kAudioDevicePropertyBufferFrameSize,
+    };
+
+    if(stream->flow != eRender)
+        return 0;
+
+    if(AudioObjectGetPropertyData(stream->dev_id, &addr, 0, NULL, &size, &value) == noErr)
+        overhead += value;
+
+    addr.mScope = kAudioObjectPropertyScopeOutput;
+    addr.mSelector = kAudioDevicePropertySafetyOffset;
+    size = sizeof(value);
+    if(AudioObjectGetPropertyData(stream->dev_id, &addr, 0, NULL, &size, &value) == noErr)
+        overhead += value;
+
+    return overhead;
+}
+
 static NTSTATUS unix_get_latency(void *args)
 {
     struct get_latency_params *params = args;
@@ -1346,7 +1375,7 @@ static NTSTATUS unix_get_latency(void *args)
         return STATUS_SUCCESS;
     }
 
-    latency += stream_latency;
+    latency += stream_latency + ca_get_render_overhead(stream);
     /* pretend we process audio in Period chunks, so max latency includes
      * the period time */
     *params->latency = muldiv(latency, 10000000, stream->fmt->nSamplesPerSec) + stream->period;
