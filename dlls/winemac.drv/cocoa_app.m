@@ -2723,7 +2723,12 @@ static NSString* WineLocalizedString(unsigned int stringID)
 
         [eventQueuesLock lock];
         for (WineEventQueue* queue in eventQueues)
+        {
+            /* A thread that didn't pump messages while the app was inactive
+               (waiting for a child process, say) must not see that it was. */
+            [queue discardEventsMatchingMask:event_mask_for_type(APP_DEACTIVATED) forWindow:nil];
             [queue postEvent:event];
+        }
         [eventQueuesLock unlock];
 
         macdrv_release_event(event);
