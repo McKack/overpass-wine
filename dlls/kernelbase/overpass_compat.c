@@ -27,15 +27,18 @@
  *   # GOG Galaxy draws its interface with Chromium, whose GPU path fails under Wine.
  *   [GOG Galaxy: software rendering]
  *   program = GalaxyClient.exe                      a program the rule covers: file name or path ending,
- *   program = GOG Galaxy\GalaxyClient Helper.exe     any case; repeat for more
+ *   program = GOG Galaxy\GalaxyClient Helper.exe     any case; repeat for more; * covers every program
  *   steam-app = 1234                                or a Steam game, by the SteamGameId Steam sets
  *   beside = libcef.dll                             or any program with this file in its folder
+ *   company = Paradox                               or any program whose version resource has this text
+ *   product = Unreal Engine                         in CompanyName or ProductName, any case
  *   add-arguments = --in-process-gpu --use-gl=swiftshader
  *   unless-argument = --type=crashpad-handler       don't add arguments to command lines containing this
  *   env = NAME=value                                for the program's Windows and Unix environment
  *   dll = xaudio2_7=n,b                             added to WINEDLLOVERRIDES
  *   graphics = dxmt                                 dxmt, d3dmetal, wined3d or auto; OverPass sets
- *                                                   OVERPASS_BACKEND_<NAME> to each backend's DLL folder
+ *                                                   OVERPASS_BACKEND_<NAME> to each backend's DLL folder;
+ *                                                   auto means dxmt when installed, else Wine's own
  *   prefer-graphics = dxvk                          like graphics, but only while the container is on Automatic
  *                                                   (OverPass sets OVERPASS_GRAPHICS_CHOSEN otherwise)
  *   d3d9 = mtld3d                                   mtld3d or wined3d for Direct3D 9, after any graphics
@@ -47,8 +50,9 @@
  *                                                   when the replacement doesn't exist
  *   source = https://...                            where the fix comes from (not used here)
  *
- * Lines starting with '#' or ';' are comments. A rule applies when any of its program, steam-app or
- * beside lines matches; matching rules are applied in the order they are read.
+ * Lines starting with '#' or ';' are comments. A rule applies when any of its program, steam-app,
+ * beside, company or product lines matches; matching rules are applied in the order they are read.
+ * Each process that matches writes a block to the log naming the rules and the file:line they came from.
  */
 
 #include <stdarg.h>
@@ -60,13 +64,17 @@
 #include "winbase.h"
 #include "winnls.h"
 #include "winternl.h"
+#include "winver.h"
 
 #include "kernelbase.h"
 #include "wine/debug.h"
 
 WINE_DEFAULT_DEBUG_CHANNEL(process);
 
-#define MAX_RULE_LINES 64
+#define MAX_RULE_LINES 1024
+
+/* Starts each file in the text load_rules builds, followed by the file's name, for the log block. */
+#define FILE_MARKER 1
 
 struct env_block
 {
@@ -221,12 +229,21 @@ static void append_file( WCHAR **text, size_t *len, const WCHAR *path )
     if (size != INVALID_FILE_SIZE && size < (4 << 20) && (utf8 = HeapAlloc( GetProcessHeap(), 0, size + 1 ))
         && ReadFile( file, utf8, size, &read, NULL ))
     {
+        const WCHAR *name = wcsrchr( path, '\\' );
+        size_t name_len;
+
+        name = name ? name + 1 : path;
+        name_len = lstrlenW( name );
         lenW = MultiByteToWideChar( CP_UTF8, 0, utf8, read, NULL, 0 );
-        grown = *text ? HeapReAlloc( GetProcessHeap(), 0, *text, (*len + lenW + 2) * sizeof(WCHAR) )
-                      : HeapAlloc( GetProcessHeap(), 0, (lenW + 2) * sizeof(WCHAR) );
+        grown = *text ? HeapReAlloc( GetProcessHeap(), 0, *text, (*len + name_len + lenW + 4) * sizeof(WCHAR) )
+                      : HeapAlloc( GetProcessHeap(), 0, (name_len + lenW + 4) * sizeof(WCHAR) );
         if (grown)
         {
             *text = grown;
+            (*text)[(*len)++] = FILE_MARKER;
+            memcpy( *text + *len, name, name_len * sizeof(WCHAR) );
+            *len += name_len;
+            (*text)[(*len)++] = '\n';
             MultiByteToWideChar( CP_UTF8, 0, utf8, read, *text + *len, lenW );
             *len += lenW;
             (*text)[(*len)++] = '\n';
@@ -276,8 +293,18 @@ static WCHAR *load_rules(void)
 struct rule
 {
     const WCHAR *name;
+    const WCHAR *file;
+    unsigned int line;                   /* of the [section] */
     const WCHAR *lines[MAX_RULE_LINES];  /* "key = value" lines */
+    unsigned int numbers[MAX_RULE_LINES];
     unsigned int count;
+};
+
+/* CompanyName and ProductName of one program, read the first time a rule asks. */
+struct version_info
+{
+    WCHAR *app;
+    WCHAR company[256], product[256];
 };
 
 /* The value of a "key = value" line, or NULL when the line has another key. */
@@ -297,6 +324,51 @@ static const WCHAR *find_nocase( const WCHAR *str, const WCHAR *sub, size_t sub_
 {
     for (; *str; str++) if (!wcsnicmp( str, sub, sub_len )) return str;
     return NULL;
+}
+
+/* Copies one string of a version resource, trying the file's own language first. */
+static void version_string( const void *data, const WCHAR *key, WCHAR *value, size_t size )
+{
+    static const DWORD fallbacks[] = { 0x04b00409, 0x04e40409 };  /* US English, Unicode and Windows-1252 */
+    const DWORD *translation = NULL;
+    unsigned int i, count = 0;
+    WCHAR path[128];
+    WCHAR *text;
+    UINT len;
+
+    if (VerQueryValueW( data, L"\\VarFileInfo\\Translation", (void **)&translation, &len ) && len >= sizeof(DWORD))
+        count = 1;
+    for (i = 0; i < count + ARRAY_SIZE(fallbacks); i++)
+    {
+        DWORD lang = i < count ? translation[i] : fallbacks[i - count];
+
+        swprintf( path, ARRAY_SIZE(path), L"\\StringFileInfo\\%04x%04x\\%s", LOWORD(lang), HIWORD(lang), key );
+        if (VerQueryValueW( data, path, (void **)&text, &len ) && len)
+        {
+            lstrcpynW( value, text, size );
+            return;
+        }
+    }
+}
+
+static const struct version_info *read_version_info( struct version_info *info, const WCHAR *app_name )
+{
+    DWORD size;
+    void *data;
+
+    if (info->app && !wcsicmp( info->app, app_name )) return info;
+    HeapFree( GetProcessHeap(), 0, info->app );
+    info->app = heap_strdupW( app_name, lstrlenW( app_name ) );
+    info->company[0] = info->product[0] = 0;
+    if (!(size = GetFileVersionInfoSizeW( app_name, NULL ))) return info;
+    if (!(data = HeapAlloc( GetProcessHeap(), 0, size ))) return info;
+    if (GetFileVersionInfoW( app_name, 0, size, data ))
+    {
+        version_string( data, L"CompanyName", info->company, ARRAY_SIZE(info->company) );
+        version_string( data, L"ProductName", info->product, ARRAY_SIZE(info->product) );
+    }
+    HeapFree( GetProcessHeap(), 0, data );
+    return info;
 }
 
 /* Applies a "from => to" replace-path value to *app_name and the program at the start of *cmdline. */
@@ -350,7 +422,8 @@ static void replace_path( const struct rule *rule, const WCHAR *value, WCHAR **a
     *cmdline = new_cmdline;
 }
 
-static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const struct env_block *env )
+static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const struct env_block *env,
+                          struct version_info *version )
 {
     size_t app_len = lstrlenW( app_name );
     unsigned int i;
@@ -365,6 +438,7 @@ static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const 
             size_t len;
             WCHAR *p;
 
+            if (!wcscmp( value, L"*" )) return TRUE;
             while (*value == '\\' || *value == '/') value++;
             if (swprintf( suffix, ARRAY_SIZE(suffix), L"\\%s", value ) < 0) continue;
             for (p = suffix; *p; p++) if (*p == '/') *p = '\\';
@@ -387,6 +461,16 @@ static BOOL rule_matches( const struct rule *rule, const WCHAR *app_name, const 
             if (swprintf( path, ARRAY_SIZE(path), L"%.*s\\%s", (int)(slash - app_name), app_name, value ) < 0) continue;
             attrs = GetFileAttributesW( path );
             if (attrs != INVALID_FILE_ATTRIBUTES && !(attrs & FILE_ATTRIBUTE_DIRECTORY)) return TRUE;
+        }
+        else if ((value = value_of( rule->lines[i], L"company" )))
+        {
+            if (*value && find_nocase( read_version_info( version, app_name )->company, value, lstrlenW( value ) ))
+                return TRUE;
+        }
+        else if ((value = value_of( rule->lines[i], L"product" )))
+        {
+            if (*value && find_nocase( read_version_info( version, app_name )->product, value, lstrlenW( value ) ))
+                return TRUE;
         }
     }
     return FALSE;
@@ -450,6 +534,8 @@ static void rule_apply( const struct rule *rule, WCHAR **app_name, WCHAR **cmdli
             unsigned int n = lstrlenW( name );
             BOOL builtin = !wcsicmp( value, L"wined3d" ) || !wcsicmp( value, L"auto" );
 
+            /* As in the app: Automatic is OverPass Runtime when it's installed. */
+            if (!wcsicmp( value, L"auto" ) && env_get( env, L"OVERPASS_BACKEND_DXMT" )) value = L"dxmt";
             for (v = value; *v && n < ARRAY_SIZE(name) - 1; v++) name[n++] = towupper( *v );
             name[n] = 0;
             /* wined3d is Wine's own, so it needs no folder in front of Wine's DLLs. */
@@ -494,12 +580,29 @@ static void rule_apply( const struct rule *rule, WCHAR **app_name, WCHAR **cmdli
     }
 }
 
-static void finish_rule( struct rule *rule, WCHAR **app_name, WCHAR **cmdline, struct env_block *env,
-                         BOOL *matched )
+/* The log block: what a rule changes for this process, and where each setting came from. */
+static void log_rule( const struct rule *rule, const WCHAR *app_name, BOOL first )
 {
-    if (rule->name && rule_matches( rule, *app_name, env ))
+    static const WCHAR *matchers[] = { L"program", L"steam-app", L"beside", L"company", L"product", L"source", L"unless-argument" };
+    unsigned int i, j;
+
+    if (first) MESSAGE( "overpass: rules for %s\n", wine_dbgstr_w( app_name ) );
+    MESSAGE( "overpass:   %s:%u [%s]\n", wine_dbgstr_w( rule->file ), rule->line, wine_dbgstr_w( rule->name ) );
+    for (i = 0; i < rule->count; i++)
+    {
+        for (j = 0; j < ARRAY_SIZE(matchers); j++) if (value_of( rule->lines[i], matchers[j] )) break;
+        if (j == ARRAY_SIZE(matchers))
+            MESSAGE( "overpass:     %u: %s\n", rule->numbers[i], wine_dbgstr_w( rule->lines[i] ) );
+    }
+}
+
+static void finish_rule( struct rule *rule, WCHAR **app_name, WCHAR **cmdline, struct env_block *env,
+                         BOOL *matched, struct version_info *version )
+{
+    if (rule->name && rule_matches( rule, *app_name, env, version ))
     {
         TRACE( "rule %s matches %s\n", debugstr_w(rule->name), debugstr_w(*app_name) );
+        log_rule( rule, *app_name, !*matched );
         rule_apply( rule, app_name, cmdline, env );
         *matched = TRUE;
     }
@@ -513,15 +616,20 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
                             WCHAR **new_app_name, WCHAR **new_cmdline, WCHAR **new_env )
 {
     struct env_block env = { 0 };
-    struct rule rule = { 0 };
+    struct version_info version = { 0 };
+    const WCHAR *file = L"";
+    struct rule *rule;
     WCHAR *text, *line, *next, *cmd = NULL, *app = NULL;
+    unsigned int number = 0;
     BOOL matched = FALSE;
 
     *new_app_name = *new_cmdline = *new_env = NULL;
     if (!app_name || !cmdline || !(text = load_rules())) return FALSE;
-    if (!env_load( &env, env_block, flags ) || !(cmd = heap_strdupW( cmdline, lstrlenW( cmdline ) ))
+    if (!(rule = HeapAlloc( GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(*rule) ))
+        || !env_load( &env, env_block, flags ) || !(cmd = heap_strdupW( cmdline, lstrlenW( cmdline ) ))
         || !(app = heap_strdupW( app_name, lstrlenW( app_name ) )))
     {
+        HeapFree( GetProcessHeap(), 0, rule );
         HeapFree( GetProcessHeap(), 0, cmd );
         env_free( &env );
         HeapFree( GetProcessHeap(), 0, text );
@@ -533,6 +641,15 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
         WCHAR *end;
 
         if ((next = wcschr( line, '\n' ))) *next++ = 0;
+        number++;
+        if (*line == FILE_MARKER)
+        {
+            /* A rule ends with its file: its strings stay valid, the text isn't touched again. */
+            finish_rule( rule, &app, &cmd, &env, &matched, &version );
+            file = line + 1;
+            number = 0;
+            continue;
+        }
         while (*line == ' ' || *line == '\t' || *line == 0xfeff) line++;
         end = line + lstrlenW( line );
         while (end > line && (end[-1] == '\r' || end[-1] == ' ' || end[-1] == '\t')) *--end = 0;
@@ -540,13 +657,20 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
 
         if (*line == '[' && end[-1] == ']')
         {
-            finish_rule( &rule, &app, &cmd, &env, &matched );
+            finish_rule( rule, &app, &cmd, &env, &matched, &version );
             end[-1] = 0;
-            rule.name = line + 1;
+            rule->name = line + 1;
+            rule->file = file;
+            rule->line = number;
         }
-        else if (rule.name && rule.count < MAX_RULE_LINES) rule.lines[rule.count++] = line;
+        else if (rule->name && rule->count < MAX_RULE_LINES)
+        {
+            rule->numbers[rule->count] = number;
+            rule->lines[rule->count++] = line;
+        }
+        else if (rule->name) WARN( "rule %s has too many lines\n", debugstr_w(rule->name) );
     }
-    finish_rule( &rule, &app, &cmd, &env, &matched );
+    finish_rule( rule, &app, &cmd, &env, &matched, &version );
 
     if (matched)
     {
@@ -560,6 +684,8 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
         HeapFree( GetProcessHeap(), 0, cmd );
     }
     env_free( &env );
+    HeapFree( GetProcessHeap(), 0, version.app );
+    HeapFree( GetProcessHeap(), 0, rule );
     HeapFree( GetProcessHeap(), 0, text );
     return matched;
 }

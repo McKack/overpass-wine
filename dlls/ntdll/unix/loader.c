@@ -831,6 +831,8 @@ static void exec_x87_sidecar( char **argv, WORD machine )
     if (!(target = argv[2])) return;
     i = strlen( target );
     if (i < 4 || strcasecmp( target + i - 4, ".exe" )) return;
+    /* Wine's own programs have no x87 math to speed up, and the sidecar adds about half a second to each start. */
+    if (i > 11 && !strncasecmp( target + 1, ":\\windows\\", 10 )) return;
     {
         WORD target_machine = get_pe_file_machine( target );
         if (target_machine != IMAGE_FILE_MACHINE_UNKNOWN && target_machine != IMAGE_FILE_MACHINE_I386) return;
