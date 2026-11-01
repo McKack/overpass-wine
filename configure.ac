@@ -2437,6 +2437,7 @@ enable_wuauserv=${enable_wuauserv:-$HOST_ARCH}
 dnl Explicitly enable some programs for arm64ec
 enable_cmd=${enable_cmd:-yes}
 enable_dllhost=${enable_dllhost:-yes}
+enable_donothing=${enable_donothing:-i386,x86_64,arm64ec}
 enable_dpnsvr=${enable_dpnsvr:-i386,x86_64,arm64ec}
 enable_dxdiag=${enable_dxdiag:-yes}
 enable_msiexec=${enable_msiexec:-yes}
@@ -3568,6 +3569,7 @@ WINE_CONFIG_MAKEFILE(programs/cscript)
 WINE_CONFIG_MAKEFILE(programs/dism)
 WINE_CONFIG_MAKEFILE(programs/dllhost)
 WINE_CONFIG_MAKEFILE(programs/dplaysvr)
+WINE_CONFIG_MAKEFILE(programs/donothing)
 WINE_CONFIG_MAKEFILE(programs/dpnsvr)
 WINE_CONFIG_MAKEFILE(programs/dpvsetup)
 WINE_CONFIG_MAKEFILE(programs/dxdiag)

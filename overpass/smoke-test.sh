@@ -72,6 +72,15 @@ out="$(tr -d '\r' < "$TMP/replace.log" | tail -1)"
 echo "replace test: $out"
 [ "$out" = "replaced" ]
 
+# A doubled backslash in the path still matches a rule, and donothing.exe stands in without a sound.
+mkdir -p "$WINEPREFIX/drive_c/game"
+cp "$WINEPREFIX/drive_c/windows/system32/hostname.exe" "$WINEPREFIX/drive_c/game/step.exe"
+printf '[stand-in test]\nprogram = game\\step.exe\nreplace-path = \\game\\step.exe => C:\\windows\\system32\\donothing.exe\n' > "$WINEPREFIX/drive_c/rules/standin.ini"
+limit 120 "$TMP/standin.log" "$W/bin/wine" cmd /c 'C:\game\step.exe /x & echo done'
+out="$(tr -d '\r' < "$TMP/standin.log" | tail -1)"
+echo "stand-in test: $out"
+[ "$out" = "done" ] && ! grep -q "Invalid option" "$TMP/standin.log"
+
 nm -gU "$W/lib/wine/x86_64-unix/winemac.so" | grep -q _macdrv_functions && echo "macdrv_functions exported"
 "$W/bin/wineserver" -k 2>/dev/null || true
 echo "smoke test passed"

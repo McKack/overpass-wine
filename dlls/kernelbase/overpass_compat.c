@@ -371,6 +371,17 @@ static const struct version_info *read_version_info( struct version_info *info, 
     return info;
 }
 
+/* Windows accepts a doubled backslash in a path, and programs that join a folder and a name pass them;
+ * rules compare path endings, so these go. The first two characters stay, for network paths. */
+static void collapse_backslashes( WCHAR *path )
+{
+    WCHAR *in, *out;
+
+    if (!path[0] || !path[1]) return;
+    for (in = out = path + 2; *in; in++) if (*in != '\\' || out[-1] != '\\') *out++ = *in;
+    *out = 0;
+}
+
 /* Applies a "from => to" replace-path value to *app_name and the program at the start of *cmdline. */
 static void replace_path( const struct rule *rule, const WCHAR *value, WCHAR **app_name, WCHAR **cmdline )
 {
@@ -635,6 +646,7 @@ BOOL overpass_compat_apply( const WCHAR *app_name, const WCHAR *cmdline, const v
         HeapFree( GetProcessHeap(), 0, text );
         return FALSE;
     }
+    collapse_backslashes( app );
 
     for (line = text; line; line = next)
     {

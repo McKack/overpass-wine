@@ -1695,6 +1695,7 @@ enable_cscript
 enable_dism
 enable_dllhost
 enable_dplaysvr
+enable_donothing
 enable_dpnsvr
 enable_dpvsetup
 enable_dxdiag
@@ -22444,6 +22445,7 @@ enable_wuauserv=${enable_wuauserv:-$HOST_ARCH}
 
 enable_cmd=${enable_cmd:-yes}
 enable_dllhost=${enable_dllhost:-yes}
+enable_donothing=${enable_donothing:-i386,x86_64,arm64ec}
 enable_dpnsvr=${enable_dpnsvr:-i386,x86_64,arm64ec}
 enable_dxdiag=${enable_dxdiag:-yes}
 enable_msiexec=${enable_msiexec:-yes}
@@ -23572,6 +23574,7 @@ wine_fn_config_makefile programs/cscript enable_cscript
 wine_fn_config_makefile programs/dism enable_dism
 wine_fn_config_makefile programs/dllhost enable_dllhost
 wine_fn_config_makefile programs/dplaysvr enable_dplaysvr
+wine_fn_config_makefile programs/donothing enable_donothing
 wine_fn_config_makefile programs/dpnsvr enable_dpnsvr
 wine_fn_config_makefile programs/dpvsetup enable_dpvsetup
 wine_fn_config_makefile programs/dxdiag enable_dxdiag
