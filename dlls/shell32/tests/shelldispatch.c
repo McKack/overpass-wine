@@ -1567,6 +1567,81 @@ static void test_ShellExecute(void)
     IShellDispatch2_Release(sd);
 }
 
+static void test_CopyHere(void)
+{
+    WCHAR temp[MAX_PATH], src[MAX_PATH], dst[MAX_PATH], file[MAX_PATH], copied[MAX_PATH];
+    IShellDispatch *sd;
+    Folder *folder, *source;
+    FolderItem *item;
+    VARIANT var, options;
+    BSTR name;
+    HRESULT hr;
+    HANDLE h;
+
+    hr = CoCreateInstance(&CLSID_Shell, NULL, CLSCTX_INPROC_SERVER, &IID_IShellDispatch, (void **)&sd);
+    ok(hr == S_OK, "got %#lx\n", hr);
+
+    GetTempPathW(ARRAY_SIZE(temp), temp);
+    swprintf(src, ARRAY_SIZE(src), L"%sshelldisp_src", temp);
+    swprintf(dst, ARRAY_SIZE(dst), L"%sshelldisp_dst", temp);
+    CreateDirectoryW(src, NULL);
+    CreateDirectoryW(dst, NULL);
+    swprintf(file, ARRAY_SIZE(file), L"%s\\one.txt", src);
+    swprintf(copied, ARRAY_SIZE(copied), L"%s\\one.txt", dst);
+    h = CreateFileW(file, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+    ok(h != INVALID_HANDLE_VALUE, "got error %lu\n", GetLastError());
+    CloseHandle(h);
+
+    V_VT(&var) = VT_BSTR;
+    V_BSTR(&var) = SysAllocString(dst);
+    hr = IShellDispatch_NameSpace(sd, var, &folder);
+    ok(hr == S_OK, "got %#lx\n", hr);
+    SysFreeString(V_BSTR(&var));
+
+    V_VT(&options) = VT_I4;
+    V_I4(&options) = FOF_NO_UI;
+
+    /* A path. */
+    V_VT(&var) = VT_BSTR;
+    V_BSTR(&var) = SysAllocString(file);
+    hr = Folder_CopyHere(folder, var, options);
+    ok(hr == S_OK, "got %#lx\n", hr);
+    SysFreeString(V_BSTR(&var));
+    ok(GetFileAttributesW(copied) != INVALID_FILE_ATTRIBUTES, "file was not copied\n");
+    ok(GetFileAttributesW(file) != INVALID_FILE_ATTRIBUTES, "source is gone\n");
+    DeleteFileW(copied);
+
+    /* A FolderItem, moved. */
+    V_VT(&var) = VT_BSTR;
+    V_BSTR(&var) = SysAllocString(src);
+    hr = IShellDispatch_NameSpace(sd, var, &source);
+    ok(hr == S_OK, "got %#lx\n", hr);
+    SysFreeString(V_BSTR(&var));
+    name = SysAllocString(L"one.txt");
+    hr = Folder_ParseName(source, name, &item);
+    ok(hr == S_OK, "got %#lx\n", hr);
+    SysFreeString(name);
+    V_VT(&var) = VT_DISPATCH;
+    V_DISPATCH(&var) = (IDispatch *)item;
+    hr = Folder_MoveHere(folder, var, options);
+    ok(hr == S_OK, "got %#lx\n", hr);
+    ok(GetFileAttributesW(copied) != INVALID_FILE_ATTRIBUTES, "file was not moved\n");
+    ok(GetFileAttributesW(file) == INVALID_FILE_ATTRIBUTES, "source is still there\n");
+    FolderItem_Release(item);
+
+    V_VT(&var) = VT_I4;
+    V_I4(&var) = 1;
+    hr = Folder_CopyHere(folder, var, options);
+    ok(hr == E_INVALIDARG, "got %#lx\n", hr);
+
+    Folder_Release(source);
+    Folder_Release(folder);
+    IShellDispatch_Release(sd);
+    DeleteFileW(copied);
+    RemoveDirectoryW(src);
+    RemoveDirectoryW(dst);
+}
+
 START_TEST(shelldispatch)
 {
     HRESULT r;
@@ -1586,6 +1661,7 @@ START_TEST(shelldispatch)
     test_Verbs();
     test_ShellLinkObject();
     test_ShellExecute();
+    test_CopyHere();
 
     CoUninitialize();
 }

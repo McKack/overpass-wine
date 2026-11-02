@@ -1890,18 +1890,149 @@ static HRESULT WINAPI FolderImpl_NewFolder(Folder3 *iface, BSTR name, VARIANT op
     return E_NOTIMPL;
 }
 
+static HRESULT add_source_path(WCHAR **list, SIZE_T *len, const WCHAR *path)
+{
+    SIZE_T size = wcslen(path) + 1;
+    WCHAR *new_list;
+
+    if (!(new_list = realloc(*list, (*len + size + 1) * sizeof(WCHAR))))
+        return E_OUTOFMEMORY;
+
+    *list = new_list;
+    memcpy(*list + *len, path, size * sizeof(WCHAR));
+    *len += size;
+    (*list)[*len] = 0;
+    return S_OK;
+}
+
+static HRESULT add_source_item(WCHAR **list, SIZE_T *len, FolderItem *item)
+{
+    BSTR path;
+    HRESULT hr;
+
+    if (FAILED(hr = FolderItem_get_Path(item, &path)))
+        return hr;
+
+    hr = add_source_path(list, len, path);
+    SysFreeString(path);
+    return hr;
+}
+
+static HRESULT add_source_items(WCHAR **list, SIZE_T *len, FolderItems *items)
+{
+    FolderItem *item;
+    VARIANT index;
+    LONG count, i;
+    HRESULT hr;
+
+    if (FAILED(hr = FolderItems_get_Count(items, &count)))
+        return hr;
+
+    V_VT(&index) = VT_I4;
+    for (i = 0; i < count && SUCCEEDED(hr); i++)
+    {
+        V_I4(&index) = i;
+        if (FAILED(hr = FolderItems_Item(items, index, &item)))
+            break;
+        hr = add_source_item(list, len, item);
+        FolderItem_Release(item);
+    }
+    return hr;
+}
+
+/* The item of CopyHere and MoveHere: a path, a FolderItem or a FolderItems. */
+static HRESULT get_source_paths(VARIANT *item, WCHAR **list)
+{
+    FolderItems *items;
+    FolderItem *single;
+    SIZE_T len = 0;
+    VARIANT value;
+    HRESULT hr;
+
+    *list = NULL;
+
+    VariantInit(&value);
+    if (FAILED(hr = VariantCopyInd(&value, item)))
+        return hr;
+
+    if (V_VT(&value) == VT_BSTR)
+        hr = add_source_path(list, &len, V_BSTR(&value));
+    else if (V_VT(&value) != VT_DISPATCH || !V_DISPATCH(&value))
+        hr = E_INVALIDARG;
+    else if (SUCCEEDED(IDispatch_QueryInterface(V_DISPATCH(&value), &IID_FolderItem, (void **)&single)))
+    {
+        hr = add_source_item(list, &len, single);
+        FolderItem_Release(single);
+    }
+    else if (SUCCEEDED(hr = IDispatch_QueryInterface(V_DISPATCH(&value), &IID_FolderItems, (void **)&items)))
+    {
+        hr = add_source_items(list, &len, items);
+        FolderItems_Release(items);
+    }
+
+    VariantClear(&value);
+    if (SUCCEEDED(hr) && !*list)
+        hr = add_source_path(list, &len, L"");
+    if (FAILED(hr))
+    {
+        free(*list);
+        *list = NULL;
+    }
+    return hr;
+}
+
+static HRESULT file_op_to_folder(FolderImpl *folder, VARIANT *item, VARIANT *options, UINT func)
+{
+    SHFILEOPSTRUCTW op = {0};
+    SIZE_T size = SysStringLen(folder->path) + 1;
+    WCHAR *from, *to;
+    VARIANT flags;
+    HRESULT hr;
+
+    if (FAILED(hr = get_source_paths(item, &from)))
+        return hr;
+
+    if (!(to = malloc((size + 1) * sizeof(WCHAR))))
+    {
+        free(from);
+        return E_OUTOFMEMORY;
+    }
+    memcpy(to, folder->path, size * sizeof(WCHAR));
+    to[size] = 0;
+
+    VariantInit(&flags);
+    if (SUCCEEDED(VariantCopyInd(&flags, options)) && SUCCEEDED(VariantChangeType(&flags, &flags, 0, VT_I4)))
+        op.fFlags = V_I4(&flags);
+    VariantClear(&flags);
+
+    op.wFunc = func;
+    op.pFrom = from;
+    op.pTo = to;
+    /* Windows reports failures to the user, not to the caller. */
+    if (*from && SHFileOperationW(&op))
+        WARN("failed to transfer %s to %s\n", debugstr_w(from), debugstr_w(folder->path));
+
+    free(to);
+    free(from);
+    return S_OK;
+}
+
 static HRESULT WINAPI FolderImpl_MoveHere(Folder3 *iface, VARIANT item, VARIANT options)
 {
-    FIXME("(%p,%s,%s)\n", iface, debugstr_variant(&item), debugstr_variant(&options));
+    FolderImpl *This = impl_from_Folder(iface);
 
-    return E_NOTIMPL;
+    TRACE("(%p,%s,%s)\n", iface, debugstr_variant(&item), debugstr_variant(&options));
+
+    return file_op_to_folder(This, &item, &options, FO_MOVE);
 }
 
 static HRESULT WINAPI FolderImpl_CopyHere(Folder3 *iface, VARIANT item, VARIANT options)
 {
-    FIXME("(%p,%s,%s)\n", iface, debugstr_variant(&item), debugstr_variant(&options));
+    FolderImpl *This = impl_from_Folder(iface);
 
-    return E_NOTIMPL;
+    TRACE("(%p,%s,%s)\n", iface, debugstr_variant(&item), debugstr_variant(&options));
+
+    return file_op_to_folder(This, &item, &options, FO_COPY);
 }
 
 static HRESULT WINAPI FolderImpl_GetDetailsOf(Folder3 *iface, VARIANT item, int column, BSTR *str)
